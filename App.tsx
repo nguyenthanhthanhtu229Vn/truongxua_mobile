@@ -28,15 +28,15 @@
          tabBarIcon: ({focused}) => {
            let iconName;
            if (route.name === 'Home') {
-             iconName = focused ? icons.clock : icons.clock;
+             iconName = focused ? icons.home : icons.home;
            } else if (route.name === 'Notification') {
-             iconName = focused ? icons.globe : icons.globe;
+             iconName = focused ? icons.notification : icons.notification;
            } else if (route.name === 'Category') {
-             iconName = focused ? icons.phone : icons.phone;
+             iconName = focused ? icons.menu : icons.menu;
            } else if (route.name === 'Message') {
-             iconName = focused ? icons.play : icons.play;
+             iconName = focused ? icons.message : icons.message;
            } else if (route.name === 'Profile') {
-             iconName = focused ? icons.user : icons.user;
+             iconName = focused ? icons.profile : icons.profile;
            }
            return (
              <Image
@@ -46,7 +46,7 @@
              />
            );
          },
-         tabBarActiveTintColor: '#ecac20',
+         tabBarActiveTintColor: '#eb760a',
          tabBarInactiveTintColor: '#000',
        })}>
        <Tab.Screen name="Home" component={Home} />

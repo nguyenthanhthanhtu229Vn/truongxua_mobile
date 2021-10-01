@@ -1,11 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
+import News from './News';
 
 const Home: React.FC = () => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Hello,Home </Text>
+    <View style={{flex: 1,}}>
+      <News />
     </View>
   );
 };
