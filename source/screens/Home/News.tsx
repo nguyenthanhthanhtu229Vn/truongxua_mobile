@@ -3,6 +3,7 @@ import React from 'react';
 import {FlatList, Text, View,Image, TouchableOpacity} from 'react-native';
 import { COLORS, FONTS, icons, SIZES } from '../../constant';
 import { StyleSheet } from 'react-native';
+import CreatePost from './CreatePost';
 
 const POST = [
   {
@@ -46,6 +47,7 @@ const POST = [
 ];
 const News: React.FC = () => {
   return (
+    <View style={{marginTop: 150}}>
       <FlatList 
         data={POST}
         renderItem={({item, index}) => {
@@ -92,6 +94,7 @@ const News: React.FC = () => {
           )
         }}
       />
+     </View>
   );
 };
 
