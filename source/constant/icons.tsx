@@ -14,7 +14,24 @@ const comment = require('../assets/icons/speech-bubble.png');
 const star = require('../assets/icons/star.png');
 const like = require('../assets/icons/like.png');
 const reply = require('../assets/icons/reply-all.png');
+
+const home_m = require('../assets/icons/house.png');
+const profile_m = require('../assets/icons/resume.png');
+const photo = require('../assets/icons/picture.png');
+const videos = require('../assets/icons/video.png');
+const groups = require('../assets/icons/group.png');
+const pages = require('../assets/icons/page.png');
+const noti = require('../assets/icons/noti.png');
+const mess = require('../assets/icons/mess.png');
+const event = require('../assets/icons/event.png');
+const grid = require('../assets/icons/grid.png');
 export default {
+  grid,
+  home_m,
+  pages,
+  photo,
+  profile_m,
+  videos,groups,noti,mess,event,
   home,
   notification,
   menu,

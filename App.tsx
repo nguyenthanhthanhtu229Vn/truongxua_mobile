@@ -19,24 +19,26 @@
  import Message from './source/screens/Message/Message';
  import Profile from './source/screens/Profile/Profile';
  import {NavigationContainer} from '@react-navigation/native';
+import BlogPost from './source/screens/Blog/BlogPost';
+import BlogDetail from './source/screens/Blog/BlogDetails';
  const Tab = createBottomTabNavigator();
  function MyTabs() {
    return (
      <Tab.Navigator
        screenOptions={({route}: {route: any}) => ({
-         // headerShown: false,
+        //  headerShown: false,
          tabBarIcon: ({focused}) => {
            let iconName;
            if (route.name === 'Home') {
-             iconName = focused ? icons.home : icons.home;
+             iconName = focused ? icons.home_m : icons.home;
            } else if (route.name === 'Notification') {
-             iconName = focused ? icons.notification : icons.notification;
+             iconName = focused ? icons.noti : icons.notification;
            } else if (route.name === 'Category') {
-             iconName = focused ? icons.menu : icons.menu;
+             iconName = focused ? icons.grid : icons.menu;
            } else if (route.name === 'Message') {
-             iconName = focused ? icons.message : icons.message;
+             iconName = focused ? icons.mess : icons.message;
            } else if (route.name === 'Profile') {
-             iconName = focused ? icons.profile : icons.profile;
+             iconName = focused ? icons.profile_m : icons.profile;
            }
            return (
              <Image
