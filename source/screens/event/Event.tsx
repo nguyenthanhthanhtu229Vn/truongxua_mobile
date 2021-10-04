@@ -5,8 +5,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
-  Button,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";

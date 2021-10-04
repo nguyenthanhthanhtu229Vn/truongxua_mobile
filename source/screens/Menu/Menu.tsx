@@ -13,7 +13,7 @@ const Menu: React.FC = () => {
       <View style={style.container}>
         <CategoryMenu icon={icons.home_m} label={constant.screens.home} />
         <CategoryMenu icon={icons.profile_m} label={constant.screens.profile} />
-        <CategoryMenu icon={icons.groups} label={constant.screens.group} />
+        <CategoryMenu icon={icons.groups} label={constant.screens.group} onPress={() => navigation.navigate('Group')} />
       </View>
       <View style={style.container}>
         {/* <CategoryMenu icon={icons.videos} label={constant.screens.video} /> */}
@@ -34,7 +34,7 @@ const Menu: React.FC = () => {
         <CategoryMenu icon={icons.noti} label={constant.screens.notification} />
       </View>
       <View style={style.container}>
-        <CategoryMenu icon={icons.mess} label={constant.screens.setting} />
+        <CategoryMenu icon={icons.setting} label={constant.screens.setting} />
       </View>
     </View>
   );

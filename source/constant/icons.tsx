@@ -25,7 +25,12 @@ const noti = require('../assets/icons/noti.png');
 const mess = require('../assets/icons/mess.png');
 const event = require('../assets/icons/event.png');
 const grid = require('../assets/icons/grid.png');
+const user2 = require('../assets/icons/user2.png');
+const setting = require('../assets/icons/settings.png');
+const check = require('../assets/icons/check.png');
+const line = require('../assets/icons/vertical-line.png');
 export default {
+  user2,setting,
   grid,
   home_m,
   pages,

@@ -27,6 +27,7 @@ import SignUp from "./source/screens/SignInUp/SignUp";
 import Event from "./source/screens/event/Event";
 import EventDetail from "./source/screens/event/EventDetail";
 import Group from "./source/screens/Group/Group";
+import GroupDetail from "./source/screens/Group/GroupDetail";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -62,7 +63,7 @@ function MyTabs() {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Category" component={Menu} />
-      <Tab.Screen name="Group" component={Group} />
+      {/* <Tab.Screen name="Group" component={Group} /> */}
     </Tab.Navigator>
   );
 }
@@ -86,6 +87,8 @@ const App = () => {
             component={MyTabs}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="GroupDetails" component={GroupDetail} />
+          <Stack.Screen name="Group" component={Group} />
           <Stack.Screen name="BlogDetail" component={BlogDetail} />
           <Stack.Screen name="Event" component={Event} />
           <Stack.Screen name="EventDetail" component={EventDetail} />
