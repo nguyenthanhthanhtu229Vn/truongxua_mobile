@@ -9,6 +9,7 @@ const screens = {
     messages: 'Messages',
     blog: 'Blog Posts',
     event: 'Event',
+    setting: 'Settings',
   };
   
   const menu = [
@@ -46,7 +47,7 @@ const screens = {
     },
     {
       id: 8,
-      label: screens.messages,
+      label: screens.setting,
     },
     {
       id: 9,

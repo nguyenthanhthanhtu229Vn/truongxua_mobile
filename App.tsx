@@ -26,6 +26,7 @@ import SignIn from "./source/screens/SignInUp/SignIn";
 import SignUp from "./source/screens/SignInUp/SignUp";
 import Event from "./source/screens/event/Event";
 import EventDetail from "./source/screens/event/EventDetail";
+import Group from "./source/screens/Group/Group";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -41,8 +42,8 @@ function MyTabs() {
             iconName = focused ? icons.noti : icons.notification;
           } else if (route.name === "Category") {
             iconName = focused ? icons.grid : icons.menu;
-          } else if (route.name === "Message") {
-            iconName = focused ? icons.mess : icons.message;
+          } else if (route.name === "Group") {
+            iconName = focused ? icons.groups : icons.groups;
           } else if (route.name === "Profile") {
             iconName = focused ? icons.profile_m : icons.profile;
           }
@@ -61,8 +62,7 @@ function MyTabs() {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Category" component={Menu} />
-      <Tab.Screen name="Message" component={Message} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Group" component={Group} />
     </Tab.Navigator>
   );
 }
