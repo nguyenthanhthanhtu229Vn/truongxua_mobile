@@ -1,53 +1,63 @@
 import React from "react";
-import { FlatList, Text, View, Image, TouchableOpacity } from "react-native";
+import { FlatList, Text, View, Image, TouchableOpacity ,ScrollView,SafeAreaView, SectionList,ImageBackground} from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";
 
-const EVENTS = [
-  {
-    id: 1,
+const EVENTS = [{
+
+  
+    id: '11',
     eventImg: require("../../assets/images/party1.jpg"),
     name: "Toronto Wedding Party Event 2020",
     date: "2 days ago",
     content: "Musical and dance party for bechelors in toronto city have fun",
   },
   {
-    id: 2,
+    id: '22',
     eventImg: require("../../assets/images/party2.jpg"),
     name: "Music Concert Lady Gaga 2020",
     date: "2 days ago",
     content: "Musical and dance party for bechelors in toronto city have fun",
   },
   {
-    id: 3,
+    id: '33',
     eventImg: require("../../assets/images/party3.jpg"),
     name: "Get Together Of Oddo Inc Abu Dhabi",
     date: "2 days ago",
     content: "Musical and dance party for bechelors in toronto city have fun",
   },
   {
-    id: 4,
+    id: '44',
     eventImg: require("../../assets/images/party4.jpg"),
     name: "Starting With EM Club",
     date: "2 days ago",
     content: "Musical and dance party for bechelors in toronto city have fun",
   },
   {
-    id: 5,
+    id: '55',
     eventImg: require("../../assets/images/party1.jpg"),
-    name: "My Friend Wedding Party",
+    name: "My Friend Wedding fun Party",
     date: "2 days ago",
     content: "Musical and dance party for bechelors in toronto city have fun",
   },
-];
+]
 
-const Event: React.FC = ({ navigation }) => {
-  return (
+
+const Event: React.FC = ({ navigation },props) => {
+  const {banner} = props;
+  return ( 
+  
     <View>
+      <ScrollView  showsVerticalScrollIndicator={false}>
       <MyCarousel />
       <View style={style.container}>
+       
         <FlatList
+           contentContainerStyle={{
+        flexDirection: 'column',
+  
+    }}
           data={EVENTS}
           renderItem={({ item, index }) => {
             return (
@@ -57,6 +67,7 @@ const Event: React.FC = ({ navigation }) => {
                   paddingBottom: 20,
                   alignItems: "center",
                 }}
+                key ={item.id}
               >
                 <TouchableOpacity
                   onPress={() => {
@@ -72,7 +83,7 @@ const Event: React.FC = ({ navigation }) => {
                     }}
                   />
                 </TouchableOpacity>
-                <View style={{ marginLeft: 10, width: SIZES.width / 2.3 }}>
+                <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
                   <Text
                     numberOfLines={2}
                     ellipsizeMode="tail"
@@ -135,8 +146,11 @@ const Event: React.FC = ({ navigation }) => {
             );
           }}
         />
+       
       </View>
-    </View>
+        </ScrollView>
+</View>
+       
   );
 };
 

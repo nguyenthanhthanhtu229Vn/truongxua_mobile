@@ -54,13 +54,35 @@ const NOTIFI = [
     date: "5 mins ago",
     content: "Some notification",
   },
+  {
+    id: 7,
+    avatar: require("../../assets/images/avatar1.jpeg"),
+    name: "Sara Honey Podcast",
+    date: "5 mins ago",
+    content: "Some notification",
+  },
+  {
+    id: 8,
+    avatar: require("../../assets/images/avatar1.jpeg"),
+    name: "Sara Honey Podcast",
+    date: "5 mins ago",
+    content: "Some notification",
+  },
+  {
+    id: 9,
+    avatar: require("../../assets/images/avatar1.jpeg"),
+    name: "Sara Honey Podcast",
+    date: "5 mins ago",
+    content: "Some notification",
+  },
 ];
 
 const Notification: React.FC = () => {
   return (
     <View style={style.container}>
-      <ScrollView>
+     
         <FlatList
+        showsVerticalScrollIndicator={false}
           data={NOTIFI}
           renderItem={({ item, index }) => {
             return (
@@ -106,7 +128,7 @@ const Notification: React.FC = () => {
             );
           }}
         />
-      </ScrollView>
+     
     </View>
   );
 };
