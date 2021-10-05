@@ -29,7 +29,25 @@ const user2 = require('../assets/icons/user2.png');
 const setting = require('../assets/icons/settings.png');
 const check = require('../assets/icons/check.png');
 const line = require('../assets/icons/vertical-line.png');
+const checkb = require('../assets/icons/checkb.png');
+const fb = require('../assets/icons/fb.png');
+const instagram = require('../assets/icons/instagram.png');
+const camera = require('../assets/icons/photo-camera.png');
+const pinterest = require('../assets/icons/pinterest.png');
+const twitter = require('../assets/icons/twitter.png');
+const group2 = require('../assets/icons/group2.png');
+const youtube = require('../assets/icons/youtube.png');
 export default {
+  youtube,
+  group2,
+  check,
+  line,
+  instagram,
+  camera,
+  pinterest,
+  twitter,
+  fb,
+  checkb,
   user2,setting,
   grid,
   home_m,

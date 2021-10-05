@@ -3,8 +3,6 @@ import React from 'react';
 import {FlatList, Text, View,Image, TouchableOpacity} from 'react-native';
 import { COLORS, FONTS, icons, SIZES } from '../../constant';
 import { StyleSheet } from 'react-native';
-import CreatePost from './CreatePost';
-
 const POST = [
   {
     'id': 1,
