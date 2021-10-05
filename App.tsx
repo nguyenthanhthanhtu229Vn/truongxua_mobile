@@ -28,6 +28,7 @@ import Event from "./source/screens/event/Event";
 import EventDetail from "./source/screens/event/EventDetail";
 import Group from "./source/screens/Group/Group";
 import GroupDetail from "./source/screens/Group/GroupDetail";
+import Setting from "./source/screens/Setting/Setting";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -93,6 +94,8 @@ const App = () => {
           <Stack.Screen name="Event" component={Event} />
           <Stack.Screen name="EventDetail" component={EventDetail} />
           <Stack.Screen name="BlogPost" component={BlogPost} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Setting" component={Setting} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

@@ -17,7 +17,7 @@ var height = Dimensions.get("window").height; //full height
 const CreatePost: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
-    <View style={{ flex: 1, position: 'absolute',width: 390}}>
+    <View style={{ flex: 1, position: "absolute", width: "100%" }}>
       <Modal
         style={{ backgroundColor: "black", opacity: 0.5 }}
         animationType="slide"

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  FlatList,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { FlatList, Text, View, Image, TouchableOpacity } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";

@@ -73,7 +73,7 @@ const Group = () => {
       <View style={{ flex: 1 }}>
         <View
           style={{
-            backgroundColor: "#F62B53",
+            backgroundColor: "#088dcd",
             height: 70,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -244,7 +244,7 @@ const Group = () => {
                         marginLeft: 20,
                         height: 30,
                         width: 62,
-                        backgroundColor: "#F62B53",
+                        backgroundColor: "#088dcd",
                         borderRadius: 12,
                         marginTop: 4,
                       }}
@@ -285,7 +285,7 @@ const style = StyleSheet.create({
   line: {
     height: 22,
     width: 4,
-    backgroundColor: "#F62B53",
+    backgroundColor: "#088dcd",
   },
   linegroup: {
     height: 1,

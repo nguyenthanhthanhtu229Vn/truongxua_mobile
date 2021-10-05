@@ -12,8 +12,18 @@ const Menu: React.FC = () => {
     <View style={{ flex: 1, marginTop: 90, marginLeft: 44 }}>
       <View style={style.container}>
         <CategoryMenu icon={icons.home_m} label={constant.screens.home} />
-        <CategoryMenu icon={icons.profile_m} label={constant.screens.profile} />
-        <CategoryMenu icon={icons.groups} label={constant.screens.group} onPress={() => navigation.navigate('Group')} />
+        <CategoryMenu
+          icon={icons.profile_m}
+          label={constant.screens.profile}
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        />
+        <CategoryMenu
+          icon={icons.groups}
+          label={constant.screens.group}
+          onPress={() => navigation.navigate("Group")}
+        />
       </View>
       <View style={style.container}>
         {/* <CategoryMenu icon={icons.videos} label={constant.screens.video} /> */}
@@ -34,7 +44,13 @@ const Menu: React.FC = () => {
         <CategoryMenu icon={icons.noti} label={constant.screens.notification} />
       </View>
       <View style={style.container}>
-        <CategoryMenu icon={icons.setting} label={constant.screens.setting} />
+        <CategoryMenu
+          icon={icons.setting}
+          label={constant.screens.setting}
+          onPress={() => {
+            navigation.navigate("Setting");
+          }}
+        />
       </View>
     </View>
   );

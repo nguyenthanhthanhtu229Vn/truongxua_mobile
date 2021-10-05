@@ -46,7 +46,7 @@ const BlogPost = ({ navigation }) => {
     <View style={{ flex: 1 }}>
       <View
         style={{
-          backgroundColor: "#F62B53",
+          backgroundColor: "#088dcd",
           height: 70,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -118,7 +118,7 @@ const BlogPost = ({ navigation }) => {
                       fontWeight: "400",
                     }}
                   >
-                    by <Text style={{ color: "#F62B53" }}> Andrew</Text>
+                    by <Text style={{ color: "#088dcd" }}> Andrew</Text>
                   </Text>
                   <Text
                     style={{
