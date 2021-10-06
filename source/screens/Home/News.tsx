@@ -52,6 +52,7 @@ const News: React.FC = () => {
     <View style={{ marginTop: 150 }}>
       <FlatList
         data={POST}
+        keyExtractor ={item => item.id.toString()}
         renderItem={({ item, index }) => {
           return (
             <View
