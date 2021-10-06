@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { View, Text, Image, FlatList, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -41,7 +42,8 @@ const BLOG = [
     time: "cách đây 2 ngày ",
   },
 ];
-const BlogPost = ({ navigation }) => {
+const BlogPost = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView>
     <View style={{ flex: 1 }}>
@@ -64,16 +66,20 @@ const BlogPost = ({ navigation }) => {
         >
          Tin Tức 
         </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('NewGroup')} >
         <Text
           style={{
-            ...FONTS.h3,
+            marginTop: 4,
+            ...FONTS.h1,
             color: COLORS.white,
             fontWeight: "400",
-            marginRight: 10,
+            marginRight: 16,
+            fontSize: 45
           }}
         >
-          Trang Chủ/Tin Tức
+          +
         </Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={BLOG}
