@@ -44,7 +44,7 @@ function MyTabs() {
             iconName = focused ? icons.home_m : icons.home;
           } else if (route.name === "Thông Báo ") {
             iconName = focused ? icons.noti : icons.notification;
-          } else if (route.name === "Category") {
+          } else if (route.name === "Danh Mục") {
             iconName = focused ? icons.grid : icons.menu;
           } else if (route.name === "Group") {
             iconName = focused ? icons.groups : icons.groups;
@@ -65,7 +65,7 @@ function MyTabs() {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Thông Báo " component={Notification} />
-      <Tab.Screen name="Danh Mục " component={Menu} />
+      <Tab.Screen name="Danh Mục" component={Menu} />
       {/* <Tab.Screen name="Group" component={Group} /> */}
     </Tab.Navigator>
   );

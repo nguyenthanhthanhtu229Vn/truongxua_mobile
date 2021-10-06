@@ -88,7 +88,7 @@ const Group = () => {
               marginLeft: 10,
             }}
           >
-            Groups
+            Nhóm
           </Text>
           <Text
             style={{
@@ -98,7 +98,7 @@ const Group = () => {
               marginRight: 10,
             }}
           >
-            Home/Groups
+            Trang Chủ/Nhóm
           </Text>
         </View>
         {/* ========HEADER========= */}
