@@ -1,15 +1,15 @@
 const screens = {
-    home: 'Home',
-    profile: 'My Profile',
-    photo:'Photos',
+    home: 'Trang Chủ',
+    profile: 'Cá Nhân',
+    photo:'Ảnh ',
     video:'Videos',
-    group: 'Group',
+    group: 'Nhóm',
     pages: 'Pages',
-    notification: 'Notification',
+    notification: 'Thông Báo ',
     messages: 'Messages',
-    blog: 'Blog Posts',
-    event: 'Event',
-    setting: 'Settings',
+    blog: 'Bài Đăng ',
+    event: 'Sự Kiện ',
+    setting: 'Cài Đặt',
   };
   
   const menu = [

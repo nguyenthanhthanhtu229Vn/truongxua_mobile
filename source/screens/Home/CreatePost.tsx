@@ -9,7 +9,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 import { Dimensions } from "react-native";
 
 var width = Dimensions.get("window").width; //full width
@@ -63,7 +63,7 @@ const CreatePost: React.FC = () => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-              Create New Post
+              Tạo Bài Viết
             </Text>
             <TouchableOpacity>
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
@@ -120,7 +120,7 @@ const CreatePost: React.FC = () => {
                   textAlign: "center",
                 }}
               >
-                Publish
+                Đăng Bài 
               </Text>
             </View>
           </TouchableOpacity>
@@ -141,7 +141,7 @@ const CreatePost: React.FC = () => {
         }}
       >
         <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-          Create New Post
+          Tạo Bài Viết 
         </Text>
         <TouchableOpacity>
           <Pressable onPress={() => setModalVisible(true)}>
@@ -166,7 +166,7 @@ const CreatePost: React.FC = () => {
                 source={require("../../assets/icons/pencil.png")}
               ></Image>
               <Text style={{ fontSize: 15, color: "#808080", marginLeft: 10 }}>
-                Create New Post
+                Tạo Bài Viết
               </Text>
             </View>
           </Pressable>
@@ -185,7 +185,7 @@ const CreatePost: React.FC = () => {
                 marginLeft: 10,
               }}
             >
-              Photo/Video
+              Ảnh/Video
             </Text>
           </View>
           <View style={{ flexDirection: "row", marginLeft: 15 }}>
@@ -201,7 +201,7 @@ const CreatePost: React.FC = () => {
                 marginLeft: 10,
               }}
             >
-              Feeling/Activity
+              Cảm Xúc/Hoạt Động
             </Text>
           </View>
         </View>

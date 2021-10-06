@@ -29,6 +29,8 @@ import EventDetail from "./source/screens/event/EventDetail";
 import Group from "./source/screens/Group/Group";
 import GroupDetail from "./source/screens/Group/GroupDetail";
 import Setting from "./source/screens/Setting/Setting";
+import AddEvent from "./source/screens/event/AddEvent";
+import AddGroup from "./source/screens/Group/AddGroup";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -40,7 +42,7 @@ function MyTabs() {
           let iconName;
           if (route.name === "Home") {
             iconName = focused ? icons.home_m : icons.home;
-          } else if (route.name === "Notification") {
+          } else if (route.name === "Thông Báo ") {
             iconName = focused ? icons.noti : icons.notification;
           } else if (route.name === "Category") {
             iconName = focused ? icons.grid : icons.menu;
@@ -62,8 +64,8 @@ function MyTabs() {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Notification" component={Notification} />
-      <Tab.Screen name="Category" component={Menu} />
+      <Tab.Screen name="Thông Báo " component={Notification} />
+      <Tab.Screen name="Danh Mục " component={Menu} />
       {/* <Tab.Screen name="Group" component={Group} /> */}
     </Tab.Navigator>
   );
@@ -88,6 +90,8 @@ const App = () => {
             component={MyTabs}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="NewEvent" component={AddEvent} />
+          <Stack.Screen name="NewGroup" component={AddGroup} />
           <Stack.Screen name="GroupDetails" component={GroupDetail} />
           <Stack.Screen name="Group" component={Group} />
           <Stack.Screen name="BlogDetail" component={BlogDetail} />

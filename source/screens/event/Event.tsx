@@ -113,9 +113,12 @@ const Event: React.FC = ({ navigation }) => {
                   >
                     {item.date}
                   </Text>
+
+                  {/* ========Note Create New Event======= */}
                   <View
                     style={{ flexDirection: "row", justifyContent: "flex-end" }}
                   >
+                    <TouchableOpacity onPress={() => navigation.navigate('NewEvent')} >
                     <Text
                       style={{
                         backgroundColor: "#17a2b8",
@@ -129,7 +132,9 @@ const Event: React.FC = ({ navigation }) => {
                     >
                       Đặt
                     </Text>
+                    </TouchableOpacity>
                   </View>
+                     {/* ========End Create New Event======= */}
                 </View>
               </View>
             );

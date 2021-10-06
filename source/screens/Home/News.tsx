@@ -143,16 +143,16 @@ const News: React.FC = () => {
                 >
                   <TouchableOpacity style={style.btn}>
                     <Image source={icons.like} style={style.icon}></Image>
-                    <Text style={style.text}>Like </Text>
+                    <Text style={style.text}>Thích </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity style={style.btn}>
                     <Image source={icons.comment} style={style.icon}></Image>
-                    <Text style={style.text}>Comment</Text>
+                    <Text style={style.text}>Bình Luận </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={style.btn}>
                     <Image source={icons.share} style={style.icon}></Image>
-                    <Text style={style.text}>Share</Text>
+                    <Text style={style.text}>Chia Sẻ</Text>
                   </TouchableOpacity>
                 </View>
               </View>
