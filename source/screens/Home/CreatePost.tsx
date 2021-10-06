@@ -18,8 +18,8 @@ const CreatePost: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={{ flex: 1, position: "absolute", width: "100%" }}>
-      <Modal
-        style={{ backgroundColor: "black", opacity: 0.5 }}
+      {/* <Modal
+        style={{ backgroundColor: "black", opacity: 0.5, flex: 1 }}
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -36,7 +36,7 @@ const CreatePost: React.FC = () => {
             height: height,
           }}
         ></View>
-      </Modal>
+      </Modal> */}
       {/* popup */}
       <Modal
         style={{ backgroundColor: "black", opacity: 0.5 }}

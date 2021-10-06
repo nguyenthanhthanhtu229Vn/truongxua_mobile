@@ -17,7 +17,7 @@ const BlogDetail = () => {
                 <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'space-around', borderTopRightRadius:20,borderTopLeftRadius: 20}}>
                     <View style={{flexDirection:'row',alignItems:'center',marginVertical: 12}}>
                         <Image source={require('../../assets/images/avatar.jpeg')} style={{height:60, width: 60,borderRadius:SIZES.base,marginLeft: -24}} />
-                        <Text style={style.text}>Post By <Text style={{color:'#F62B53'}}>Name</Text></Text>
+                        <Text style={style.text}>Bài đăng bởi  <Text style={{color:'#F62B53'}}>Name</Text></Text>
                     </View>
                     <Text>11 June, 2020</Text>
                 </View>

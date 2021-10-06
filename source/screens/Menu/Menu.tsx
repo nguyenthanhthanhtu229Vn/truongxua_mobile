@@ -41,10 +41,7 @@ const Menu: React.FC = () => {
             navigation.navigate("BlogPost");
           }}
         />
-        <CategoryMenu icon={icons.noti} label={constant.screens.notification} />
-      </View>
-      <View style={style.container}>
-        <CategoryMenu
+                <CategoryMenu
           icon={icons.setting}
           label={constant.screens.setting}
           onPress={() => {
@@ -52,7 +49,16 @@ const Menu: React.FC = () => {
           }}
         />
       </View>
-    </View>
+      {/* <View style={style.container}>
+        <CategoryMenu
+          icon={icons.setting}
+          label={constant.screens.setting}
+          onPress={() => {
+            navigation.navigate("Setting");
+          }}
+        /> */}
+      </View>
+    // </View>
   );
 };
 const style = StyleSheet.create({

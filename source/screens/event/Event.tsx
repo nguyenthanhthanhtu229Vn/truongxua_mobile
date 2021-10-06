@@ -14,6 +14,7 @@ import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";
 import { Foundation } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
 
 const EVENTS = [
   {
@@ -53,7 +54,8 @@ const EVENTS = [
   },
 ];
 
-const Event: React.FC = ({ navigation }, props) => {
+const Event: React.FC = (props) => {
+  const navigation = useNavigation();
   const { banner } = props;
   return (
     <View>
@@ -61,7 +63,9 @@ const Event: React.FC = ({ navigation }, props) => {
         <MyCarousel />
 
         {/* Plust Btn */}
-        <TouchableOpacity style={style.plusBtn}>
+        <TouchableOpacity style={style.plusBtn} onPress= {() => {
+          navigation.navigate('NewEvent')
+        }} >
           <Foundation name="plus" style={style.textPlus}></Foundation>
         </TouchableOpacity>
 

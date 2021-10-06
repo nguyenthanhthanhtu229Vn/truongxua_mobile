@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, FlatList } from "react-native";
+import { View, Text, Image, FlatList, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { COLORS, FONTS, SIZES } from "../../constant";
 
@@ -8,41 +8,42 @@ const BLOG = [
     img: require("../../assets/images/class1.jpeg"),
     title: "Chao Mung Ngay Khai Giang",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
   {
     img: require("../../assets/images/class2.jpeg"),
     title: "Dien Ra Hoi Thao Sinh Vien",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
   {
     img: require("../../assets/images/class3.jpeg"),
     title: "Chao Mung Ngay Khai Giang",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
   {
     img: require("../../assets/images/class4.jpeg"),
     title: "Chao Mung Ngay Khai Giang",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
   {
     img: require("../../assets/images/class2.jpeg"),
     title: "Chao Mung Ngay Khai Giang",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
   {
     img: require("../../assets/images/class3.jpeg"),
     title: "Chao Mung Ngay Khai Giang",
     author: "Quang Huy",
-    time: "2 days ago",
+    time: "cách đây 2 ngày ",
   },
 ];
 const BlogPost = ({ navigation }) => {
   return (
+    <ScrollView>
     <View style={{ flex: 1 }}>
       <View
         style={{
@@ -61,7 +62,7 @@ const BlogPost = ({ navigation }) => {
             marginLeft: 10,
           }}
         >
-          Blog News
+         Tin Tức 
         </Text>
         <Text
           style={{
@@ -71,7 +72,7 @@ const BlogPost = ({ navigation }) => {
             marginRight: 10,
           }}
         >
-          Home/Blog
+          Trang Chủ/Tin Tức
         </Text>
       </View>
       <FlatList
@@ -127,7 +128,7 @@ const BlogPost = ({ navigation }) => {
                       fontWeight: "400",
                     }}
                   >
-                    2 days
+                    {item.time}
                   </Text>
                 </View>
               </View>
@@ -136,6 +137,7 @@ const BlogPost = ({ navigation }) => {
         }}
       />
     </View>
+    </ScrollView>
   );
 };
 

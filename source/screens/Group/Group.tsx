@@ -104,7 +104,7 @@ const Group = () => {
         {/* ========HEADER========= */}
         <View style={{ marginHorizontal: 16, marginVertical: 18 }}>
           <View style={style.line} />
-          <Text style={style.header}>My Groups</Text>
+          <Text style={style.header}>Nhóm Của Tôi</Text>
         </View>
         {/*=====FlatList Group=========  */}
         <View>
@@ -165,7 +165,7 @@ const Group = () => {
           {/* ========HEADER========= */}
           <View style={{ marginHorizontal: 16, marginVertical: 20 }}>
             <View style={style.line} />
-            <Text style={style.header}>Joined Groups</Text>
+            <Text style={style.header}>Đã Tham Gia Nhóm</Text>
             <FlatList
               data={JOINED_GROUP}
               renderItem={({ item, index }) => {
@@ -198,7 +198,7 @@ const Group = () => {
                             bottom: 18,
                           }}
                         >
-                          Joined
+                          Tham Gia
                         </Text>
                       </View>
                     </View>
@@ -232,7 +232,7 @@ const Group = () => {
                     <Text
                       style={{
                         textAlign: "center",
-                        marginLeft: 26,
+                        marginLeft: 4,
                         marginTop: 6,
                         fontSize: 18,
                       }}
@@ -243,7 +243,7 @@ const Group = () => {
                       style={{
                         marginLeft: 20,
                         height: 30,
-                        width: 62,
+                        width: 90,
                         backgroundColor: "#088dcd",
                         borderRadius: 12,
                         marginTop: 4,
@@ -259,7 +259,7 @@ const Group = () => {
                           paddingTop: 3,
                         }}
                       >
-                        Join
+                       Tham gia 
                       </Text>
                     </TouchableOpacity>
                   </View>

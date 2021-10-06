@@ -40,7 +40,7 @@ function MyTabs() {
         //  headerShown: false,
         tabBarIcon: ({ focused }) => {
           let iconName;
-          if (route.name === "Home") {
+          if (route.name === "Trang Chủ") {
             iconName = focused ? icons.home_m : icons.home;
           } else if (route.name === "Thông Báo ") {
             iconName = focused ? icons.noti : icons.notification;
@@ -63,7 +63,7 @@ function MyTabs() {
         tabBarInactiveTintColor: "#000",
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Trang Chủ" component={Home} />
       <Tab.Screen name="Thông Báo " component={Notification} />
       <Tab.Screen name="Danh Mục" component={Menu} />
       {/* <Tab.Screen name="Group" component={Group} /> */}

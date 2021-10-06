@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, ScrollView } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import News from "../Home/News";
@@ -7,6 +7,7 @@ import News from "../Home/News";
 const width = Dimensions.get("window").width;
 const TouchSocial = ({ icon, bg }: { icon: any; bg: string }) => {
   return (
+    
     <TouchableOpacity
       style={{
         height: 30,
@@ -26,6 +27,7 @@ const TouchSocial = ({ icon, bg }: { icon: any; bg: string }) => {
 
 const GroupDetail = () => {
   return (
+    <ScrollView showsVerticalScrollIndicator={false}>
     <View>
       {/* =======HEADER====== */}
       <View style={{ position: "relative" }}>
@@ -57,7 +59,7 @@ const GroupDetail = () => {
             left: 130,
           }}
         >
-          Music Group
+         Nhóm 12A1
         </Text>
         <View
           style={{
@@ -91,8 +93,7 @@ const GroupDetail = () => {
         <View
           style={{
             flexDirection: "row",
-            marginLeft: 14,
-            width: 80,
+            width: 120,
             height: 24,
             paddingTop: 2,
             backgroundColor: "#F62B53",
@@ -107,7 +108,7 @@ const GroupDetail = () => {
             source={require("../../assets/icons/checkb.png")}
             style={{ height: 20, width: 20, marginLeft: 6 }}
           />
-          <Text style={{ color: COLORS.white, fontWeight: "500" }}>Joined</Text>
+          <Text style={{ color: COLORS.white, fontWeight: "500" }}>Đã Tham Gia</Text>
         </View>
       </View>
       {/* =======Member ========= */}
@@ -120,13 +121,12 @@ const GroupDetail = () => {
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image source={icons.group2} style={style.icon} />
-          <Text style={style.msg}>MEMBER</Text>
+          <Text style={style.msg}>Thành Viên</Text>
           <Text
             style={{
               color: COLORS.gray,
               ...FONTS.h4,
               fontWeight: "300",
-              marginLeft: 18,
             }}
           >
             45
@@ -140,7 +140,7 @@ const GroupDetail = () => {
           }}
         >
           <Image source={icons.camera} style={style.icon} />
-          <Text style={style.msg}>CATEGORY</Text>
+          <Text style={style.msg}>Danh Mục</Text>
           <Text
             style={{
               color: COLORS.gray,
@@ -149,12 +149,12 @@ const GroupDetail = () => {
               marginRight: 20,
             }}
           >
-            Entertainment
+            Giải Trí
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image source={icons.globe} style={style.icon} />
-          <Text style={style.msg}>GROUP</Text>
+          <Text style={style.msg}>Nhóm</Text>
           <Text
             style={{
               color: COLORS.gray,
@@ -163,7 +163,7 @@ const GroupDetail = () => {
               marginLeft: 32,
             }}
           >
-            Public
+            Công Khai
           </Text>
         </View>
         <View
@@ -174,16 +174,16 @@ const GroupDetail = () => {
           }}
         >
           <Image source={icons.group2} style={style.icon} />
-          <Text style={style.msg}>INVITE</Text>
+          <Text style={style.msg}>Mời</Text>
           <Text
             style={{
               color: "#F62B53",
               ...FONTS.h4,
               fontWeight: "400",
-              marginLeft: 38,
+              marginLeft: 52,
             }}
           >
-            Send invitation
+            Gửi Lời Mời
           </Text>
         </View>
         {/* ====== Button Social ==== */}
@@ -199,6 +199,7 @@ const GroupDetail = () => {
       <News />
       </View>
     </View>
+    </ScrollView>
   );
 };
 
