@@ -86,26 +86,6 @@ const Event: React.FC = ({ navigation }, props) => {
                       navigation.navigate("EventDetail");
                     }}
                   >
-<<<<<<< HEAD
-                    {item.content}
-                  </Text>
-                  <Text
-                    style={{
-                      color: COLORS.darkGray,
-                      marginLeft: 4,
-                      ...FONTS.h4,
-                      fontWeight: "500",
-                    }}
-                  >
-                    {item.date}
-                  </Text>
-
-                  {/* ========Note Create New Event======= */}
-                  <View
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
-                    <TouchableOpacity onPress={() => navigation.navigate('NewEvent')} >
-=======
                     <Image
                       source={item.eventImg}
                       style={{
@@ -116,7 +96,6 @@ const Event: React.FC = ({ navigation }, props) => {
                     />
                   </TouchableOpacity>
                   <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
->>>>>>> e37ad91012b7264550e5b17610d98896656853c4
                     <Text
                       numberOfLines={2}
                       ellipsizeMode="tail"
@@ -131,9 +110,6 @@ const Event: React.FC = ({ navigation }, props) => {
                     >
                       {item.name}
                     </Text>
-<<<<<<< HEAD
-                    </TouchableOpacity>
-=======
                     <Text
                       numberOfLines={2}
                       ellipsizeMode="tail"
@@ -180,9 +156,7 @@ const Event: React.FC = ({ navigation }, props) => {
                         Đặt
                       </Text>
                     </View>
->>>>>>> e37ad91012b7264550e5b17610d98896656853c4
                   </View>
-                     {/* ========End Create New Event======= */}
                 </View>
               );
             }}
