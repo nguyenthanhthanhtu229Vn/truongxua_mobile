@@ -64,9 +64,8 @@ function MyTabs() {
       })}
     >
       <Tab.Screen name="Trang Chủ" component={Home} />
-      <Tab.Screen name="Thông Báo " component={Notification} />
       <Tab.Screen name="Danh Mục" component={Menu} />
-      {/* <Tab.Screen name="Group" component={Group} /> */}
+      <Tab.Screen name="Thông Báo " component={Notification} />
     </Tab.Navigator>
   );
 }

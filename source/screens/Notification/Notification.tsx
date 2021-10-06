@@ -79,8 +79,39 @@ const NOTIFI = [
 
 const Notification: React.FC = () => {
   return (
-    <View style={style.container}>
-     
+    <ScrollView >
+    <View>
+     <View
+          style={{
+            backgroundColor: "#088dcd",
+            height: 70,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              ...FONTS.h2,
+              color: COLORS.white2,
+              fontWeight: "700",
+              marginLeft: 10,
+            }}
+          >
+            Thông Báo
+          </Text>
+          <Text
+            style={{
+              ...FONTS.h3,
+              color: COLORS.white,
+              fontWeight: "400",
+              marginRight: 10,
+            }}
+          >
+            Trang Chủ/Thông Báo
+          </Text>
+        </View>
+        <View  style={style.container}>
         <FlatList
         showsVerticalScrollIndicator={false}
           data={NOTIFI}
@@ -128,8 +159,9 @@ const Notification: React.FC = () => {
             );
           }}
         />
-     
+     </View>
     </View>
+    </ScrollView>
   );
 };
 
@@ -137,7 +169,7 @@ const style = StyleSheet.create({
   container: {
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 40,
+    paddingTop: 20
   },
 });
 export default Notification;
