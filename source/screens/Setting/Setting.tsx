@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth } from "../../config/firebase";
 import SignIn from "../SignInUp/SignIn";
 import SettingGeneral from "./SettingGeneral";
 import SettingProfile from "./SettingProfile";
@@ -15,6 +16,25 @@ const Setting = ({ navigation }) => {
   const [status, setStatus] = useState("Chung");
   const setStatusFilter = (status) => {
     setStatus(status);
+  };
+  const confirmLogout = () => {
+    Alert.alert("Đăng xuất", "Bạn chắc chắn muốn đăng xuất", [
+      {
+        text: "Hủy",
+        style: "cancel",
+      },
+      { text: "OK", onPress: () => Logout() },
+    ]);
+  };
+  const Logout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.navigate("SignIn");
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
   return (
     <View style={style.container}>
@@ -51,7 +71,7 @@ const Setting = ({ navigation }) => {
           <TouchableOpacity
             style={style.logOutBtn}
             onPress={() => {
-              navigation.navigate("SignIn");
+              confirmLogout();
             }}
           >
             <Text style={style.logOutText}>Đăng xuất</Text>

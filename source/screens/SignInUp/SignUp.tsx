@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from "react";
+import React, { useState } from "react";
 import { Image, ImageBackground, Text, View } from "react-native";
 import {
   ScrollView,
@@ -10,14 +10,117 @@ import {
   AntDesign,
   Feather,
   SimpleLineIcons,
-  Ionicons,
+  Entypo,
 } from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
+import firebase from "firebase";
+import Animated, { event } from "react-native-reanimated";
 import { Dimensions } from "react-native";
+import { auth } from "../../config/firebase";
+import * as Google from "expo-google-app-auth";
+import Error from "../Error/Error";
+import axios from "axios";
 
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const SignUp: React.FC = ({ navigation }) => {
+  const baseUrl = "http://20.188.111.70:12348";
+  const [registering, setRegistering] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirm, setConfirm] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [bio, setBio] = useState<string>("");
+  const [img, setImg] = useState<string>("");
+  const [status, setStatus] = useState<boolean>(false);
+  // const history=useHistory();
+  const loadAccountToData = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}/api/v1/Alumni`, {
+        email,
+        name,
+        password,
+        phone,
+        address,
+        img,
+        bio,
+        status,
+      });
+      if (response.status === 200) {
+        alert("Đăng ký thành công");
+        navigation.navigate("SignIn");
+      }
+    } catch (error) {
+      alert("Đăng ký không thành công");
+      setRegistering(false);
+    }
+  };
+
+  const signUpWithEmailAndPassword = () => {
+    if (password !== confirm) {
+      setError("Mật khẩu khùng trùng khớp");
+      setRegistering(false);
+    } else if (name.length == 0 || phone.length == 0) {
+      setError("Không được để nội dung trống");
+      setRegistering(false);
+    } else if (phone.length != 10) {
+      setError("Số điện thoại 10 chữ số");
+      setRegistering(false);
+    } else {
+      if (error !== "") setError("");
+      setRegistering(true);
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((result) => {
+          loadAccountToData();
+        })
+        .catch((error) => {
+          if (error.code.includes("auth/weak-password")) {
+            setError("Mật khẩu quá yếu");
+          } else if (error.code.includes("auth/invalid-email")) {
+            setError("Email chưa đúng. Vui lòng thử lại");
+          } else {
+            setError("Email đã được sử dụng");
+          }
+          setRegistering(false);
+        });
+    }
+  };
+
+  const signInWithGoogleAsync = async () => {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId:
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+        clientId:
+          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+        iosClientId:
+          "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
+
+      if (result.type === "success") {
+        const googleCredential = firebase.auth.GoogleAuthProvider.credential(
+          result.idToken
+        );
+        firebase
+          .auth()
+          .signInWithCredential(googleCredential)
+          .then(() => {
+            navigation.navigate("MyTabs");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
+    }
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView>
@@ -48,7 +151,11 @@ const SignUp: React.FC = ({ navigation }) => {
             Vui lòng đăng ký tài khoản
           </Text>
           <View
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 20,
+            }}
           >
             <AntDesign
               name="lock"
@@ -71,7 +178,7 @@ const SignUp: React.FC = ({ navigation }) => {
               Đăng ký
             </Text>
           </View>
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 20 }}>
             <View style={{ position: "relative" }}>
               <AntDesign
                 name="user"
@@ -83,7 +190,9 @@ const SignUp: React.FC = ({ navigation }) => {
                 }}
               />
               <TextInput
-                placeholder="Tên đăng nhập"
+                placeholder="Email đăng nhập"
+                onChangeText={(email) => setEmail(email)}
+                value={email}
                 placeholderTextColor="#8e8e96"
                 style={{
                   color: "white",
@@ -117,6 +226,7 @@ const SignUp: React.FC = ({ navigation }) => {
                   fontSize: 18,
                   paddingBottom: 5,
                 }}
+                onChangeText={(password) => setPassword(password)}
               />
             </View>
             <View style={{ position: "relative", marginTop: 15 }}>
@@ -141,59 +251,88 @@ const SignUp: React.FC = ({ navigation }) => {
                   fontSize: 18,
                   paddingBottom: 5,
                 }}
-              />
-            </View>
-            <View style={{ position: "relative", marginTop: 15 }}>
-              <Ionicons
-                name="school-outline"
-                style={{
-                  color: "#8e8e96",
-                  position: "absolute",
-                  right: 0,
-                  fontSize: 18,
-                }}
-              />
-              <TextInput
-                placeholder="Tên trường"
-                secureTextEntry
-                placeholderTextColor="#8e8e96"
-                style={{
-                  color: "white",
-                  borderBottomColor: "#8e8e96",
-                  borderBottomWidth: 1,
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                  paddingBottom: 5,
-                }}
-              />
-            </View>
-            <View style={{ position: "relative", marginTop: 15 }}>
-              <Ionicons
-                name="school-outline"
-                style={{
-                  color: "#8e8e96",
-                  position: "absolute",
-                  right: 0,
-                  fontSize: 18,
-                }}
-              />
-              <TextInput
-                placeholder="Niên khóa"
-                secureTextEntry
-                keyboardType="number-pad"
-                placeholderTextColor="#8e8e96"
-                style={{
-                  color: "white",
-                  borderBottomColor: "#8e8e96",
-                  borderBottomWidth: 1,
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                  paddingBottom: 5,
-                }}
+                onChangeText={(confirm) => setConfirm(confirm)}
               />
             </View>
           </View>
-          <TouchableOpacity>
+          <View style={{ position: "relative", marginTop: 15 }}>
+            <AntDesign
+              name="user"
+              style={{
+                color: "#8e8e96",
+                position: "absolute",
+                right: 0,
+                fontSize: 18,
+              }}
+            />
+            <TextInput
+              placeholder="Họ và tên"
+              onChangeText={(name) => setName(name)}
+              value={name}
+              placeholderTextColor="#8e8e96"
+              style={{
+                color: "white",
+                borderBottomColor: "#8e8e96",
+                borderBottomWidth: 1,
+                fontFamily: "Roboto",
+                fontSize: 18,
+                paddingBottom: 5,
+              }}
+            />
+          </View>
+          <View style={{ position: "relative", marginTop: 15 }}>
+            <Entypo
+              name="location-pin"
+              style={{
+                color: "#8e8e96",
+                position: "absolute",
+                right: 0,
+                fontSize: 18,
+              }}
+            />
+            <TextInput
+              placeholder="Địa chỉ"
+              onChangeText={(address) => setAddress(address)}
+              value={address}
+              placeholderTextColor="#8e8e96"
+              style={{
+                color: "white",
+                borderBottomColor: "#8e8e96",
+                borderBottomWidth: 1,
+                fontFamily: "Roboto",
+                fontSize: 18,
+                paddingBottom: 5,
+              }}
+            />
+          </View>
+          <View style={{ position: "relative", marginTop: 15 }}>
+            <AntDesign
+              name="phone"
+              style={{
+                color: "#8e8e96",
+                position: "absolute",
+                right: 0,
+                fontSize: 18,
+              }}
+            />
+            <TextInput
+              placeholder="Số điện thoại"
+              keyboardType="number-pad"
+              onChangeText={(phone) => setPhone(phone)}
+              value={phone}
+              placeholderTextColor="#8e8e96"
+              style={{
+                color: "white",
+                borderBottomColor: "#8e8e96",
+                borderBottomWidth: 1,
+                fontFamily: "Roboto",
+                fontSize: 18,
+                paddingBottom: 5,
+              }}
+            />
+          </View>
+          <Error error={error} />
+          <TouchableOpacity onPress={() => signUpWithEmailAndPassword()}>
             <View
               style={{
                 backgroundColor: "#088dcd",
@@ -215,7 +354,11 @@ const SignUp: React.FC = ({ navigation }) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("SignIn");
+            }}
+          >
             <Text
               style={{
                 color: "#8e8e96",
@@ -233,7 +376,7 @@ const SignUp: React.FC = ({ navigation }) => {
             style={{
               flexDirection: "row",
               justifyContent: "center",
-              marginTop: 20,
+              marginTop: 80,
             }}
           >
             <TouchableOpacity
@@ -328,7 +471,7 @@ const SignUp: React.FC = ({ navigation }) => {
                 style={{ width: 40, height: 40, marginRight: 20 }}
               ></Image>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => signInWithGoogleAsync()}>
               <Image
                 source={require("../../assets/icons/iconsSignIn/google.png")}
                 style={{ width: 40, height: 40, marginRight: 20 }}

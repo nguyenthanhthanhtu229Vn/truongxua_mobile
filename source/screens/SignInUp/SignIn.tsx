@@ -1,15 +1,84 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from "react";
+import React, { useState } from "react";
 import { Image, ImageBackground, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
 import { Dimensions } from "react-native";
 import SignUp from "./SignUp";
-
+import { auth, Providers } from "../../config/firebase";
+import Error from "../Error/Error";
+import firebase from "firebase";
+import * as Google from "expo-google-app-auth";
+import axios from "axios";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
+
 const SignIn: React.FC = ({ navigation }) => {
+  const baseUrl = "http://20.188.111.70:12348";
+  const [authentication, setAuthentication] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const signInWithEmailAndPassword = () => {
+    if (error !== "") setError("");
+    setAuthentication(true);
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        navigation.navigate("MyTabs");
+      })
+      .catch((error) => {
+        setError("Tài khoản hoặc mật khẩu không đúng.");
+        setAuthentication(false);
+      });
+  };
+
+  // const signInWithSocialMedia = (provider: firebase.auth.AuthProvider) => {
+  //   if (error !== "") setError("");
+  //   setAuthentication(true);
+  //   SignInWithSocialMedia(provider)
+  //     .then((result) => {
+  //       navigation.navigate("MyTabs");
+  //     })
+  //     .catch((error) => {
+  //       setError(error.message);
+  //       setAuthentication(false);
+  //     });
+  // };
+
+  const signInWithGoogleAsync = async () => {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId:
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+        clientId:
+          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+        iosClientId:
+          "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
+
+      if (result.type === "success") {
+        const googleCredential = firebase.auth.GoogleAuthProvider.credential(
+          result.idToken
+        );
+        firebase
+          .auth()
+          .signInWithCredential(googleCredential)
+          .then(() => {
+            navigation.navigate("MyTabs");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
+    }
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ImageBackground
@@ -39,7 +108,7 @@ const SignIn: React.FC = ({ navigation }) => {
           Sử dụng tài khoản để đăng nhập
         </Text>
         <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
+          style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}
         >
           <AntDesign
             name="key"
@@ -62,7 +131,7 @@ const SignIn: React.FC = ({ navigation }) => {
             Đăng nhập
           </Text>
         </View>
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 30 }}>
           <View style={{ position: "relative" }}>
             <Feather
               name="user"
@@ -74,7 +143,9 @@ const SignIn: React.FC = ({ navigation }) => {
               }}
             />
             <TextInput
-              placeholder="Tên đăng nhập"
+              placeholder="Email đăng nhập"
+              onChangeText={(email) => setEmail(email)}
+              value={email}
               placeholderTextColor="#8e8e96"
               style={{
                 color: "white",
@@ -99,6 +170,7 @@ const SignIn: React.FC = ({ navigation }) => {
             <TextInput
               placeholder="Mật khẩu"
               secureTextEntry
+              onChangeText={(password) => setPassword(password)}
               placeholderTextColor="#8e8e96"
               style={{
                 color: "white",
@@ -111,11 +183,8 @@ const SignIn: React.FC = ({ navigation }) => {
             />
           </View>
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("MyTabs");
-          }}
-        >
+        <Error error={error} />
+        <TouchableOpacity onPress={() => signInWithEmailAndPassword()}>
           <View
             style={{
               backgroundColor: "#088dcd",
@@ -252,7 +321,10 @@ const SignIn: React.FC = ({ navigation }) => {
               style={{ width: 40, height: 40, marginRight: 20 }}
             ></Image>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            // onPress={() => signInWithSocialMedia(Providers.google)}
+            onPress={() => signInWithGoogleAsync()}
+          >
             <Image
               source={require("../../assets/icons/iconsSignIn/google.png")}
               style={{ width: 40, height: 40, marginRight: 20 }}
