@@ -16,7 +16,6 @@ import { icons } from "./source/constant";
 import Home from "./source/screens/Home/Home";
 import Notification from "./source/screens/Notification/Notification";
 import Menu from "./source/screens/Menu/Menu";
-import Message from "./source/screens/Message/Message";
 import Profile from "./source/screens/Profile/Profile";
 import { NavigationContainer } from "@react-navigation/native";
 import BlogPost from "./source/screens/Blog/BlogPost";
@@ -31,13 +30,13 @@ import GroupDetail from "./source/screens/Group/GroupDetail";
 import Setting from "./source/screens/Setting/Setting";
 import AddEvent from "./source/screens/event/AddEvent";
 import AddGroup from "./source/screens/Group/AddGroup";
+import EditPostModal from "./source/screens/Home/EditModal";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }: { route: any }) => ({
-        //  headerShown: false,
         tabBarIcon: ({ focused }) => {
           let iconName;
           if (route.name === "Trang Chủ") {
@@ -89,6 +88,7 @@ const App = () => {
             component={MyTabs}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name = "Edit Post" component={EditPostModal} />
           <Stack.Screen name="NewEvent" component={AddEvent} />
           <Stack.Screen name="NewGroup" component={AddGroup} />
           <Stack.Screen name="GroupDetails" component={GroupDetail} />

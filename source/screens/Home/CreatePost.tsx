@@ -4,40 +4,56 @@ import {
   Text,
   View,
   Image,
-  Animated,
   TextInput,
   Modal,
   Pressable,
 } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { Dimensions } from "react-native";
+import axios from "axios";
 
-var width = Dimensions.get("window").width; //full width
-var height = Dimensions.get("window").height; //full height
 const CreatePost: React.FC = () => {
+  //========  begin call api post =======
+  const baseUrl = 'http://20.188.111.70:12348'
+  const [content,  setContent] = useState("");
+  const [alumniId, setAlumniId] = useState(1);
+  const [createAt, setCreateAt] = useState(new Date());
+  const [status, setStatus] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const OnChangeContentHandler = (content) =>{
+    setContent(content);
+  }
+  const onSubmitFormHandler = async (event) => {
+    if (!content.trim()) {
+      alert("Please Write something");
+      return;
+    }
+    setIsLoading(true);
+    try{
+      const response  =await axios.post(`${baseUrl}/api/v1/Posts`,{
+          alumniId,
+          content,
+          createAt,
+          status
+      });
+      if(response.status === 201){
+        alert(`You have created : ${JSON.stringify(response.data)}`);
+        setIsLoading(false);
+        setContent('');
+      }else{
+        alert('Creat Post Success');
+        setIsLoading(false);
+        setContent('')
+      }    
+    }
+    catch (error){
+      alert('An error has occurred');
+      setIsLoading(false)
+    } 
+  }
+//=======End call api create post =========
   return (
     <View style={{ flex: 1, position: "absolute", width: "100%" }}>
-      {/* <Modal
-        style={{ backgroundColor: "black", opacity: 0.5, flex: 1 }}
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "black",
-            opacity: 0.5,
-            position: "absolute",
-            width: width,
-            height: height,
-          }}
-        ></View>
-      </Modal> */}
-      {/* popup */}
       <Modal
         style={{ backgroundColor: "black", opacity: 0.5 }}
         animationType="slide"
@@ -87,7 +103,10 @@ const CreatePost: React.FC = () => {
               scrollEnabled
               multiline
               placeholder="Write something"
-            ></TextInput>
+              value={content}
+              editable={!isLoading}
+              onChangeText={OnChangeContentHandler}
+            />
           </View>
           <View style={{ flexDirection: "row", margin: 20 }}>
             <Image
@@ -103,7 +122,7 @@ const CreatePost: React.FC = () => {
               source={require("../../assets/icons/menu.png")}
             ></Image>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onSubmitFormHandler} disabled={isLoading}>
             <View
               style={{
                 backgroundColor: "#088dcd",

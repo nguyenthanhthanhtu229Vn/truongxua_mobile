@@ -1,63 +1,118 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from "react";
-import { FlatList, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  FlatList,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Animated,
+  Button,
+} from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
-import CreatePost from "./CreatePost";
+import { useNavigation } from "@react-navigation/core";
+import axios from "axios";
 
-const POST = [
-  {
-    id: 1,
-    avatar: require("../../assets/images/avatar.jpeg"),
-    name: "Sara Honey Podcast",
-    icons: icons.globe,
-    date: "Published: Sep, 15,2020",
-    content:
-      "Supervision as a Personnel Development Device Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.",
-    imagesPost: require("../../assets/images/class1.jpeg"),
-  },
-  {
-    id: 2,
-    avatar: require("../../assets/images/avatar1.jpeg"),
-    name: "Sara Honey Podcast",
-    icons: icons.globe,
-    date: "Published: Sep, 15,2020",
-    content:
-      "Supervision as a Personnel Development Device Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.",
-    imagesPost: require("../../assets/images/class4.jpeg"),
-  },
-  {
-    id: 3,
-    avatar: require("../../assets/images/avatar.jpeg"),
-    name: "Sara Honey Podcast",
-    icons: icons.globe,
-    date: "Published: Sep, 15,2020",
-    content:
-      "Supervision as a Personnel Development Device Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.",
-    imagesPost: require("../../assets/images/class2.jpeg"),
-  },
-  {
-    id: 4,
-    avatar: require("../../assets/images/avatar.jpeg"),
-    name: "Sara Honey Podcast",
-    icons: icons.globe,
-    date: "Published: Sep, 15,2020",
-    content:
-      "Supervision as a Personnel Development Device Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero.",
-    imagesPost: require("../../assets/images/class3.jpeg"),
-  },
-];
+// ========= Start Modal=========
+
+const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
+  const [showModal, setShowModal] = React.useState(visible);
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    toggleModal();
+  }, [visible]);
+  const toggleModal = () => {
+    if (visible) {
+      setShowModal(true);
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        delay: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setTimeout(() => setShowModal(false), 200);
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+  return (
+    <Modal transparent visible={showModal}>
+      <View style={style.modalBackGround}>
+        <Animated.View
+          style={[style.modalContainer, { transform: [{ scale: scaleValue }] }]}
+        >
+          {children}
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+};
+// ======== End Modal=========
 const News: React.FC = () => {
+
+  const [visible, setVisible] = React.useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const postURL = "http://20.188.111.70:12348/api/v1/Posts?pageNumber=0&pageSize=5";
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetch(postURL)
+      .then((response) =>
+        response.json().then((res) => {
+          setData(res);
+        })
+      )
+      .catch((error) => alert(error))
+      .finally(() => setLoading(false));
+  });
+  // delete post
+  const baseUrl = 'http://20.188.111.70:12348'
+  const [content,  setContent] = useState("");
+  const [alumniId, setAlumniId] = useState(1);
+  const [createAt, setCreateAt] = useState(new Date());
+  const [modifiedAt, setModifiedAt] = useState(null);
+  const [status, setStatus] = useState(true);
+  //====== begin detele post =======
+  const onSubmitFormHandler = async (event) => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(`${baseUrl}/api/v1/Posts/192`, {
+        content,
+        alumniId,
+        createAt,
+        modifiedAt,
+        status
+      });
+      if (response.status === 204) {
+        alert(` You have deleted: ${JSON.stringify(response.data)}`);
+        setLoading(false);
+        setContent('')
+      } else {
+        alert('Delete Post Success');
+        setLoading(false);
+      }
+    } catch (error) {
+      alert("Failed to delete resource");
+      setLoading(false);
+    }
+  }; 
+    //====== End detele post =======
+  const navigation = useNavigation();
   return (
     <View style={{ marginTop: 150 }}>
       <FlatList
-        data={POST}
-        keyExtractor ={item => item.id.toString()}
+        data={data}
+        keyExtractor={({ id }, index) => id}
         renderItem={({ item, index }) => {
           return (
             <View
               style={{
-                height: 450,
+                // height: 450,
+                height: 200,
                 backgroundColor: COLORS.white2,
                 shadowOpacity: 0.4,
                 marginBottom: 16,
@@ -73,7 +128,7 @@ const News: React.FC = () => {
               >
                 <View style={{ flexDirection: "row" }}>
                   <Image
-                    source={item.avatar}
+                    source={require("../../assets/images/avatar.jpeg")}
                     style={{
                       height: 60,
                       width: 60,
@@ -88,8 +143,94 @@ const News: React.FC = () => {
                       fontWeight: "500",
                     }}
                   >
-                    {item.name}
+                    Quang Huy
                   </Text>
+                  {/* begin modal */}
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ModalPoup visible={visible}>
+                      <View style={{ alignItems: "center" }}>
+                        <View style={style.header}>
+                          <TouchableOpacity onPress={() => setVisible(false)}>
+                            <Image
+                              source={require("../../assets/icons/error.png")}
+                              style={{ height: 30, width: 30 }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <TouchableOpacity onPress={() => navigation.navigate('Edit Post')}>
+                          <Image
+                            source={require("../../assets/icons/edit.png")}
+                            style={{
+                              height: 20,
+                              width: 20,
+                              marginVertical: 10,
+                              marginLeft: 10,
+                              marginRight: 10,
+                            }}
+                          />
+                        </TouchableOpacity>
+                        <Text>Edit Post</Text>
+                      </View>
+                      {/* delete */}
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <TouchableOpacity onPress={onSubmitFormHandler}>
+                          <Image
+                            source={require("../../assets/icons/delete.png")}
+                            style={{
+                              height: 20,
+                              width: 20,
+                              marginVertical: 10,
+                              marginLeft: 10,
+                              marginRight: 10,
+                            }}
+                          />
+                        </TouchableOpacity>
+                        <Text>Delete Post</Text>
+                      </View>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <TouchableOpacity>
+                          <Image
+                            source={require("../../assets/icons/edit.png")}
+                            style={{
+                              height: 20,
+                              width: 20,
+                              marginVertical: 10,
+                              marginLeft: 10,
+                              marginRight: 10,
+                            }}
+                          />
+                        </TouchableOpacity>
+                        <Text>Edit Privacy</Text>
+                      </View>
+                    </ModalPoup>
+                    <TouchableOpacity onPress={() => setVisible(true)}>
+                      <Image
+                        source={require("../../assets/icons/menu.png")}
+                        style={{
+                          height: 14,
+                          width: 14,
+                          marginLeft: 170,
+                          marginBottom: 34,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {/* end modal */}
                 </View>
 
                 <View
@@ -103,7 +244,9 @@ const News: React.FC = () => {
                     source={icons.globe}
                     style={{ height: 20, width: 20 }}
                   />
-                  <Text style={{ marginLeft: 8 }}>{item.date}</Text>
+                  <Text style={{ marginLeft: 8 }}>
+                    Published: {item.createAt}
+                  </Text>
                 </View>
                 <Text
                   style={{
@@ -116,7 +259,7 @@ const News: React.FC = () => {
                   {item.content}
                 </Text>
                 <Image
-                  source={item.imagesPost}
+                  source={item.images}
                   style={{ width: "100%" }}
                   resizeMode="cover"
                 />
@@ -188,6 +331,26 @@ const style = StyleSheet.create({
     ...FONTS.h4,
     fontWeight: "500",
     marginLeft: 10,
+  },
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
+  },
+  header: {
+    width: "100%",
+    height: 40,
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
 });
 export default News;
