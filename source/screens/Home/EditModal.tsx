@@ -11,6 +11,7 @@ import {
 import { TouchableOpacity } from "react-native";
 import { Constants } from 'expo-constants';
 import axios from "axios";
+import { useNavigation } from "@react-navigation/core";
 
 const EditPostModal: React.FC = () => {
   //======begin call api put=======
@@ -20,7 +21,7 @@ const EditPostModal: React.FC = () => {
   const [alumniId, setAlumniId] = useState(1);
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [status, setStatus] = useState(true);
-
+  const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -32,7 +33,6 @@ const EditPostModal: React.FC = () => {
       alert('Content is invalid')
       return;
     }
-    setIsLoading(true);
     axios( {
         url : `${baseUrl}/api/v1/Posts/195`,
         method: 'PUT',
@@ -43,19 +43,14 @@ const EditPostModal: React.FC = () => {
     } 
     )
     .then((response) => {
-        if(response.status === 201){
-            alert(`You have created : ${JSON.stringify(response.data)}`);
-            setIsLoading(false);
-            setContent('');
-          }else{
+        if(response.status === 200){
             alert('Update Post Success');
-            setIsLoading(false);
-            setContent('')
-          }    
+            setContent('');
+            navigation.navigate('MyTabs')
+          }  
     })
     .catch((error) => {
         alert('An error has occurred');
-           setIsLoading(false)
     })
     }
       //======end call api put=======

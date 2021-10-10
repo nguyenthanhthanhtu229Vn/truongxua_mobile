@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Modal,
   Animated,
-  Button,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -55,7 +54,7 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
 // ======== End Modal=========
 const News: React.FC = () => {
 
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const postURL = "http://20.188.111.70:12348/api/v1/Posts?pageNumber=0&pageSize=5";
   const [data, setData] = useState({});
@@ -80,20 +79,17 @@ const News: React.FC = () => {
   const onSubmitFormHandler = async (event) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/Posts/192`, {
+      const response = await axios.delete(`${baseUrl}/api/v1/Posts/214`, {
         content,
         alumniId,
         createAt,
         modifiedAt,
         status
       });
-      if (response.status === 204) {
-        alert(` You have deleted: ${JSON.stringify(response.data)}`);
-        setLoading(false);
-        setContent('')
-      } else {
+      if (response.status === 200) {
         alert('Delete Post Success');
-        setLoading(false);
+        setTimeout(function(){ setVisible(false) }, 2);
+        // setVisible(false)
       }
     } catch (error) {
       alert("Failed to delete resource");
@@ -168,7 +164,7 @@ const News: React.FC = () => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <TouchableOpacity onPress={() => navigation.navigate('Edit Post')}>
+                        <TouchableOpacity  onPress={() => navigation.navigate('Edit Post')}>
                           <Image
                             source={require("../../assets/icons/edit.png")}
                             style={{

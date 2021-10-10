@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/core";
 
 const CreatePost: React.FC = () => {
   //========  begin call api post =======
@@ -20,6 +21,7 @@ const CreatePost: React.FC = () => {
   const [status, setStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
   const OnChangeContentHandler = (content) =>{
     setContent(content);
   }
@@ -28,7 +30,6 @@ const CreatePost: React.FC = () => {
       alert("Please Write something");
       return;
     }
-    setIsLoading(true);
     try{
       const response  =await axios.post(`${baseUrl}/api/v1/Posts`,{
           alumniId,
@@ -36,19 +37,14 @@ const CreatePost: React.FC = () => {
           createAt,
           status
       });
-      if(response.status === 201){
-        alert(`You have created : ${JSON.stringify(response.data)}`);
-        setIsLoading(false);
+      if(response.status === 200){
         setContent('');
-      }else{
         alert('Creat Post Success');
-        setIsLoading(false);
-        setContent('')
-      }    
+        setTimeout(function(){ setModalVisible(false) }, 2);
+      }
     }
     catch (error){
       alert('An error has occurred');
-      setIsLoading(false)
     } 
   }
 //=======End call api create post =========
