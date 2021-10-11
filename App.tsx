@@ -31,6 +31,7 @@ import Setting from "./source/screens/Setting/Setting";
 import AddEvent from "./source/screens/event/AddEvent";
 import AddGroup from "./source/screens/Group/AddGroup";
 import EditPostModal from "./source/screens/Home/EditModal";
+import ImagePost from "./source/screens/testApi";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {

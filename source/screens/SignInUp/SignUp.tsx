@@ -65,13 +65,15 @@ const SignUp: React.FC = () => {
     if (password !== confirm) {
       setError("Mật khẩu khùng trùng khớp");
       setRegistering(false);
-    } else if (name.length == 0 || phone.length == 0) {
-      setError("Không được để nội dung trống");
-      setRegistering(false);
-    } else if (phone.length != 10) {
-      setError("Số điện thoại 10 chữ số");
-      setRegistering(false);
-    } else {
+    }
+    //  else if (name.length == 0 || phone.length == 0) {
+    //   setError("Không được để nội dung trống");
+    //   setRegistering(false);
+    // } else if (phone.length != 10) {
+    //   setError("Số điện thoại 10 chữ số");
+    //   setRegistering(false);
+    // }
+     else {
       if (error !== "") setError("");
       setRegistering(true);
       auth
@@ -125,7 +127,7 @@ const SignUp: React.FC = () => {
     }
   };
   return (
-    <View style={{ flex: 1, padding: 20, marginTop: 36 }}>
+    <View style={{ flex: 1, padding: 20, marginTop: 110 }}>
       <ScrollView>
         <View
           style={{
@@ -152,7 +154,7 @@ const SignUp: React.FC = () => {
             fontSize: 30,
             fontWeight: "500",
             textAlign: "center",
-            marginBottom: 10,
+            marginBottom: 18,
           }}
         >
          Vui Lòng Đăng Ký
@@ -178,7 +180,7 @@ const SignUp: React.FC = () => {
                 borderBottomWidth: 1,
                 fontSize: 18,
                 paddingBottom: 5,
-                marginBottom: 10,
+                marginBottom: 14,
               }}
             />
           </View>
@@ -199,7 +201,7 @@ const SignUp: React.FC = () => {
               style={{
                 borderBottomColor: "#8e8e96",
                 borderBottomWidth: 1,
-                marginBottom: 10,
+                marginBottom: 14,
                 fontSize: 18,
                 paddingBottom: 5,
               }}
@@ -224,14 +226,14 @@ const SignUp: React.FC = () => {
                 borderBottomColor: "#8e8e96",
                 borderBottomWidth: 1,
                 fontSize: 18,
-                marginBottom: 10,
+                marginBottom: 14,
                 paddingBottom: 5,
               }}
               onChangeText={(confirm) => setConfirm(confirm)}
             />
           </View>
         </View>
-        <View style={{ position: "relative", marginTop: 15 }}>
+        {/* <View style={{ position: "relative", marginTop: 15 }}>
           <AntDesign
             name="user"
             style={{
@@ -254,8 +256,8 @@ const SignUp: React.FC = () => {
               paddingBottom: 5,
             }}
           />
-        </View>
-        <View style={{ position: "relative", marginTop: 15 }}>
+        </View> */}
+        {/* <View style={{ position: "relative", marginTop: 15 }}>
           <Entypo
             name="location-pin"
             style={{
@@ -278,8 +280,8 @@ const SignUp: React.FC = () => {
               paddingBottom: 5,
             }}
           />
-        </View>
-        <View style={{ position: "relative", marginTop: 15 }}>
+        </View> */}
+        {/* <View style={{ position: "relative", marginTop: 15 }}>
           <AntDesign
             name="phone"
             style={{
@@ -303,7 +305,7 @@ const SignUp: React.FC = () => {
               paddingBottom: 5,
             }}
           />
-        </View>
+        </View> */}
         <Error error={error} />
         <TouchableOpacity onPress={() => signUpWithEmailAndPassword()}>
           <View
