@@ -19,10 +19,13 @@ import { auth } from "../../config/firebase";
 import * as Google from "expo-google-app-auth";
 import Error from "../Error/Error";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/core";
+import { COLORS } from "../../constant";
 
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
-const SignUp: React.FC = ({ navigation }) => {
+const SignUp: React.FC = () => {
+  const navigation = useNavigation();
   const baseUrl = "http://20.188.111.70:12348";
   const [registering, setRegistering] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -122,140 +125,40 @@ const SignUp: React.FC = ({ navigation }) => {
     }
   };
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, padding: 20, marginTop: 36 }}>
       <ScrollView>
-        <ImageBackground
-          source={require("../../assets/images/imgSignIn/bgSignIn.jpg")}
+        <View
           style={{
-            position: "relative",
-            padding: 20,
-            flex: 2,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            // backgroundColor: "black",
+            opacity: 0.5,
+            width: width,
+            bottom: 0,
+          }}
+        />
+        <Image
+          source={require("../../assets/images/imgSignIn/logoSchool.png")}
+          style={{
+            width: 100,
+            height: 100,
+            alignSelf: "center",
+          }}
+        />
+        <Text
+          style={{
+            color: COLORS.black,
+            fontSize: 30,
+            fontWeight: "500",
+            textAlign: "center",
+            marginBottom: 10,
           }}
         >
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              backgroundColor: "black",
-              opacity: 0.5,
-              width: width,
-              bottom: 0,
-            }}
-          ></View>
-          <Image
-            source={require("../../assets/images/imgSignIn/logoSchool.png")}
-            style={{ width: 80, height: 50, alignSelf: "center" }}
-          ></Image>
-          <Text style={{ color: "white", fontFamily: "Roboto", fontSize: 20 }}>
-            Vui lòng đăng ký tài khoản
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 20,
-            }}
-          >
-            <AntDesign
-              name="lock"
-              style={{
-                color: "white",
-                marginRight: 5,
-                fontFamily: "Roboto",
-                fontSize: 23,
-                fontWeight: "bold",
-              }}
-            ></AntDesign>
-            <Text
-              style={{
-                color: "white",
-                fontFamily: "Roboto",
-                fontSize: 23,
-                fontWeight: "bold",
-              }}
-            >
-              Đăng ký
-            </Text>
-          </View>
-          <View style={{ marginTop: 20 }}>
-            <View style={{ position: "relative" }}>
-              <AntDesign
-                name="user"
-                style={{
-                  color: "#8e8e96",
-                  position: "absolute",
-                  right: 0,
-                  fontSize: 18,
-                }}
-              />
-              <TextInput
-                placeholder="Email đăng nhập"
-                onChangeText={(email) => setEmail(email)}
-                value={email}
-                placeholderTextColor="#8e8e96"
-                style={{
-                  color: "white",
-                  borderBottomColor: "#8e8e96",
-                  borderBottomWidth: 1,
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                  paddingBottom: 5,
-                }}
-              />
-            </View>
-            <View style={{ position: "relative", marginTop: 15 }}>
-              <AntDesign
-                name="lock"
-                style={{
-                  color: "#8e8e96",
-                  position: "absolute",
-                  right: 0,
-                  fontSize: 18,
-                }}
-              />
-              <TextInput
-                placeholder="Mật khẩu"
-                secureTextEntry
-                placeholderTextColor="#8e8e96"
-                style={{
-                  color: "white",
-                  borderBottomColor: "#8e8e96",
-                  borderBottomWidth: 1,
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                  paddingBottom: 5,
-                }}
-                onChangeText={(password) => setPassword(password)}
-              />
-            </View>
-            <View style={{ position: "relative", marginTop: 15 }}>
-              <AntDesign
-                name="lock"
-                style={{
-                  color: "#8e8e96",
-                  position: "absolute",
-                  right: 0,
-                  fontSize: 18,
-                }}
-              />
-              <TextInput
-                placeholder="Xác nhận lại mật khẩu"
-                secureTextEntry
-                placeholderTextColor="#8e8e96"
-                style={{
-                  color: "white",
-                  borderBottomColor: "#8e8e96",
-                  borderBottomWidth: 1,
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                  paddingBottom: 5,
-                }}
-                onChangeText={(confirm) => setConfirm(confirm)}
-              />
-            </View>
-          </View>
-          <View style={{ position: "relative", marginTop: 15 }}>
+         Vui Lòng Đăng Ký
+        </Text>
+        <View style={{ marginTop: 24 }}>
+          <View style={{ position: "relative" }}>
             <AntDesign
               name="user"
               style={{
@@ -266,48 +169,22 @@ const SignUp: React.FC = ({ navigation }) => {
               }}
             />
             <TextInput
-              placeholder="Họ và tên"
-              onChangeText={(name) => setName(name)}
-              value={name}
+              placeholder="Email"
+              onChangeText={(email) => setEmail(email)}
+              value={email}
               placeholderTextColor="#8e8e96"
               style={{
-                color: "white",
                 borderBottomColor: "#8e8e96",
                 borderBottomWidth: 1,
-                fontFamily: "Roboto",
                 fontSize: 18,
                 paddingBottom: 5,
-              }}
-            />
-          </View>
-          <View style={{ position: "relative", marginTop: 15 }}>
-            <Entypo
-              name="location-pin"
-              style={{
-                color: "#8e8e96",
-                position: "absolute",
-                right: 0,
-                fontSize: 18,
-              }}
-            />
-            <TextInput
-              placeholder="Địa chỉ"
-              onChangeText={(address) => setAddress(address)}
-              value={address}
-              placeholderTextColor="#8e8e96"
-              style={{
-                color: "white",
-                borderBottomColor: "#8e8e96",
-                borderBottomWidth: 1,
-                fontFamily: "Roboto",
-                fontSize: 18,
-                paddingBottom: 5,
+                marginBottom: 10,
               }}
             />
           </View>
           <View style={{ position: "relative", marginTop: 15 }}>
             <AntDesign
-              name="phone"
+              name="lock"
               style={{
                 color: "#8e8e96",
                 position: "absolute",
@@ -316,137 +193,143 @@ const SignUp: React.FC = ({ navigation }) => {
               }}
             />
             <TextInput
-              placeholder="Số điện thoại"
-              keyboardType="number-pad"
-              onChangeText={(phone) => setPhone(phone)}
-              value={phone}
+              placeholder="Mật khẩu"
+              secureTextEntry
               placeholderTextColor="#8e8e96"
               style={{
-                color: "white",
                 borderBottomColor: "#8e8e96",
                 borderBottomWidth: 1,
-                fontFamily: "Roboto",
+                marginBottom: 10,
                 fontSize: 18,
                 paddingBottom: 5,
               }}
+              onChangeText={(password) => setPassword(password)}
             />
           </View>
-          <Error error={error} />
-          <TouchableOpacity onPress={() => signUpWithEmailAndPassword()}>
-            <View
+          <View style={{ position: "relative", marginTop: 15 }}>
+            <AntDesign
+              name="lock"
               style={{
-                backgroundColor: "#088dcd",
-                width: "100%",
-                borderRadius: 25,
-                marginTop: 20,
-                padding: 10,
+                color: "#8e8e96",
+                position: "absolute",
+                right: 0,
+                fontSize: 18,
               }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  textAlign: "center",
-                  fontFamily: "Roboto",
-                  fontSize: 18,
-                }}
-              >
-                Đăng ký
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignIn");
+            />
+            <TextInput
+              placeholder="Xác nhận lại mật khẩu"
+              secureTextEntry
+              placeholderTextColor="#8e8e96"
+              style={{
+                borderBottomColor: "#8e8e96",
+                borderBottomWidth: 1,
+                fontSize: 18,
+                marginBottom: 10,
+                paddingBottom: 5,
+              }}
+              onChangeText={(confirm) => setConfirm(confirm)}
+            />
+          </View>
+        </View>
+        <View style={{ position: "relative", marginTop: 15 }}>
+          <AntDesign
+            name="user"
+            style={{
+              color: "#8e8e96",
+              position: "absolute",
+              right: 0,
+              fontSize: 18,
+            }}
+          />
+          <TextInput
+            placeholder="Họ và tên"
+            onChangeText={(name) => setName(name)}
+            value={name}
+            placeholderTextColor="#8e8e96"
+            style={{
+              borderBottomColor: "#8e8e96",
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              fontSize: 18,
+              paddingBottom: 5,
+            }}
+          />
+        </View>
+        <View style={{ position: "relative", marginTop: 15 }}>
+          <Entypo
+            name="location-pin"
+            style={{
+              color: "#8e8e96",
+              position: "absolute",
+              right: 0,
+              fontSize: 18,
+            }}
+          />
+          <TextInput
+            placeholder="Địa chỉ"
+            onChangeText={(address) => setAddress(address)}
+            value={address}
+            placeholderTextColor="#8e8e96"
+            style={{
+              borderBottomColor: "#8e8e96",
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              fontSize: 18,
+              paddingBottom: 5,
+            }}
+          />
+        </View>
+        <View style={{ position: "relative", marginTop: 15 }}>
+          <AntDesign
+            name="phone"
+            style={{
+              color: "#8e8e96",
+              position: "absolute",
+              right: 0,
+              fontSize: 18,
+            }}
+          />
+          <TextInput
+            placeholder="Số điện thoại"
+            keyboardType="number-pad"
+            onChangeText={(phone) => setPhone(phone)}
+            value={phone}
+            placeholderTextColor="#8e8e96"
+            style={{
+              borderBottomColor: "#8e8e96",
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              fontSize: 18,
+              paddingBottom: 5,
+            }}
+          />
+        </View>
+        <Error error={error} />
+        <TouchableOpacity onPress={() => signUpWithEmailAndPassword()}>
+          <View
+            style={{
+              backgroundColor: "#088dcd",
+              width: "100%",
+              borderRadius: 25,
+              marginTop: 20,
+              padding: 17,
             }}
           >
             <Text
               style={{
-                color: "#8e8e96",
-                fontFamily: "Roboto",
-                fontSize: 16,
+                color: "white",
                 textAlign: "center",
-                marginTop: 30,
-                textDecorationLine: "underline",
+
+                fontSize: 20,
               }}
             >
-              Đã có tài khoản?
+              Đăng ký
             </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 80,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("SignIn");
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "white",
-                  padding: 10,
-                  flexDirection: "row",
-                  marginRight: 30,
-                  borderRadius: 250,
-                }}
-              >
-                <Feather
-                  name="key"
-                  style={{
-                    color: "#000",
-                    marginRight: 5,
-                    marginTop: 2,
-                    fontSize: 16,
-                  }}
-                ></Feather>
-                <Text
-                  style={{ color: "#000", fontFamily: "Roboto", fontSize: 16 }}
-                >
-                  Đăng nhập
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("SignUp");
-              }}
-            >
-              <View
-                style={{
-                  // backgroundColor: "#088dcd",
-                  backgroundColor: "#088dcd",
-                  padding: 10,
-                  flexDirection: "row",
-                  width: 115,
-                  justifyContent: "center",
-                  borderRadius: 250,
-                }}
-              >
-                <SimpleLineIcons
-                  name="pencil"
-                  style={{
-                    color: "white",
-                    marginRight: 5,
-                    marginTop: 2,
-                    fontSize: 16,
-                  }}
-                ></SimpleLineIcons>
-                <Text
-                  style={{ color: "white", fontFamily: "Roboto", fontSize: 16 }}
-                >
-                  Đăng ký
-                </Text>
-              </View>
-            </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </TouchableOpacity>
         <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
           <Text
             style={{
-              fontFamily: "Roboto",
               fontSize: 20,
               marginTop: 20,
               color: "#595050",
@@ -454,11 +337,7 @@ const SignUp: React.FC = ({ navigation }) => {
           >
             Hoặc
           </Text>
-          <Text
-            style={{ fontFamily: "Roboto", fontSize: 18, color: "#595050" }}
-          >
-            Đăng nhập bằng
-          </Text>
+          <Text style={{ fontSize: 18, color: "#595050" }}>Đăng nhập bằng</Text>
           <View
             style={{
               flexDirection: "row",
@@ -484,6 +363,25 @@ const SignUp: React.FC = ({ navigation }) => {
               ></Image>
             </TouchableOpacity>
           </View>
+          {/* Da co tai khoan */}
+          <TouchableOpacity
+          style={{marginTop: 30}}
+          onPress={() => {
+            navigation.navigate("SignIn");
+          }}
+        >
+          <Text
+            style={{
+              color: "#8e8e96",
+              fontSize: 18,
+              textAlign: "center",
+              // marginTop: 30,
+              // textDecorationLine: "underline",
+            }}
+          >
+            Đã có tài khoản? <Text style={{color:COLORS.blue, textDecorationLine: "underline"}}>Đăng Nhập</Text>
+          </Text>
+        </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

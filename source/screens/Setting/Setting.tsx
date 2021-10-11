@@ -95,7 +95,6 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   textTitle: {
-    fontFamily: "Roboto",
     borderLeftWidth: 5,
     borderLeftColor: "#088dcd",
     fontSize: 20,
@@ -104,7 +103,6 @@ const style = StyleSheet.create({
     fontWeight: "600",
   },
   more: {
-    fontFamily: "Roboto",
     color: "#088dcd",
     fontSize: 15,
   },
@@ -125,12 +123,10 @@ const style = StyleSheet.create({
     borderRadius: 20,
   },
   settingName: {
-    fontFamily: "Roboto",
     color: "black",
     fontSize: 16,
   },
   settingNameActive: {
-    fontFamily: "Roboto",
     color: "white",
     fontSize: 16,
   },
@@ -141,7 +137,6 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   logOutText: {
-    fontFamily: "Roboto",
     color: "white",
     textAlign: "center",
     fontSize: 16,

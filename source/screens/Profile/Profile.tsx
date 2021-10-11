@@ -329,7 +329,6 @@ const style = StyleSheet.create({
     borderWidth: 2,
   },
   nameProfile: {
-    fontFamily: "Roboto",
     fontSize: 22,
     color: "white",
     fontWeight: "bold",
@@ -356,7 +355,6 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   textTitle: {
-    fontFamily: "Roboto",
     borderLeftWidth: 5,
     borderLeftColor: "#088dcd",
     fontSize: 20,
@@ -364,7 +362,6 @@ const style = StyleSheet.create({
     paddingLeft: 10,
   },
   group: {
-    fontFamily: "Roboto",
     fontWeight: "bold",
     fontSize: 16,
     color: "#4d5165",
@@ -375,7 +372,6 @@ const style = StyleSheet.create({
     marginRight: 5,
   },
   more: {
-    fontFamily: "Roboto",
     color: "#088dcd",
     fontSize: 15,
   },
@@ -394,7 +390,6 @@ const style = StyleSheet.create({
     marginLeft: 8,
   },
   numberParti: {
-    fontFamily: "Roboto",
     color: "gray",
     fontSize: 15,
   },
@@ -408,24 +403,20 @@ const style = StyleSheet.create({
     marginLeft: 10,
   },
   titleBlog: {
-    fontFamily: "Roboto",
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 5,
   },
   by: {
-    fontFamily: "Roboto",
     fontSize: 16,
     marginBottom: 5,
     color: "gray",
   },
   authorBlog: {
-    fontFamily: "Roboto",
     color: "#088dcd",
     fontSize: 16,
   },
   timeBlog: {
-    fontFamily: "Roboto",
     fontSize: 16,
     color: "gray",
   },

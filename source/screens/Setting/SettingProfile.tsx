@@ -72,13 +72,11 @@ const style = StyleSheet.create({
     borderWidth: 2,
   },
   title: {
-    fontFamily: "Roboto",
     color: "black",
     fontSize: 18,
     // borderLeftColor: "#088dcd",
   },
   desc: {
-    fontFamily: "Roboto",
     color: "#4d4d82",
     fontSize: 16,
     marginTop: 10,
@@ -97,12 +95,10 @@ const style = StyleSheet.create({
   },
   cancelText: {
     color: "#088dcd",
-    fontFamily: "Roboto",
     fontSize: 18,
   },
   saveText: {
     color: "white",
-    fontFamily: "Roboto",
     fontSize: 18,
   },
   cancelBtn: {
@@ -115,21 +111,18 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   changeImg: {
-    fontFamily: "Roboto",
     fontSize: 16,
     color: "#088dcd",
     marginLeft: 20,
   },
   subTitle: {
     marginTop: 10,
-    fontFamily: "Roboto",
     fontSize: 18,
   },
   input: {
     backgroundColor: "white",
     padding: 10,
     borderWidth: 1,
-    fontFamily: "Roboto",
     fontSize: 18,
     borderColor: "#ddd",
     borderRadius: 10,

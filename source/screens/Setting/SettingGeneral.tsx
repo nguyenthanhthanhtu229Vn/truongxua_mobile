@@ -46,13 +46,11 @@ const SettingGeneral = () => {
 
 const style = StyleSheet.create({
   title: {
-    fontFamily: "Roboto",
     color: "black",
     fontSize: 18,
     // borderLeftColor: "#088dcd",
   },
   desc: {
-    fontFamily: "Roboto",
     color: "#4d4d82",
     fontSize: 16,
     marginTop: 10,
@@ -74,12 +72,10 @@ const style = StyleSheet.create({
   },
   cancelText: {
     color: "#088dcd",
-    fontFamily: "Roboto",
     fontSize: 18,
   },
   saveText: {
     color: "white",
-    fontFamily: "Roboto",
     fontSize: 18,
   },
   cancelBtn: {
@@ -92,7 +88,6 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   descAcount: {
-    fontFamily: "Roboto",
     color: "#4d4d82",
     fontSize: 16,
     marginTop: 10,
@@ -103,7 +98,6 @@ const style = StyleSheet.create({
     padding: 10,
   },
   deleteText: {
-    fontFamily: "Roboto",
     color: "white",
     fontSize: 16,
   },
@@ -114,7 +108,6 @@ const style = StyleSheet.create({
     marginTop: 15,
   },
   logOutText: {
-    fontFamily: "Roboto",
     color: "white",
     textAlign: "center",
     fontSize: 16,

@@ -158,7 +158,7 @@ const AddEvent = () => {
                 width: 354,
                 padding: 10,
                 borderWidth: 1,
-                fontFamily: "Roboto",
+               
                 fontSize: 18,
                 borderColor: "#CCCCCC",
                 borderRadius: 10,
@@ -172,7 +172,7 @@ const AddEvent = () => {
                 width: 80,
                 padding: 10,
                 borderWidth: 1,
-                fontFamily: "Roboto",
+               
                 fontSize: 18,
                 borderColor: "#CCCCCC",
                 borderRadius: 10,
@@ -255,7 +255,7 @@ const style = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderWidth: 1,
-    fontFamily: "Roboto",
+   
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,
@@ -265,7 +265,7 @@ const style = StyleSheet.create({
     paddingLeft: 8,
     backgroundColor: "white",
     borderWidth: 1,
-    fontFamily: "Roboto",
+   
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,

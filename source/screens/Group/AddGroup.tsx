@@ -161,8 +161,7 @@ const style = StyleSheet.create({
   input: {
     backgroundColor: "white",
     padding: 10,
-    borderWidth: 1,
-    fontFamily: "Roboto",
+    borderWidth: 1, 
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,
@@ -172,7 +171,6 @@ const style = StyleSheet.create({
     paddingLeft: 8,
     backgroundColor: "white",
     borderWidth: 1,
-    fontFamily: "Roboto",
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,

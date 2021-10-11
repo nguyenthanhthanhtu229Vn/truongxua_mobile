@@ -40,7 +40,7 @@ const SignUp: React.FC = () => {
           >
             <Text
               style={{
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 color: "white",
               }}
@@ -50,7 +50,7 @@ const SignUp: React.FC = () => {
             <Text
               style={{
                 marginTop: 5,
-                fontFamily: "Roboto",
+              
                 fontSize: 22,
                 color: "white",
                 fontWeight: "bold",
@@ -60,7 +60,7 @@ const SignUp: React.FC = () => {
             </Text>
             <Text
               style={{
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 color: "white",
                 marginTop: 5,
@@ -83,7 +83,7 @@ const SignUp: React.FC = () => {
               name="clockcircleo"
               style={{
                 color: "#088dcd",
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 fontWeight: "bold",
               }}
@@ -91,7 +91,7 @@ const SignUp: React.FC = () => {
             <Text
               style={{
                 color: "#088dcd",
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 fontWeight: "bold",
                 marginLeft: 10,
@@ -111,14 +111,14 @@ const SignUp: React.FC = () => {
               name="location"
               style={{
                 color: "#6d757a",
-                fontFamily: "Roboto",
+              
                 fontSize: 20,
               }}
             ></EvilIcons>
             <Text
               style={{
                 color: "#6d757a",
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 marginLeft: 10,
               }}
@@ -129,7 +129,7 @@ const SignUp: React.FC = () => {
           <Text
             style={{
               color: "black",
-              fontFamily: "Roboto",
+            
               fontSize: 20,
               marginTop: 10,
             }}
@@ -139,7 +139,7 @@ const SignUp: React.FC = () => {
           <Text
             style={{
               color: "#6d757a",
-              fontFamily: "Roboto",
+            
               fontSize: 16,
               marginTop: 20,
               lineHeight: 25,
@@ -157,7 +157,7 @@ const SignUp: React.FC = () => {
                 borderLeftWidth: 3,
                 paddingLeft: 10,
                 color: "black",
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 marginTop: 20,
                 fontWeight: "bold",
@@ -183,7 +183,7 @@ const SignUp: React.FC = () => {
             <Text
               style={{
                 color: "#6d757a",
-                fontFamily: "Roboto",
+              
                 fontSize: 16,
                 marginTop: 20,
                 lineHeight: 25,
@@ -197,7 +197,7 @@ const SignUp: React.FC = () => {
             <Text
               style={{
                 color: "black",
-                fontFamily: "Roboto",
+              
                 fontSize: 18,
                 marginTop: 20,
               }}
@@ -218,7 +218,7 @@ const SignUp: React.FC = () => {
               >
                 <Text
                   style={{
-                    fontFamily: "Roboto",
+                  
                     fontSize: 18,
                     color: "white",
                   }}
@@ -228,7 +228,7 @@ const SignUp: React.FC = () => {
                 <AntDesign
                   name="arrowright"
                   style={{
-                    fontFamily: "Roboto",
+                  
                     fontSize: 18,
                     color: "white",
                     marginLeft: 10,
