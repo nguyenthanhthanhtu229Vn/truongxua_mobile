@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Text,
@@ -6,55 +6,29 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
-  SectionList,
-  ImageBackground,
 } from "react-native";
-import { COLORS, FONTS, icons, SIZES } from "../../constant";
+import { COLORS, FONTS,SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";
 import { Foundation } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
 
-const EVENTS = [
-  {
-    id: "11",
-    eventImg: require("../../assets/images/party1.jpg"),
-    name: "Toronto Wedding Party Event 2020",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: "22",
-    eventImg: require("../../assets/images/party2.jpg"),
-    name: "Music Concert Lady Gaga 2020",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: "33",
-    eventImg: require("../../assets/images/party3.jpg"),
-    name: "Get Together Of Oddo Inc Abu Dhabi",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: "44",
-    eventImg: require("../../assets/images/party4.jpg"),
-    name: "Starting With EM Club",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: "55",
-    eventImg: require("../../assets/images/party1.jpg"),
-    name: "My Friend Wedding fun Party",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-];
-
 const Event: React.FC = (props) => {
+  const [isLoading, setLoading] = useState(true);
+  const eventURL = "http://20.188.111.70:12348/api/v1/Events";
+  const [event, setData] = useState({});
+  // console.log(event);
+  useEffect(() => {
+    fetch(eventURL)
+      .then((response) =>
+        response.json().then((res) => {
+          setData(res);
+        })
+      )
+      .catch((error) => alert(error))
+      .finally(() => setLoading(false));
+  });
+
   const navigation = useNavigation();
   const { banner } = props;
   return (
@@ -74,7 +48,7 @@ const Event: React.FC = (props) => {
             contentContainerStyle={{
               flexDirection: "column",
             }}
-            data={EVENTS}
+            data={event}
             renderItem={({ item, index }) => {
               return (
                 <View
@@ -91,7 +65,7 @@ const Event: React.FC = (props) => {
                     }}
                   >
                     <Image
-                      source={item.eventImg}
+                      source={require("../../assets/images/party1.jpg")}
                       style={{
                         height: SIZES.height / 5,
                         borderRadius: 5,
@@ -128,7 +102,7 @@ const Event: React.FC = (props) => {
                         marginBottom: 10,
                       }}
                     >
-                      {item.content}
+                      {item.description}
                     </Text>
                     <Text
                       style={{
@@ -138,7 +112,7 @@ const Event: React.FC = (props) => {
                         fontWeight: "500",
                       }}
                     >
-                      {item.date}
+                      {item.startDate}
                     </Text>
                     <View
                       style={{

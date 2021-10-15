@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/core";
 const EditPostModal: React.FC = () => {
   //======begin call api put=======
   const baseUrl = 'http://20.188.111.70:12348'
-  const [id, setId] = useState(195)
+  const [id, setId] = useState(231)
   const [content,  setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [modifiedAt, setModifiedAt] = useState(new Date());
@@ -34,20 +34,20 @@ const EditPostModal: React.FC = () => {
       return;
     }
     axios( {
-        url : `${baseUrl}/api/v1/Posts/195`,
+        url : `${baseUrl}/api/v1/Posts/231`,
         method: 'PUT',
         data: { id,
             alumniId,
             content,status,
             modifiedAt}
-    } 
+    }
     )
     .then((response) => {
         if(response.status === 200){
             alert('Update Post Success');
             setContent('');
             navigation.navigate('MyTabs')
-          }  
+          }
     })
     .catch((error) => {
         alert('An error has occurred');
@@ -141,15 +141,15 @@ const EditPostModal: React.FC = () => {
                     textAlign: "center",
                   }}
                 >
-                  Đăng Bài 
+              Sửa Bài Viết
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
         </Modal>
-  
+
         {/* ==================================== */}
-  
+
         <View
           style={{
             zIndex: 1,
@@ -162,7 +162,7 @@ const EditPostModal: React.FC = () => {
           }}
         >
           <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-            Tạo Bài Viết 
+            Tạo Bài Viết
           </Text>
           <TouchableOpacity>
             <Pressable onPress={() => setModalVisible(true)}>

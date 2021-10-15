@@ -53,7 +53,6 @@ const ImagePost = () => {
 const CreatePost: React.FC = () => {
   //========  begin call api post =======
   const baseUrl = "http://20.188.111.70:12348";
-
   const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [createAt, setCreateAt] = useState(new Date());

@@ -79,7 +79,7 @@ const News: React.FC = () => {
   const onSubmitFormHandler = async (event) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/Posts/214`, {
+      const response = await axios.delete(`${baseUrl}/api/v1/Posts/231`, {
         content,
         alumniId,
         createAt,
