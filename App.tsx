@@ -28,7 +28,6 @@ import EventDetail from "./source/screens/event/EventDetail";
 import Group from "./source/screens/Group/Group";
 import GroupDetail from "./source/screens/Group/GroupDetail";
 import Setting from "./source/screens/Setting/Setting";
-import AddEvent from "./source/screens/event/AddEvent";
 import AddGroup from "./source/screens/Group/AddGroup";
 import EditPostModal from "./source/screens/Home/EditModal";
 import ImagePost from "./source/screens/testApi";
@@ -90,7 +89,6 @@ const App = () => {
             options={{ headerShown: false }}
           />
           <Stack.Screen name = "Edit Post" component={EditPostModal} />
-          <Stack.Screen name="NewEvent" component={AddEvent} />
           <Stack.Screen name="NewGroup" component={AddGroup} />
           <Stack.Screen name="GroupDetails" component={GroupDetail} />
           <Stack.Screen name="Group" component={Group} />

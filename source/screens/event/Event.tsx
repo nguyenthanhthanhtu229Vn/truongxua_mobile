@@ -30,18 +30,18 @@ const Event: React.FC = (props) => {
   });
 
   const navigation = useNavigation();
-  const { banner } = props;
+  // const { banner } = props;
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <MyCarousel />
 
         {/* Plust Btn */}
-        <TouchableOpacity style={style.plusBtn} onPress= {() => {
+        {/* <TouchableOpacity style={style.plusBtn} onPress= {() => {
           navigation.navigate('NewEvent')
         }} >
           <Foundation name="plus" style={style.textPlus}></Foundation>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={style.container}>
           <FlatList
@@ -120,7 +120,7 @@ const Event: React.FC = (props) => {
                         justifyContent: "flex-end",
                       }}
                     >
-                      <Text
+                      {/* <Text
                         style={{
                           backgroundColor: "#17a2b8",
                           color: COLORS.white,
@@ -132,7 +132,7 @@ const Event: React.FC = (props) => {
                         }}
                       >
                         Đặt
-                      </Text>
+                      </Text> */}
                     </View>
                   </View>
                 </View>
