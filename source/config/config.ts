@@ -1,12 +1,12 @@
 const config={
     firebase:{
-        apiKey: "AIzaSyCsqAI1zAkDHYDByZNHtBrW5NX7sC0_0Nc",
-        authDomain: "truongxua-f4fe1.firebaseapp.com",
-        projectId: "truongxua-f4fe1",
-        storageBucket: "truongxua-f4fe1.appspot.com",
-        messagingSenderId: "190415757946",
-        appId: "1:190415757946:web:3267c88084c7053fa3d1c3",
-        measurementId: "G-YX7S76DQMT",
+        apiKey: "AIzaSyDwpXOvPtDvsJ6tqtRbM4WCs5GdoXHkfGU",
+        authDomain: "truongxua-d9940.firebaseapp.com",
+        projectId: "truongxua-d9940",
+        storageBucket: "truongxua-d9940.appspot.com",
+        messagingSenderId: "78169522021",
+        appId: "1:78169522021:web:13934f5f09fb08e97ceb8c",
+        measurementId: "G-2T9SQ4HENT"
     }
 
     // firebase:{

@@ -73,7 +73,7 @@ const SignUp: React.FC = () => {
     //   setError("Số điện thoại 10 chữ số");
     //   setRegistering(false);
     // }
-     else {
+    else {
       if (error !== "") setError("");
       setRegistering(true);
       auth
@@ -100,7 +100,7 @@ const SignUp: React.FC = () => {
         androidClientId:
           "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         clientId:
-          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+          "78169522021-qic4kukdgsplh1eh0v303pfl8413bkum.apps.googleusercontent.com",
         iosClientId:
           "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
         scopes: ["profile", "email"],
@@ -157,7 +157,7 @@ const SignUp: React.FC = () => {
             marginBottom: 18,
           }}
         >
-         Vui Lòng Đăng Ký
+          Vui Lòng Đăng Ký
         </Text>
         <View style={{ marginTop: 24 }}>
           <View style={{ position: "relative" }}>
@@ -367,23 +367,28 @@ const SignUp: React.FC = () => {
           </View>
           {/* Da co tai khoan */}
           <TouchableOpacity
-          style={{marginTop: 30}}
-          onPress={() => {
-            navigation.navigate("SignIn");
-          }}
-        >
-          <Text
-            style={{
-              color: "#8e8e96",
-              fontSize: 18,
-              textAlign: "center",
-              // marginTop: 30,
-              // textDecorationLine: "underline",
+            style={{ marginTop: 30 }}
+            onPress={() => {
+              navigation.navigate("SignIn");
             }}
           >
-            Đã có tài khoản? <Text style={{color:COLORS.blue, textDecorationLine: "underline"}}>Đăng Nhập</Text>
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: "#8e8e96",
+                fontSize: 18,
+                textAlign: "center",
+                // marginTop: 30,
+                // textDecorationLine: "underline",
+              }}
+            >
+              Đã có tài khoản?{" "}
+              <Text
+                style={{ color: COLORS.blue, textDecorationLine: "underline" }}
+              >
+                Đăng Nhập
+              </Text>
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
