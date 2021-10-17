@@ -50,7 +50,17 @@ const SignIn: React.FC = () => {
   //       setAuthentication(false);
   //     });
   // };
-
+  const getIdToken = () => {
+    firebase
+      .auth()
+      .currentUser?.getIdToken(/* forceRefresh */ true)
+      .then(function (idToken) {
+        console.log(idToken);
+      })
+      .catch(function (error) {
+        // Handle error
+      });
+  };
   const signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
@@ -71,6 +81,7 @@ const SignIn: React.FC = () => {
           .auth()
           .signInWithCredential(googleCredential)
           .then(() => {
+            getIdToken();
             navigation.navigate("MyTabs");
           })
           .catch((error) => {
@@ -84,7 +95,7 @@ const SignIn: React.FC = () => {
     }
   };
   return (
-    <View style={{ flex: 1,padding: 20, marginTop: 70}}>
+    <View style={{ flex: 1, padding: 20, marginTop: 70 }}>
       <View
         style={{
           position: "absolute",
@@ -97,11 +108,18 @@ const SignIn: React.FC = () => {
       ></View>
       <Image
         source={require("../../assets/images/imgSignIn/logoSchool.png")}
-        style={{ width: 100, height: 100, alignSelf: "center", marginTop: 50}}
+        style={{ width: 100, height: 100, alignSelf: "center", marginTop: 50 }}
       ></Image>
-      <Text style={{ color: COLORS.black, fontSize: 30, fontWeight: '500', textAlign:'center' }}>
+      <Text
+        style={{
+          color: COLORS.black,
+          fontSize: 30,
+          fontWeight: "500",
+          textAlign: "center",
+        }}
+      >
         Đăng Nhập
-        </Text>
+      </Text>
       <View style={{ marginTop: 40 }}>
         <View style={{ position: "relative", marginBottom: 20 }}>
           <Feather
@@ -161,7 +179,6 @@ const SignIn: React.FC = () => {
             borderRadius: 25,
             marginTop: 50,
             padding: 17,
-            
           }}
         >
           <Text
@@ -228,12 +245,16 @@ const SignIn: React.FC = () => {
           </TouchableOpacity>
         </View>
         {/* Ban co tai khoan chua  */}
-        <View style={{marginTop: 40}}>
+        <View style={{ marginTop: 40 }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-          <Text style={{color: "#8e8e96", fontSize: 18}}>
-            Bạn Chưa Có Tài Khoản{" "}
-            <Text style={{ textDecorationLine: "underline",color:COLORS.blue }}>Đăng Ký</Text>
-          </Text>
+            <Text style={{ color: "#8e8e96", fontSize: 18 }}>
+              Bạn Chưa Có Tài Khoản{" "}
+              <Text
+                style={{ textDecorationLine: "underline", color: COLORS.blue }}
+              >
+                Đăng Ký
+              </Text>
+            </Text>
           </TouchableOpacity>
         </View>
         {/* End  */}

@@ -1,31 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native-gesture-handler";
-const GROUPS = [
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "12A1",
-    "number-people": "1.2k",
-  },
-  {
-    img: require("../../assets/images/event2.jpg"),
-    name: "12A2",
-    "number-people": "1.2k",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "12A1",
-    "number-people": "1.2k",
-  },
-  {
-    img: require("../../assets/images/event2.jpg"),
-    name: "12A2",
-    "number-people": "1.2k",
-  },
-];
+import axios from "axios";
+// const GROUPS = [
+//   {
+//     img: require("../../assets/images/event.jpg"),
+//     name: "12A1",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event2.jpg"),
+//     name: "12A2",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event.jpg"),
+//     name: "12A1",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event2.jpg"),
+//     name: "12A2",
+//     "number-people": "1.2k",
+//   },
+// ];
 const JOINED_GROUP = [
   {
     img: require("../../assets/images/event.jpg"),
@@ -67,7 +68,19 @@ const SUGGESTED = [
   },
 ];
 const Group = () => {
+  const groupURL =
+    "http://20.188.111.70:12348/api/v1/groups?pageNumber=0&pageSize=0";
   const navigation = useNavigation();
+  const [groups, setGroup] = useState<boolean>(false);
+  useEffect(() => {
+    fetch(groupURL)
+      .then((response) =>
+        response.json().then((res) => {
+          setGroup(res);
+        })
+      )
+      .catch((error) => alert(error));
+  });
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
@@ -109,19 +122,27 @@ const Group = () => {
         {/*=====FlatList Group=========  */}
         <View>
           <FlatList
-            data={GROUPS}
+            data={groups}
             numColumns={2}
             renderItem={({ item, index }) => {
               return (
-                <View style={{ marginLeft: 10, marginBottom: 20 }}>
+                <View
+                  style={{
+                    padding: 10,
+                    marginBottom: 20,
+                    display: "flex",
+                    flex: 1,
+                    justifyContent: "space-between",
+                  }}
+                >
                   <TouchableOpacity
                     onPress={() => navigation.navigate("GroupDetails")}
                   >
                     <Image
-                      source={item.img}
+                      source={{ uri: item.backgroundImg }}
                       style={{
                         height: 120,
-                        width: 180,
+                        width: 190,
                         borderRadius: SIZES.radius,
                       }}
                     />
@@ -131,31 +152,33 @@ const Group = () => {
                       flexDirection: "row",
                       marginTop: 8,
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      // justifyContent: "space-between",
                     }}
                   >
                     <Text
                       style={{
                         ...FONTS.h3,
-                        fontSize: 20,
+                        fontSize: 14,
                         color: COLORS.black,
                         fontWeight: "500",
                         marginLeft: 8,
+                        width: 145,
+                        overflow: "hidden",
                       }}
+                      numberOfLines={1}
                     >
                       {item.name}
                     </Text>
                     <Image
                       source={icons.user2}
                       style={{
-                        height: 16,
-                        width: 16,
-                        position: "relative",
-                        left: 42,
+                        height: 14,
+                        width: 14,
+                        marginLeft: 5,
                       }}
                     />
-                    <Text style={{ ...FONTS.h4, fontSize: 18 }}>
-                      {item["number-people"]}
+                    <Text style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}>
+                      {item.alumniInGroups}
                     </Text>
                   </View>
                 </View>
@@ -259,7 +282,7 @@ const Group = () => {
                           paddingTop: 3,
                         }}
                       >
-                       Tham gia 
+                        Tham gia
                       </Text>
                     </TouchableOpacity>
                   </View>
