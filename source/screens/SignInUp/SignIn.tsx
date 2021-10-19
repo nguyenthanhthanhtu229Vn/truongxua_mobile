@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from "react";
-import { Image, ImageBackground, Text, View } from "react-native";
+import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
@@ -13,6 +13,7 @@ import * as Google from "expo-google-app-auth";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 import { COLORS } from "../../constant";
+import jwtDecode from "jwt-decode";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 // username: Huytq@gmail.com
@@ -24,6 +25,7 @@ const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+
   const signInWithEmailAndPassword = () => {
     if (error !== "") setError("");
     setAuthentication(true);
@@ -31,6 +33,7 @@ const SignIn: React.FC = () => {
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
         navigation.navigate("MyTabs");
+        getIdToken();
       })
       .catch((error) => {
         setError("Tài khoản hoặc mật khẩu không đúng.");
@@ -38,29 +41,34 @@ const SignIn: React.FC = () => {
       });
   };
 
-  // const signInWithSocialMedia = (provider: firebase.auth.AuthProvider) => {
-  //   if (error !== "") setError("");
-  //   setAuthentication(true);
-  //   SignInWithSocialMedia(provider)
-  //     .then((result) => {
-  //       navigation.navigate("MyTabs");
-  //     })
-  //     .catch((error) => {
-  //       setError(error.message);
-  //       setAuthentication(false);
-  //     });
-  // };
+  const getAccessToken = async (idToken) => {
+    try {
+      const response = await axios.post(
+        `http://20.188.111.70:12348/api/users/log-in?idToken=${idToken}`
+      );
+      if (response.status === 200) {
+        await AsyncStorage.setItem("idToken", response.data);
+        const decoded = jwtDecode(response.data);
+        await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
+        navigation.navigate("MyTabs");
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   const getIdToken = () => {
     firebase
       .auth()
       .currentUser?.getIdToken(/* forceRefresh */ true)
       .then(function (idToken) {
-        console.log(idToken);
+        getAccessToken(idToken);
       })
       .catch(function (error) {
-        // Handle error
+        console.log(error);
       });
   };
+
   const signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
@@ -82,7 +90,6 @@ const SignIn: React.FC = () => {
           .signInWithCredential(googleCredential)
           .then(() => {
             getIdToken();
-            navigation.navigate("MyTabs");
           })
           .catch((error) => {
             console.log(error);

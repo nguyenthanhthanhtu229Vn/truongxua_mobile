@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  AsyncStorage,
+} from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
+import { set } from "react-native-reanimated";
 // const GROUPS = [
 //   {
 //     img: require("../../assets/images/event.jpg"),
@@ -68,18 +76,32 @@ const SUGGESTED = [
   },
 ];
 const Group = () => {
-  const groupURL =
-    "http://20.188.111.70:12348/api/v1/groups?pageNumber=0&pageSize=0";
-  const navigation = useNavigation();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    const headers = {
+      Authorization:
+        "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    featchGroups(headers);
+  };
+  const [idToken, setIdToken] = useState<string>();
   const [groups, setGroup] = useState<boolean>(false);
+  const groupURL =
+    "http://20.188.111.70:12347/api/v1/groups?pageNumber=0&pageSize=0";
+
+  async function featchGroups(headers) {
+    try {
+      const response = await axios.get(
+        "http://20.188.111.70:12347/api/v1/groups?pageNumber=1&pageSize=5",
+        { headers }
+      );
+      setGroup(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
-    fetch(groupURL)
-      .then((response) =>
-        response.json().then((res) => {
-          setGroup(res);
-        })
-      )
-      .catch((error) => alert(error));
+    tokenForAuthor();
   });
   return (
     <ScrollView>

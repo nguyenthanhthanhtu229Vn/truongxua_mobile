@@ -53,10 +53,10 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
 };
 // ======== End Modal=========
 const News: React.FC = () => {
-
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const postURL = "http://20.188.111.70:12348/api/v1/posts?sort=desc&pageNumber=0&pageSize=5";
+  const postURL =
+    "http://20.188.111.70:12348/api/v1/posts?sort=desc&pageNumber=0&pageSize=5";
   const [data, setData] = useState({});
   useEffect(() => {
     fetch(postURL)
@@ -69,12 +69,26 @@ const News: React.FC = () => {
       .finally(() => setLoading(false));
   });
   // delete post
-  const baseUrl = 'http://20.188.111.70:12348'
-  const [content,  setContent] = useState("");
+  const baseUrl = "http://20.188.111.70:12348";
+  const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [createAt, setCreateAt] = useState(new Date());
   const [modifiedAt, setModifiedAt] = useState(null);
   const [status, setStatus] = useState(true);
+  const formatDate = (date) => {
+    const day = new Date(date);
+    return (
+      day.getDate() +
+      " tháng " +
+      day.getMonth() +
+      ", " +
+      day.getFullYear() +
+      " lúc " +
+      day.getHours() +
+      ":" +
+      day.getMinutes()
+    );
+  };
   //====== begin detele post =======
   const onSubmitFormHandler = async (event) => {
     setLoading(true);
@@ -84,19 +98,21 @@ const News: React.FC = () => {
         alumniId,
         createAt,
         modifiedAt,
-        status
+        status,
       });
       if (response.status === 200) {
-        alert('Delete Post Success');
-        setTimeout(function(){ setVisible(false) }, 2);
+        alert("Delete Post Success");
+        setTimeout(function () {
+          setVisible(false);
+        }, 2);
         // setVisible(false)
       }
     } catch (error) {
       alert("Failed to delete resource");
       setLoading(false);
     }
-  }; 
-    //====== End detele post =======
+  };
+  //====== End detele post =======
   const navigation = useNavigation();
   return (
     <View style={{ marginTop: 150 }}>
@@ -164,7 +180,9 @@ const News: React.FC = () => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <TouchableOpacity  onPress={() => navigation.navigate('Edit Post')}>
+                        <TouchableOpacity
+                          onPress={() => navigation.navigate("Edit Post")}
+                        >
                           <Image
                             source={require("../../assets/icons/edit.png")}
                             style={{
@@ -241,7 +259,7 @@ const News: React.FC = () => {
                     style={{ height: 20, width: 20 }}
                   />
                   <Text style={{ marginLeft: 8 }}>
-                    Published: {item.createAt}
+                    {formatDate(item.createAt)}
                   </Text>
                 </View>
                 <Text
