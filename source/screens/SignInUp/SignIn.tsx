@@ -49,7 +49,8 @@ const SignIn: React.FC = () => {
         await AsyncStorage.setItem("idToken", response.data);
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
-        navigation.navigate("MyTabs");
+        // navigation.navigate("MyTabs");
+        navigation.navigate("Update Profile");
       }
     } catch (error) {
       alert(error);
