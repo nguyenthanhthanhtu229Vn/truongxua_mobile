@@ -3,9 +3,7 @@ import React, { useState } from "react";
 import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
 import { Dimensions } from "react-native";
-import SignUp from "./SignUp";
 import { auth, Providers } from "../../config/firebase";
 import Error from "../Error/Error";
 import firebase from "firebase";
@@ -32,12 +30,9 @@ const SignIn: React.FC = () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-<<<<<<< HEAD
-        navigation.navigate("MyTabs");
+        // navigation.navigate("MyTabs");
         getIdToken();
-=======
         navigation.navigate("Update Profile");
->>>>>>> 0ea7b0b (update profile alumini)
       })
       .catch((error) => {
         setError("Tài khoản hoặc mật khẩu không đúng.");

@@ -12,29 +12,7 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
-import { set } from "react-native-reanimated";
-// const GROUPS = [
-//   {
-//     img: require("../../assets/images/event.jpg"),
-//     name: "12A1",
-//     "number-people": "1.2k",
-//   },
-//   {
-//     img: require("../../assets/images/event2.jpg"),
-//     name: "12A2",
-//     "number-people": "1.2k",
-//   },
-//   {
-//     img: require("../../assets/images/event.jpg"),
-//     name: "12A1",
-//     "number-people": "1.2k",
-//   },
-//   {
-//     img: require("../../assets/images/event2.jpg"),
-//     name: "12A2",
-//     "number-people": "1.2k",
-//   },
-// ];
+
 const JOINED_GROUP = [
   {
     img: require("../../assets/images/event.jpg"),
@@ -103,6 +81,7 @@ const Group = () => {
   useEffect(() => {
     tokenForAuthor();
   });
+  const navigation = useNavigation();
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
