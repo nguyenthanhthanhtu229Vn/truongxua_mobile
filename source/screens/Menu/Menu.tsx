@@ -11,7 +11,7 @@ const Menu: React.FC = () => {
   return (
     <View style={{ flex: 1, marginTop: 90, marginLeft: 44 }}>
       <View style={style.container}>
-        <CategoryMenu icon={icons.home_m} label={constant.screens.home} />
+        <CategoryMenu icon={icons.home_m} label={constant.screens.home} onPress={() => navigation.navigate('Update Profile')} />
         <CategoryMenu
           icon={icons.profile_m}
           label={constant.screens.profile}

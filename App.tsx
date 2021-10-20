@@ -10,7 +10,7 @@
  * @format
  */
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Image, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { icons } from "./source/constant";
 import Home from "./source/screens/Home/Home";
@@ -31,6 +31,7 @@ import Setting from "./source/screens/Setting/Setting";
 import AddGroup from "./source/screens/Group/AddGroup";
 import EditPostModal from "./source/screens/Home/EditModal";
 import ImagePost from "./source/screens/testApi";
+import UpdateProfile from "./source/screens/Alumini/UpdateProfile";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -98,6 +99,7 @@ const App = () => {
           <Stack.Screen name="BlogPost" component={BlogPost} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Setting" component={Setting} />
+          <Stack.Screen name="Update Profile" component={UpdateProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
