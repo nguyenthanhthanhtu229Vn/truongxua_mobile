@@ -37,11 +37,11 @@ const Event: React.FC = (props) => {
         <MyCarousel />
 
         {/* Plust Btn */}
-        {/* <TouchableOpacity style={style.plusBtn} onPress= {() => {
+        <TouchableOpacity style={style.plusBtn} onPress= {() => {
           navigation.navigate('NewEvent')
         }} >
           <Foundation name="plus" style={style.textPlus}></Foundation>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <View style={style.container}>
           <FlatList

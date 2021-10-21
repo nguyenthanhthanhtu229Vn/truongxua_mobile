@@ -277,42 +277,6 @@ const News: React.FC = () => {
                   style={{ width: "100%" }}
                   resizeMode="cover"
                 />
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 14,
-                    alignItems: "center",
-                    marginLeft: 8,
-                  }}
-                >
-                  <Image source={icons.thumpUp} style={style.iconf} />
-                  <Image source={icons.heart} style={style.iconf} />
-                  <Image source={icons.angry} style={style.iconf} />
-                  <Image source={icons.sad} style={style.iconf} />
-                  <Text>10+</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 10,
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <TouchableOpacity style={style.btn}>
-                    <Image source={icons.like} style={style.icon}></Image>
-                    <Text style={style.text}>Thích </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={style.btn}>
-                    <Image source={icons.comment} style={style.icon}></Image>
-                    <Text style={style.text}>Bình Luận </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={style.btn}>
-                    <Image source={icons.share} style={style.icon}></Image>
-                    <Text style={style.text}>Chia Sẻ</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           );

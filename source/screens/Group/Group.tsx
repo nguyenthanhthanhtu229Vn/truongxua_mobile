@@ -184,11 +184,15 @@ const Group = () => {
                     }}
                   >
                     <TouchableOpacity
+                      // onPress={() =>
+                      //   navigation.navigate("GroupDetails", {
+                      //     id: item.id,
+                      //     numberAlumni: countAlumniInGroup(item.id),
+                      //   })
+                      // }
+
                       onPress={() =>
-                        navigation.navigate("GroupDetails", {
-                          id: item.id,
-                          numberAlumni: countAlumniInGroup(item.id),
-                        })
+                        navigation.navigate("GroupDetails")
                       }
                     >
                       <Image
