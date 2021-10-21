@@ -184,16 +184,15 @@ const Group = () => {
                     }}
                   >
                     <TouchableOpacity
-                      // onPress={() =>
-                      //   navigation.navigate("GroupDetails", {
-                      //     id: item.id,
-                      //     numberAlumni: countAlumniInGroup(item.id),
-                      //   })
-                      // }
-
                       onPress={() =>
-                        navigation.navigate("GroupDetails")
+                        navigation.navigate("GroupDetails", {
+                          id: item.id,
+                          numberAlumni: countAlumniInGroup(item.id),
+                        })
                       }
+                      // onPress={() =>
+                      //   navigation.navigate("GroupDetails")
+                      // }
                     >
                       <Image
                         source={{ uri: item.backgroundImg }}

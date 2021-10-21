@@ -82,13 +82,13 @@ const GroupDetail = () => {
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
   useEffect(() => {
-    // fetch(groupURL + route.params.id)
-    //   .then((response) =>
-    //     response.json().then((res) => {
-    //       setGroupDetail(res);
-    //     })
-    //   )
-    //   .catch((error) => alert(error));
+    fetch(groupURL + route.params.id)
+      .then((response) =>
+        response.json().then((res) => {
+          setGroupDetail(res);
+        })
+      )
+      .catch((error) => alert(error));
   });
 
   // =======Begin Call Api Post 
@@ -154,7 +154,6 @@ const GroupDetail = () => {
       day.getMinutes()
     );
   };
-
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -272,7 +271,7 @@ const GroupDetail = () => {
                 fontWeight: "300",
               }}
             >
-              {/* {route.params.numberAlumni} */}1
+              {/* {route.params.numberAlumni} */}
             </Text>
           </View>
           <View

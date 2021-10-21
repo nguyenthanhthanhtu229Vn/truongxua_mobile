@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/core";
 const EditPostModal: React.FC = () => {
   //======begin call api put=======
   const baseUrl = 'http://20.188.111.70:12348'
-  const [id, setId] = useState(231)
+  const [id, setId] = useState(267)
   const [content,  setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [modifiedAt, setModifiedAt] = useState(new Date());
@@ -34,7 +34,7 @@ const EditPostModal: React.FC = () => {
       return;
     }
     axios( {
-        url : `${baseUrl}/api/v1/Posts/231`,
+        url : `${baseUrl}/api/v1/Posts/267`,
         method: 'PUT',
         data: { id,
             alumniId,
