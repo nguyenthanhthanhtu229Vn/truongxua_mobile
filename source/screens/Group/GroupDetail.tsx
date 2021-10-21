@@ -497,6 +497,31 @@ const GroupDetail = () => {
                 >
                   {item.content}
                 </Text>
+                {/* ======comment ==== */}
+                <View style={{flexDirection: 'row',marginTop: 14, alignItems:'center',marginLeft: 8}}>
+                  <Image source={icons.thumpUp} style={style.iconf} />
+                  <Image source={icons.heart} style={style.iconf} />
+                  <Image source={icons.angry} style={style.iconf} />
+                  <Image source={icons.sad} style={style.iconf} />
+                  <Text>10+</Text>
+                </View>
+
+                <View style={{flexDirection: 'row', marginTop: 10, justifyContent: 'space-around'}}>
+                  <TouchableOpacity style={style.btn}>
+                    <Image source= {icons.like} style={style.icon}></Image>
+                    <Text style={style.text}>Like </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={style.btn}>
+                    <Image source= {icons.comment} style={style.icon}></Image>
+                    <Text style={style.text}>Comment</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={style.btn}>
+                    <Image source= {icons.share} style={style.icon}></Image>
+                    <Text style={style.text}>Share</Text>
+                  </TouchableOpacity>
+                </View>
+                
                 <Image
                   source={item.images}
                   style={{ width: "100%" }}
@@ -542,11 +567,6 @@ const style = StyleSheet.create({
     borderRadius: 6,
     shadowOpacity: 0.2,
   },
-  // icon: {
-  //   height: 14,
-  //   width: 14,
-  //   marginLeft: 8,
-  // },
   iconf: {
     height: 20,
     width: 20,
