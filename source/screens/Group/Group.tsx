@@ -12,7 +12,29 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
-
+import { set } from "react-native-reanimated";
+// const GROUPS = [
+//   {
+//     img: require("../../assets/images/event.jpg"),
+//     name: "12A1",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event2.jpg"),
+//     name: "12A2",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event.jpg"),
+//     name: "12A1",
+//     "number-people": "1.2k",
+//   },
+//   {
+//     img: require("../../assets/images/event2.jpg"),
+//     name: "12A2",
+//     "number-people": "1.2k",
+//   },
+// ];
 const JOINED_GROUP = [
   {
     img: require("../../assets/images/event.jpg"),
@@ -56,24 +78,39 @@ const SUGGESTED = [
 const Group = () => {
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setIdUser(objUser.GroupId);
+    //
     const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
-    featchGroups(headers);
+    await featchGroups(headers);
+    await featchAlumni(headers);
   };
-  const [idToken, setIdToken] = useState<string>();
   const [groups, setGroup] = useState<boolean>(false);
+  const navigation = useNavigation();
+  const [idUser, setIdUser] = useState<string>();
+  const [user, setUser] = useState<string>("");
   const groupURL =
-    "http://20.188.111.70:12347/api/v1/groups?pageNumber=0&pageSize=0";
-
+    "http://20.188.111.70:12348/api/v1/groups?pageNumber=0&pageSize=0";
+  const alumniURL =
+    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
   async function featchGroups(headers) {
     try {
-      const response = await axios.get(
-        "http://20.188.111.70:12347/api/v1/groups?pageNumber=1&pageSize=5",
-        { headers }
-      );
+      const response = await axios.get(groupURL, { headers });
       setGroup(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function featchAlumni(headers) {
+    try {
+      const response = await axios.get(alumniURL, { headers });
+      setUser(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -81,7 +118,16 @@ const Group = () => {
   useEffect(() => {
     tokenForAuthor();
   });
-  const navigation = useNavigation();
+
+  const countAlumniInGroup = (idGroup) => {
+    let count = 0;
+    for (let i = 0; i < user.length; i++) {
+      if (user[i].groupId == idGroup) {
+        count++;
+      }
+    }
+    return count;
+  };
   return (
     <ScrollView>
       <View style={{ flex: 1 }}>
@@ -126,66 +172,74 @@ const Group = () => {
             data={groups}
             numColumns={2}
             renderItem={({ item, index }) => {
-              return (
-                <View
-                  style={{
-                    padding: 10,
-                    marginBottom: 20,
-                    display: "flex",
-                    flex: 1,
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("GroupDetails", { id: item.id })
-                    }
-                  >
-                    <Image
-                      source={{ uri: item.backgroundImg }}
-                      style={{
-                        height: 120,
-                        width: 190,
-                        borderRadius: SIZES.radius,
-                      }}
-                    />
-                  </TouchableOpacity>
+              if (idUser == item.id) {
+                return (
                   <View
                     style={{
-                      flexDirection: "row",
-                      marginTop: 8,
-                      alignItems: "center",
-                      // justifyContent: "space-between",
+                      padding: 10,
+                      marginBottom: 20,
+                      display: "flex",
+                      flex: 1,
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Text
-                      style={{
-                        ...FONTS.h3,
-                        fontSize: 14,
-                        color: COLORS.black,
-                        fontWeight: "500",
-                        marginLeft: 8,
-                        width: 145,
-                        overflow: "hidden",
-                      }}
-                      numberOfLines={1}
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("GroupDetails", {
+                          id: item.id,
+                          numberAlumni: countAlumniInGroup(item.id),
+                        })
+                      }
                     >
-                      {item.name}
-                    </Text>
-                    <Image
-                      source={icons.user2}
+                      <Image
+                        source={{ uri: item.backgroundImg }}
+                        style={{
+                          height: 120,
+                          width: 190,
+                          borderRadius: SIZES.radius,
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <View
                       style={{
-                        height: 14,
-                        width: 14,
-                        marginLeft: 5,
+                        flexDirection: "row",
+                        marginTop: 8,
+                        alignItems: "center",
+                        // justifyContent: "space-between",
                       }}
-                    />
-                    <Text style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}>
-                      {item.alumniInGroups}
-                    </Text>
+                    >
+                      <Text
+                        style={{
+                          ...FONTS.h3,
+                          fontSize: 14,
+                          color: COLORS.black,
+                          fontWeight: "500",
+                          marginLeft: 8,
+                          width: 145,
+                          overflow: "hidden",
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.name}
+                      </Text>
+                      <Image
+                        source={icons.user2}
+                        style={{
+                          height: 14,
+                          width: 14,
+                          marginLeft: 5,
+                        }}
+                      />
+                      <Text
+                        style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}
+                      >
+                        {countAlumniInGroup(item.id)}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              );
+                );
+              }
+              return null;
             }}
           />
           {/* ========HEADER========= */}

@@ -58,7 +58,6 @@ const News: React.FC = () => {
   const postURL =
     "http://20.188.111.70:12348/api/v1/posts?sort=desc&pageNumber=0&pageSize=5";
   const [data, setData] = useState({});
-  console.log(data);
   useEffect(() => {
     fetch(postURL)
       .then((response) =>

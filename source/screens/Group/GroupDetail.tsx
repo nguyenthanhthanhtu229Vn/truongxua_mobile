@@ -55,10 +55,32 @@ const GroupDetail = () => {
             source={{ uri: groupDetail.backgroundImg }}
             style={{ width: width, height: 200 }}
           />
+          <View
+            style={{
+              flexDirection: "row",
+              width: 120,
+              height: 24,
+              paddingTop: 2,
+              backgroundColor: "#F62B53",
+              borderRadius: 4,
+              position: "absolute",
+              top: 10,
+              right: -20,
+              marginRight: 20,
+            }}
+          >
+            <Image
+              source={require("../../assets/icons/checkb.png")}
+              style={{ height: 20, width: 20, marginLeft: 6 }}
+            />
+            <Text style={{ color: COLORS.white, fontWeight: "500" }}>
+              Đã Tham Gia
+            </Text>
+          </View>
         </View>
         <View>
           <Image
-            source={require("../../assets/images/avatar.jpeg")}
+            source={{ uri: groupDetail.avataImg }}
             style={{
               width: 100,
               height: 100,
@@ -72,7 +94,8 @@ const GroupDetail = () => {
             style={{
               ...FONTS.h3,
               fontWeight: "700",
-              fontSize: 20,
+              fontSize: 18,
+              backgroundColor: "black",
               color: COLORS.white,
               position: "absolute",
               bottom: 30,
@@ -111,28 +134,6 @@ const GroupDetail = () => {
               style={style.img}
             />
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: 120,
-              height: 24,
-              paddingTop: 2,
-              backgroundColor: "#F62B53",
-              borderRadius: 4,
-              position: "absolute",
-              bottom: 200,
-              right: 0,
-              marginRight: 20,
-            }}
-          >
-            <Image
-              source={require("../../assets/icons/checkb.png")}
-              style={{ height: 20, width: 20, marginLeft: 6 }}
-            />
-            <Text style={{ color: COLORS.white, fontWeight: "500" }}>
-              Đã Tham Gia
-            </Text>
-          </View>
         </View>
 
         {/* =======Member ========= */}
@@ -153,7 +154,7 @@ const GroupDetail = () => {
                 fontWeight: "300",
               }}
             >
-              45
+              {route.params.numberAlumni}
             </Text>
           </View>
           <View

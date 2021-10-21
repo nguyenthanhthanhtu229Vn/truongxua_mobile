@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from "react";
-import { Image, ImageBackground, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -17,23 +17,76 @@ var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
   const baseUrl = "http://20.188.111.70:12348";
   const navigation = useNavigation();
-
+  const [id, setId] = useState<string>("");
   const [registering, setRegistering] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("Huytq@gmail.com");
-  const [password, setPassword] = useState<string>("123456");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [bio, setBio] = useState<string>("");
   const [img, setImg] = useState<string>(
-    "https://image-us.24h.com.vn/upload/1-2021/images/2021-03-18/gia-nhap-duong-dua-bikini-tieu-thu-ha-noi-chiem-tron-song-bb9-5639403-1616037657-573-width800height999.jpg"
+    "https://1.bp.blogspot.com/--feZt7VOE1I/WKffpcr7UHI/AAAAAAAACyY/Mro30dfNA3M4C5fAr-gP26V8avY2XVk8ACLcB/s1600/anh-dai-dien-facebook-doc-1.jpg"
   );
+  const [status, setStatus] = useState<boolean>(true);
   const [groupId, setGroupId] = useState(1);
   const [schoolId, setSchoolId] = useState(3);
+  const [alumni, setAlumni] = useState<string>("");
 
-  const UpdateProfile = () => {
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setId(objUser.Id);
+  };
+
+  async function getAlumni(idAlumni) {
+    try {
+      const response = await axios.get(
+        "http://20.188.111.70:12348/api/v1/alumni/" + idAlumni
+      );
+      setAlumni(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    tokenForAuthor();
+    getAlumni(id);
+    if (alumni.name != null) {
+      setName(alumni.name);
+    }
+    if (alumni.password != null) {
+      setPassword(alumni.password);
+    }
+    if (alumni.email != null) {
+      setEmail(alumni.email);
+    }
+    if (alumni.address != null) {
+      setAddress(alumni.address);
+    }
+    if (alumni.phone != null) {
+      setPhone(alumni.phone);
+    }
+    if (alumni.bio != null) {
+      setBio(alumni.bio);
+    }
+    if (alumni.img != null) {
+      setImg(alumni.img);
+    }
+    if (alumni.groupId != null) {
+      setGroupId(alumni.groupId);
+    }
+    if (alumni.schoolId != null) {
+      setSchoolId(alumni.schoolId);
+    }
+  });
+
+  const UpdateProfile = async () => {
     axios({
-      url: "http://20.188.111.70:12348/api/v1/alumni?id=123",
+      url: "http://20.188.111.70:12348/api/v1/alumni?id=" + id,
       method: "PUT",
       data: {
         password,
@@ -43,6 +96,7 @@ const UpdateProfile: React.FC = () => {
         address,
         bio,
         img,
+        status,
         groupId,
         schoolId,
       },
@@ -94,7 +148,7 @@ const UpdateProfile: React.FC = () => {
         </Text>
 
         {/* =========Email====*/}
-        <View style={{ marginTop: 24 }}>
+        {/* <View style={{ marginTop: 24 }}>
           <View style={{ position: "relative" }}>
             <AntDesign
               name="user"
@@ -119,9 +173,9 @@ const UpdateProfile: React.FC = () => {
                 marginBottom: 14,
               }}
             />
-          </View>
-          {/* =======Password======== */}
-          <View style={{ position: "relative", marginTop: 15 }}>
+          </View> */}
+        {/* =======Password======== */}
+        {/* <View style={{ position: "relative", marginTop: 15 }}>
             <AntDesign
               name="lock"
               style={{
@@ -147,7 +201,7 @@ const UpdateProfile: React.FC = () => {
               onChangeText={(password) => setPassword(password)}
             />
           </View>
-        </View>
+        </View> */}
         {/* =======Fullname======== */}
         <View style={{ position: "relative", marginTop: 15 }}>
           <AntDesign
