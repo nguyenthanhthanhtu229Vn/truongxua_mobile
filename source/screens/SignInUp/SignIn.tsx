@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
@@ -25,17 +25,17 @@ const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [alumni, setAlumni] = useState<string>("");
   async function getAlumni(idAlumni) {
     try {
       const response = await axios.get(
         "http://20.188.111.70:12348/api/v1/alumni/" + idAlumni
       );
-      setAlumni(response.data);
+      return response;
     } catch (error) {
       console.log(error);
     }
   }
+
   const signInWithEmailAndPassword = () => {
     if (error !== "") setError("");
     setAuthentication(true);
@@ -60,12 +60,12 @@ const SignIn: React.FC = () => {
         await AsyncStorage.setItem("idToken", response.data);
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
-        await getAlumni(decoded.Id);
+        const alumni = await getAlumni(decoded.Id);
         if (
-          alumni.name == null ||
-          alumni.address == null ||
-          alumni.phone == null ||
-          alumni.bio == null
+          alumni.data.name == "" ||
+          alumni.data.address == "" ||
+          alumni.data.phone == "" ||
+          alumni.data.bio == ""
         ) {
           navigation.navigate("Update Profile");
         } else {
@@ -122,7 +122,7 @@ const SignIn: React.FC = () => {
     }
   };
   return (
-    <View style={{ flex: 1, padding: 20, marginTop: 70 }}>
+    <View style={{ flex: 1, padding: 20, marginTop: 60 }}>
       <View
         style={{
           position: "absolute",
@@ -272,9 +272,9 @@ const SignIn: React.FC = () => {
           </TouchableOpacity>
         </View>
         {/* Ban co tai khoan chua  */}
-        <View style={{ marginTop: 40 }}>
+        <View style={{ marginTop: 15 }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-            <Text style={{ color: "#8e8e96", fontSize: 18 }}>
+            <Text style={{ color: "#8e8e96", fontSize: 16 }}>
               Bạn Chưa Có Tài Khoản{" "}
               <Text
                 style={{ textDecorationLine: "underline", color: COLORS.blue }}

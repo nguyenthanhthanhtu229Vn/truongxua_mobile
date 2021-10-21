@@ -127,7 +127,7 @@ const SignUp: React.FC = () => {
     }
   };
   return (
-    <View style={{ flex: 1, padding: 20, marginTop: 110 }}>
+    <View style={{ flex: 1, padding: 20, marginTop: 90 }}>
       <ScrollView>
         <View
           style={{
@@ -367,7 +367,7 @@ const SignUp: React.FC = () => {
           </View>
           {/* Da co tai khoan */}
           <TouchableOpacity
-            style={{ marginTop: 30 }}
+            style={{ marginTop: 15 }}
             onPress={() => {
               navigation.navigate("SignIn");
             }}
@@ -375,7 +375,7 @@ const SignUp: React.FC = () => {
             <Text
               style={{
                 color: "#8e8e96",
-                fontSize: 18,
+                fontSize: 16,
                 textAlign: "center",
                 // marginTop: 30,
                 // textDecorationLine: "underline",

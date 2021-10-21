@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, AsyncStorage } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../../config/firebase";
@@ -12,7 +13,8 @@ const listTab = [
   { status: "Riêng tư" },
   { status: "Thông báo" },
 ];
-const Setting = ({ navigation }) => {
+const Setting = () => {
+  const navigation = useNavigation();
   const [status, setStatus] = useState("Chung");
   const setStatusFilter = (status) => {
     setStatus(status);
@@ -26,11 +28,24 @@ const Setting = ({ navigation }) => {
       { text: "OK", onPress: () => Logout() },
     ]);
   };
+  const removeItemValue = async (key) => {
+    try {
+      await AsyncStorage.removeItem(key);
+      return true;
+    } catch (exception) {
+      return false;
+    }
+  };
   const Logout = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.navigate("SignIn");
+        removeItemValue("idToken");
+        removeItemValue("infoUser");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "SignIn" }],
+        });
       })
       .catch((error) => {
         alert(error);
