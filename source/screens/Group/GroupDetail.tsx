@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
-import News from "../Home/News";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import { Foundation } from "@expo/vector-icons";
@@ -76,8 +75,8 @@ const TouchSocial = ({ icon, bg }: { icon: any; bg: string }) => {
 };
 
 const GroupDetail = () => {
-  // =begin call api group 
-  const groupURL = "http://20.188.111.70:12348/api/v1/groups/";
+  const baseUrl = "http://20.188.111.70:12348";
+  const groupURL = `${baseUrl}/api/v1/groups/`;
   const navigation = useNavigation();
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
@@ -95,7 +94,7 @@ const GroupDetail = () => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const postURL =
-    "http://20.188.111.70:12348/api/v1/posts?sort=desc&pageNumber=0&pageSize=5";
+    `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=5`;
   const [data, setData] = useState({});
   useEffect(() => {
     fetch(postURL)
@@ -108,24 +107,16 @@ const GroupDetail = () => {
       .finally(() => setLoading(false));
   });
 
-  // delete post
-  const baseUrl = "http://20.188.111.70:12348";
+    //====== begin detele post =======
   const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [createAt, setCreateAt] = useState(new Date());
   const [modifiedAt, setModifiedAt] = useState(null);
   const [status, setStatus] = useState(true);
-    //====== begin detele post =======
-    const onSubmitFormHandler = async (event) => {
+    const onSubmitFormHandler = async (id) => {
       setLoading(true);
       try {
-        const response = await axios.delete(`${baseUrl}/api/v1/Posts/231`, {
-          content,
-          alumniId,
-          createAt,
-          modifiedAt,
-          status,
-        });
+        const response = await axios.delete(`${baseUrl}/api/v1/posts/`+ id )
         if (response.status === 200) {
           alert("Delete Post Success");
           setTimeout(function () {
@@ -145,7 +136,7 @@ const GroupDetail = () => {
     return (
       day.getDate() +
       " tháng " +
-      day.getMonth() +
+      (day.getMonth() + 1) +
       ", " +
       day.getFullYear() +
       " lúc " +
@@ -271,7 +262,7 @@ const GroupDetail = () => {
                 fontWeight: "300",
               }}
             >
-              {/* {route.params.numberAlumni} */}
+              {route.params.numberAlumni}
             </Text>
           </View>
           <View
@@ -406,7 +397,9 @@ const GroupDetail = () => {
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <TouchableOpacity
-                          onPress={() => navigation.navigate("Edit Post")}
+                          onPress={() => navigation.navigate("Edit Post" ,{
+                            id: item.id
+                          })}
                         >
                           <Image
                             source={require("../../assets/icons/edit.png")}
@@ -425,7 +418,7 @@ const GroupDetail = () => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <TouchableOpacity onPress={onSubmitFormHandler}>
+                        <TouchableOpacity onPress={() => onSubmitFormHandler(item.id)}>
                           <Image
                             source={require("../../assets/icons/delete.png")}
                             style={{
@@ -512,7 +505,7 @@ const GroupDetail = () => {
                     <Text style={style.text}>Like </Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={style.btn}>
+                  <TouchableOpacity style={style.btn} onPress={() => navigation.navigate('Group Post Detail')}>
                     <Image source= {icons.comment} style={style.icon}></Image>
                     <Text style={style.text}>Comment</Text>
                   </TouchableOpacity>

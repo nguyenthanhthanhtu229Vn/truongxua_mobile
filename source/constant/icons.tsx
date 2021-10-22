@@ -37,7 +37,15 @@ const pinterest = require('../assets/icons/pinterest.png');
 const twitter = require('../assets/icons/twitter.png');
 const group2 = require('../assets/icons/group2.png');
 const youtube = require('../assets/icons/youtube.png');
+const smile_face= require('../assets/icons/smile.png');
+const send = require('../assets/icons/send.png');
+const gif = require('../assets/icons/gif.png');
+const fmale = require('../assets/icons/assistant.png');
+const search = require('../assets/icons/search.png');
 export default {
+  search,
+  smile_face,
+  send,gif,fmale,
   youtube,
   group2,
   check,

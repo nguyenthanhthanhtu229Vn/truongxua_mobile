@@ -63,16 +63,9 @@ const SignUp: React.FC = () => {
 
   const signUpWithEmailAndPassword = () => {
     if (password !== confirm) {
-      setError("Mật khẩu khùng trùng khớp");
+      setError("Mật khẩu không trùng khớp");
       setRegistering(false);
     }
-    //  else if (name.length == 0 || phone.length == 0) {
-    //   setError("Không được để nội dung trống");
-    //   setRegistering(false);
-    // } else if (phone.length != 10) {
-    //   setError("Số điện thoại 10 chữ số");
-    //   setRegistering(false);
-    // }
     else {
       if (error !== "") setError("");
       setRegistering(true);
@@ -233,79 +226,6 @@ const SignUp: React.FC = () => {
             />
           </View>
         </View>
-        {/* <View style={{ position: "relative", marginTop: 15 }}>
-          <AntDesign
-            name="user"
-            style={{
-              color: "#8e8e96",
-              position: "absolute",
-              right: 0,
-              fontSize: 18,
-            }}
-          />
-          <TextInput
-            placeholder="Họ và tên"
-            onChangeText={(name) => setName(name)}
-            value={name}
-            placeholderTextColor="#8e8e96"
-            style={{
-              borderBottomColor: "#8e8e96",
-              borderBottomWidth: 1,
-              marginBottom: 10,
-              fontSize: 18,
-              paddingBottom: 5,
-            }}
-          />
-        </View> */}
-        {/* <View style={{ position: "relative", marginTop: 15 }}>
-          <Entypo
-            name="location-pin"
-            style={{
-              color: "#8e8e96",
-              position: "absolute",
-              right: 0,
-              fontSize: 18,
-            }}
-          />
-          <TextInput
-            placeholder="Địa chỉ"
-            onChangeText={(address) => setAddress(address)}
-            value={address}
-            placeholderTextColor="#8e8e96"
-            style={{
-              borderBottomColor: "#8e8e96",
-              borderBottomWidth: 1,
-              marginBottom: 10,
-              fontSize: 18,
-              paddingBottom: 5,
-            }}
-          />
-        </View> */}
-        {/* <View style={{ position: "relative", marginTop: 15 }}>
-          <AntDesign
-            name="phone"
-            style={{
-              color: "#8e8e96",
-              position: "absolute",
-              right: 0,
-              fontSize: 18,
-            }}
-          />
-          <TextInput
-            placeholder="Số điện thoại"
-            keyboardType="number-pad"
-            onChangeText={(phone) => setPhone(phone)}
-            value={phone}
-            placeholderTextColor="#8e8e96"
-            style={{
-              borderBottomColor: "#8e8e96",
-              borderBottomWidth: 1,
-              marginBottom: 10,
-              fontSize: 18,
-              paddingBottom: 5,
-            }}
-          />
-        </View> */}
         <Error error={error} />
         <TouchableOpacity onPress={() => signUpWithEmailAndPassword()}>
           <View

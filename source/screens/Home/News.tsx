@@ -13,6 +13,7 @@ import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
+import { idText } from "typescript";
 
 // ========= Start Modal=========
 
@@ -53,10 +54,11 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
 };
 // ======== End Modal=========
 const News: React.FC = () => {
+  const baseUrl = "http://20.188.111.70:12348";
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const postURL =
-    "http://20.188.111.70:12348/api/v1/posts?sort=desc&pageNumber=0&pageSize=5";
+    `${baseUrl}/api/v1/news?sort=desc&pageNumber=0&pageSize=5`;
   const [data, setData] = useState({});
   useEffect(() => {
     fetch(postURL)
@@ -69,7 +71,6 @@ const News: React.FC = () => {
       .finally(() => setLoading(false));
   });
   // delete post
-  const baseUrl = "http://20.188.111.70:12348";
   const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [createAt, setCreateAt] = useState(new Date());
@@ -80,7 +81,7 @@ const News: React.FC = () => {
     return (
       day.getDate() +
       " tháng " +
-      day.getMonth() +
+      (day.getMonth() + 1) +
       ", " +
       day.getFullYear() +
       " lúc " +
@@ -89,17 +90,12 @@ const News: React.FC = () => {
       day.getMinutes()
     );
   };
-  //====== begin detele post =======
-  const onSubmitFormHandler = async (event) => {
+  // ====== begin detele post =======
+  const onSubmitFormHandler = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/Posts/231`, {
-        content,
-        alumniId,
-        createAt,
-        modifiedAt,
-        status,
-      });
+      const response = await axios.delete(`${baseUrl}/api/v1/news/` + id)
+
       if (response.status === 200) {
         alert("Delete Post Success");
         setTimeout(function () {
@@ -126,7 +122,7 @@ const News: React.FC = () => {
                 // height: 450,
                 height: 200,
                 backgroundColor: COLORS.white2,
-                shadowOpacity: 0.4,
+                shadowOpacity: 0.2,
                 marginBottom: 16,
               }}
             >
@@ -200,7 +196,8 @@ const News: React.FC = () => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <TouchableOpacity onPress={onSubmitFormHandler}>
+                        
+                        <TouchableOpacity onPress={() => onSubmitFormHandler(item.id)}>
                           <Image
                             source={require("../../assets/icons/delete.png")}
                             style={{

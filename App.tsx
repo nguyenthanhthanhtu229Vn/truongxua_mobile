@@ -10,7 +10,7 @@
  * @format
  */
 import React from "react";
-import { Image, View } from "react-native";
+import {View } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -19,7 +19,7 @@ import RootNavigator from "./source/screens/RootNavigator/Rootnavigator";
 const App = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <NavigationContainer>
+      <NavigationContainer >
         <RootNavigator />
       </NavigationContainer>
     </View>

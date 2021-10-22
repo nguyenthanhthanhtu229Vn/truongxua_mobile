@@ -10,8 +10,8 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { COLORS } from "../../constant";
-
+import { COLORS, icons } from "../../constant";
+import Error from "../Error/Error";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
@@ -29,9 +29,10 @@ const UpdateProfile: React.FC = () => {
     "https://1.bp.blogspot.com/--feZt7VOE1I/WKffpcr7UHI/AAAAAAAACyY/Mro30dfNA3M4C5fAr-gP26V8avY2XVk8ACLcB/s1600/anh-dai-dien-facebook-doc-1.jpg"
   );
   const [status, setStatus] = useState<boolean>(true);
-  const [groupId, setGroupId] = useState(1);
-  const [schoolId, setSchoolId] = useState(3);
+  const [groupId, setGroupId] = useState(33);
+  const [schoolId, setSchoolId] = useState();
   const [alumni, setAlumni] = useState<string>("");
+  const [error, setError] = useState("");
 
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
@@ -85,42 +86,50 @@ const UpdateProfile: React.FC = () => {
   });
 
   const UpdateProfile = async () => {
-    axios({
-      url: "http://20.188.111.70:12348/api/v1/alumni?id=" + id,
-      method: "PUT",
-      data: {
-        password,
-        email,
-        phone,
-        name,
-        address,
-        bio,
-        img,
-        status,
-        groupId,
-        schoolId,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Cập Nhập Thành Công");
-          navigation.navigate("MyTabs");
-          //   setName("");
-          //   setEmail("");
-          //   setAddress("");
-          //   setBio("");
-          //   setPassword("");
-          //   setPhone("");
-        } else {
-          throw new Error("An error has occurred");
-        }
-      })
-      .catch((error) => {
-        alert(error);
-        setRegistering(false);
-      });
-  };
-
+    // if (
+    //   name.length == 0 ||
+    //   address.length == 0 ||
+    //   phone.length == 0 ||
+    //   bio.length == 0
+    // ) {
+    //   setError("Không Được Để Trống");
+    //   // setRegistering(false);
+    // } else if (phone.length != 10) {
+    //   setError("Số điện thoại 10 chữ số");
+    //   // setRegistering(false);
+    // }else{
+      // if (error !== ""){
+      //   setRegistering(true);
+        axios({
+          url: "http://20.188.111.70:12348/api/v1/alumni?id=" + id,
+          method: "PUT",
+          data: {
+            password,
+            email,
+            phone,
+            name,
+            address,
+            bio,
+            img,
+            status,
+            groupId,
+            schoolId,
+          },
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              alert("Cập Nhập Thành Công");
+              navigation.navigate("MyTabs");
+            } else {
+              throw new Error("An error has occurred");
+            }
+          })
+          .catch((error) => {
+            alert(error);
+            setRegistering(false);
+          });
+      // }
+      }
   return (
     <View style={{ flex: 1, padding: 20, marginTop: 30 }}>
       <ScrollView>
@@ -146,62 +155,29 @@ const UpdateProfile: React.FC = () => {
         >
           Cập Nhập Thông Tin
         </Text>
+        {/* =====Search School====== */}
+        <View style={{ position: "relative", marginTop: 15 }}>
+          <Image
+            source={icons.search}
+            style={{ height: 14, width: 14, position: "absolute", right: 0 }}
+          />
+          <TextInput
+            keyboardType="default"
+            placeholder="Seach School Name ...."
+            onChangeText={(schoolName) => setName(schoolName)}
+            value={schoolId}
+            placeholderTextColor="#8e8e96"
+            style={{
+              borderBottomColor: "#8e8e96",
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              fontSize: 18,
+              paddingBottom: 5,
+            }}
+          />
+        </View>
+        {/* =====End School Name ===== */}
 
-        {/* =========Email====*/}
-        {/* <View style={{ marginTop: 24 }}>
-          <View style={{ position: "relative" }}>
-            <AntDesign
-              name="user"
-              style={{
-                color: "#8e8e96",
-                position: "absolute",
-                right: 0,
-                fontSize: 18,
-              }}
-            />
-            <TextInput
-              editable={false}
-              placeholder="Email"
-              onChangeText={(email) => setEmail(email)}
-              value={email}
-              placeholderTextColor="#8e8e96"
-              style={{
-                borderBottomColor: "#8e8e96",
-                borderBottomWidth: 1,
-                fontSize: 18,
-                paddingBottom: 5,
-                marginBottom: 14,
-              }}
-            />
-          </View> */}
-        {/* =======Password======== */}
-        {/* <View style={{ position: "relative", marginTop: 15 }}>
-            <AntDesign
-              name="lock"
-              style={{
-                color: "#8e8e96",
-                position: "absolute",
-                right: 0,
-                fontSize: 18,
-              }}
-            />
-            <TextInput
-              editable={false}
-              placeholder="Mật khẩu"
-              secureTextEntry
-              placeholderTextColor="#8e8e96"
-              style={{
-                borderBottomColor: "#8e8e96",
-                borderBottomWidth: 1,
-                marginBottom: 14,
-                fontSize: 18,
-                paddingBottom: 5,
-              }}
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-            />
-          </View>
-        </View> */}
         {/* =======Fullname======== */}
         <View style={{ position: "relative", marginTop: 15 }}>
           <AntDesign

@@ -190,9 +190,6 @@ const Group = () => {
                           numberAlumni: countAlumniInGroup(item.id),
                         })
                       }
-                      // onPress={() =>
-                      //   navigation.navigate("GroupDetails")
-                      // }
                     >
                       <Image
                         source={{ uri: item.backgroundImg }}
@@ -208,7 +205,6 @@ const Group = () => {
                         flexDirection: "row",
                         marginTop: 8,
                         alignItems: "center",
-                        // justifyContent: "space-between",
                       }}
                     >
                       <Text

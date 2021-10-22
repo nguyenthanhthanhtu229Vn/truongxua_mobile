@@ -70,7 +70,7 @@ const CreatePostInGroup: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/Posts`, {
+      const response = await axios.post(`${baseUrl}/api/v1/posts`, {
         alumniId,
         content,
         createAt,

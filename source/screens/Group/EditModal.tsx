@@ -16,38 +16,40 @@ import { useNavigation } from "@react-navigation/core";
 const EditPostModal: React.FC = () => {
   //======begin call api put=======
   const baseUrl = 'http://20.188.111.70:12348'
-  const [id, setId] = useState(267)
+  // const [id, setId] = useState()
   const [content,  setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [status, setStatus] = useState(true);
   const navigation = useNavigation();
-
+  const [groupId, setGroupId] = useState(33);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const OnChangeContentHandler = (content) =>{
     setContent(content);
   }
-  const onSubmitFormHandler = async (event) => {
+  const onSubmitFormHandler = async (id) => {
     if(!content.trim){
       alert('Content is invalid')
       return;
     }
     axios( {
-        url : `${baseUrl}/api/v1/posts?id=268`,
+        url : `${baseUrl}/api/v1/posts?id=`+id,
         method: 'PUT',
-        data: { id,
+        data: {
+            groupId,
             alumniId,
             content,
             status,
-            modifiedAt}
+            modifiedAt
+          }
     }
     )
     .then((response) => {
         if(response.status === 200){
             alert('Update Post Success');
             setContent('');
-            navigation.navigate('MyTabs')
+            navigation.navigate('GroupDetails')
           }
     })
     .catch((error) => {
@@ -125,7 +127,7 @@ const EditPostModal: React.FC = () => {
                 source={require("../../assets/icons/menu.png")}
               ></Image>
             </View>
-            <TouchableOpacity onPress={onSubmitFormHandler} disabled={isLoading}>
+            <TouchableOpacity onPress={() => onSubmitFormHandler(id)} disabled={isLoading}>
               <View
                 style={{
                   backgroundColor: "#088dcd",

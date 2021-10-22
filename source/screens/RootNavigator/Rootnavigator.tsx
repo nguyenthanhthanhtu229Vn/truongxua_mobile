@@ -9,8 +9,6 @@ import EventDetail from "../event/EventDetail";
 import AddGroup from "../Group/AddGroup";
 import CreatePostInGroup from "../Group/CreatePostInGroup";
 import GroupDetail from "../Group/GroupDetail";
-import EditPostModal from "../Home/EditModal";
-import Home from "../Home/Home";
 import Menu from "../Menu/Menu";
 import Profile from "../Profile/Profile";
 import Setting from "../Setting/Setting";
@@ -20,6 +18,9 @@ import Event from "../event/Event";
 import Notification from "../Notification/Notification";
 import Group from "../Group/Group";
 import { Image, View } from "react-native";
+import GroupPostDetail from "../Group/GroupPostDetails";
+import Home from "../Home/Home";
+import EditPostModal from "../Home/EditModal";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -76,18 +77,26 @@ const RootNavigator = () => {
           component={MyTabs}
           options={{ headerShown: false }}
         />
+        {/* ======= Group Post ========= */}
         <Stack.Screen name = "Edit Post" component={EditPostModal} />
         <Stack.Screen name="NewGroup" component={AddGroup} />
         <Stack.Screen name="GroupDetails" component={GroupDetail} />
+        <Stack.Screen name="Group Post Detail" component={GroupPostDetail} />
         <Stack.Screen name="Group" component={Group} />
-        <Stack.Screen name="BlogDetail" component={BlogDetail} />
+        <Stack.Screen name="Create Post In Group" component={CreatePostInGroup} />
+
+        {/* ======Event ======= */}
         <Stack.Screen name="Event" component={Event} />
         <Stack.Screen name="EventDetail" component={EventDetail} />
-        <Stack.Screen name="BlogPost" component={BlogPost} />
+
+        {/*=======Alumini ======  */}
         <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Setting" component={Setting} />
         <Stack.Screen name="Update Profile" component={UpdateProfile} />
-        <Stack.Screen name="Create Post In Group" component={CreatePostInGroup} />
+
+        {/* =======Other====== */}
+        <Stack.Screen name="BlogDetail" component={BlogDetail} />
+        <Stack.Screen name="BlogPost" component={BlogPost} />
+        <Stack.Screen name="Setting" component={Setting} />
       </Stack.Navigator>
     )
 }
