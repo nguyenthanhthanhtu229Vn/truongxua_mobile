@@ -66,7 +66,7 @@ const CreatePostInGroup: React.FC = () => {
   };
   const onSubmitFormHandler = async (event) => {
     if (!content.trim()) {
-      alert("Please Write something");
+      alert("Không được để trống ");
       return;
     }
     try {
@@ -78,37 +78,26 @@ const CreatePostInGroup: React.FC = () => {
       });
       if (response.status === 200) {
         setContent("");
-        alert("Creat Post Success");
-        setTimeout(function () {
-          setModalVisible(false);
-        }, 2);
+        navigation.navigate('Group');
+        alert("Tạo Bài Đăng Thành Công");
+        // setTimeout(function () {
+        //   setModalVisible(false);
+        // }, 2);
       }
     } catch (error) {
-      alert("An error has occurred");
+      alert("Đã Xảy Ra Lỗi !!");
     }
   };
   //=======End call api create post =========
   return (
     <View style={{ flex: 1, position: "absolute", width: "100%" }}>
-      <Modal
-        style={{ backgroundColor: "black", opacity: 0.5 }}
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
         <View
           style={{
             zIndex: 10,
             backgroundColor: "white",
             justifyContent: "center",
-            marginLeft: 10,
-            marginRight: 10,
             padding: 10,
             borderRadius: 10,
-            marginTop: 50,
           }}
         >
           <View
@@ -117,14 +106,6 @@ const CreatePostInGroup: React.FC = () => {
             <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
               Tạo Bài Viết
             </Text>
-            <TouchableOpacity>
-              <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Image
-                  style={{ width: 20, height: 20 }}
-                  source={require("../../assets/icons/error.png")}
-                />
-              </Pressable>
-            </TouchableOpacity>
           </View>
           <View>
             <TextInput
@@ -138,7 +119,7 @@ const CreatePostInGroup: React.FC = () => {
               }}
               scrollEnabled
               multiline
-              placeholder="Write something"
+              placeholder="Nội Dung Bài Đăng"
               value={content}
               editable={!isLoading}
               onChangeText={OnChangeContentHandler}
@@ -179,87 +160,6 @@ const CreatePostInGroup: React.FC = () => {
             </View>
           </TouchableOpacity>
         </View>
-      </Modal>
-
-      {/* ==================================== */}
-
-      <View
-        style={{
-          zIndex: 1,
-          borderRadius: 10,
-          borderColor: "#d0d0d0",
-          borderWidth: 1,
-          backgroundColor: "#fafafa",
-          padding: 10,
-          margin: 5,
-        }}
-      >
-        <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-          Tạo Bài Viết
-        </Text>
-        <TouchableOpacity>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <View
-              style={{
-                borderRadius: 250,
-                borderColor: "#d0d0d0",
-                borderWidth: 1,
-                backgroundColor: "#fff",
-                padding: 10,
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                style={{
-                  width: 15,
-                  height: 15,
-                  alignItems: "center",
-                  marginTop: 3,
-                  marginLeft: 5,
-                }}
-                source={require("../../assets/icons/pencil.png")}
-              />
-              <Text style={{ fontSize: 15, color: "#808080", marginLeft: 10 }}>
-                Tạo Bài Viết
-              </Text>
-            </View>
-          </Pressable>
-        </TouchableOpacity>
-        <View style={{ flexDirection: "row", marginTop: 20 }}>
-          <View style={{ flexDirection: "row", marginLeft: 10 }}>
-            <Image
-              style={{ width: 25, height: 25 }}
-              source={require("../../assets/icons/imageGallery.png")}
-            />
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "500",
-                marginBottom: 10,
-                marginLeft: 10,
-              }}
-            >
-              Ảnh/Video
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", marginLeft: 15 }}>
-            <Image
-              style={{ width: 25, height: 25 }}
-              source={require("../../assets/icons/feedback.png")}
-            ></Image>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "500",
-                marginBottom: 10,
-                marginLeft: 10,
-              }}
-            >
-              Cảm Xúc/Hoạt Động
-            </Text>
-          </View>
-        </View>
-      </View>
     </View>
   );
 };

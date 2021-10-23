@@ -19,27 +19,6 @@ const comment = [
     content:
       "Last summer, as Portland, Oregon, began to sizzle under a brutal, triple-digit heat wave, Vivek Shandas installed a window air conditioner in the bedroom of his home.",
   },
-  // {
-  //   rating: "6",
-  //   img: require("../../assets/images/event.jpg"),
-  //   user: "Bryan",
-  //   content:
-  //     "Last summer, as Portland, Oregon, began to sizzle under a brutal, triple-digit heat wave, Vivek Shandas installed a window air conditioner in the bedroom of his home.",
-  // },
-  // {
-  //   rating: "9",
-  //   img: require("../../assets/images/event.jpg"),
-  //   user: "Bryan",
-  //   content:
-  //     "Last summer, as Portland, Oregon, began to sizzle under a brutal, triple-digit heat wave, Vivek Shandas installed a window air conditioner in the bedroom of his home.",
-  // },
-  // {
-  //   rating: "9",
-  //   img: require("../../assets/images/event.jpg"),
-  //   user: "Bryan",
-  //   content:
-  //     "Last summer, as Portland, Oregon, began to sizzle under a brutal, triple-digit heat wave, Vivek Shandas installed a window air conditioner in the bedroom of his home.",
-  // },
 ];
 const GroupPostDetail = () => {
   return (

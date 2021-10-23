@@ -13,7 +13,7 @@ import { Constants } from 'expo-constants';
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 
-const EditPostModal: React.FC = () => {
+const EditPostGroup: React.FC = () => {
   //======begin call api put=======
   const baseUrl = 'http://20.188.111.70:12348'
   // const [id, setId] = useState()
@@ -24,17 +24,16 @@ const EditPostModal: React.FC = () => {
   const navigation = useNavigation();
   const [groupId, setGroupId] = useState(33);
   const [isLoading, setIsLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const OnChangeContentHandler = (content) =>{
     setContent(content);
   }
-  const onSubmitFormHandler = async (id) => {
+  const onSubmitFormHandler = async () => {
     if(!content.trim){
-      alert('Content is invalid')
+      alert('Không được để trống')
       return;
     }
     axios( {
-        url : `${baseUrl}/api/v1/posts?id=`+id,
+        url : `${baseUrl}/api/v1/posts?id=292`,
         method: 'PUT',
         data: {
             groupId,
@@ -47,53 +46,35 @@ const EditPostModal: React.FC = () => {
     )
     .then((response) => {
         if(response.status === 200){
-            alert('Update Post Success');
+            alert('Sửa Bài Đăng Thành Công');
             setContent('');
-            navigation.navigate('GroupDetails')
+            navigation.navigate('Group')
           }
     })
     .catch((error) => {
-        alert('An error has occurred');
+        alert('Đã Có Lỗi Xảy Ra!!');
     })
     }
       //======end call api put=======
     return (
         <View style={{ flex: 1, position: "absolute", width: "100%" }}>
-        <Modal
-          style={{ backgroundColor: "black", opacity: 0.5 }}
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
+
           <View
             style={{
               zIndex: 10,
               backgroundColor: "white",
               justifyContent: "center",
-              marginLeft: 10,
-              marginRight: 10,
               padding: 10,
               borderRadius: 10,
-              marginTop: 50,
             }}
           >
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-                Tạo Bài Viết
+                Sửa Bài Đăng
               </Text>
-              <TouchableOpacity>
-                <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                  <Image
-                    style={{ width: 20, height: 20 }}
-                    source={require("../../assets/icons/error.png")}
-                  ></Image>
-                </Pressable>
-              </TouchableOpacity>
+
             </View>
             <View>
               <TextInput
@@ -127,7 +108,7 @@ const EditPostModal: React.FC = () => {
                 source={require("../../assets/icons/menu.png")}
               ></Image>
             </View>
-            <TouchableOpacity onPress={() => onSubmitFormHandler(id)} disabled={isLoading}>
+            <TouchableOpacity onPress={onSubmitFormHandler} disabled={isLoading}>
               <View
                 style={{
                   backgroundColor: "#088dcd",
@@ -144,93 +125,12 @@ const EditPostModal: React.FC = () => {
                     textAlign: "center",
                   }}
                 >
-              Sửa Bài Viết
+                Sửa Bài Đăng
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
-        </Modal>
-
-        {/* ==================================== */}
-
-        <View
-          style={{
-            zIndex: 1,
-            borderRadius: 10,
-            borderColor: "#d0d0d0",
-            borderWidth: 1,
-            backgroundColor: "#fafafa",
-            padding: 10,
-            margin: 5,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-            Tạo Bài Viết
-          </Text>
-          <TouchableOpacity>
-            <Pressable onPress={() => setModalVisible(true)}>
-              <View
-                style={{
-                  borderRadius: 250,
-                  borderColor: "#d0d0d0",
-                  borderWidth: 1,
-                  backgroundColor: "#fff",
-                  padding: 10,
-                  flexDirection: "row",
-                }}
-              >
-                <Image
-                  style={{
-                    width: 15,
-                    height: 15,
-                    alignItems: "center",
-                    marginTop: 3,
-                    marginLeft: 5,
-                  }}
-                  source={require("../../assets/icons/pencil.png")}
-                ></Image>
-                <Text style={{ fontSize: 15, color: "#808080", marginLeft: 10 }}>
-                  Tạo Bài Viết
-                </Text>
-              </View>
-            </Pressable>
-          </TouchableOpacity>
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <View style={{ flexDirection: "row", marginLeft: 10 }}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require("../../assets/icons/imageGallery.png")}
-              ></Image>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "500",
-                  marginBottom: 10,
-                  marginLeft: 10,
-                }}
-              >
-                Ảnh/Video
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row", marginLeft: 15 }}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require("../../assets/icons/feedback.png")}
-              ></Image>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "500",
-                  marginBottom: 10,
-                  marginLeft: 10,
-                }}
-              >
-                Cảm Xúc/Hoạt Động
-              </Text>
-            </View>
-          </View>
         </View>
-      </View>
     )
   };
-export default EditPostModal;
+export default EditPostGroup;

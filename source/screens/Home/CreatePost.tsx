@@ -54,7 +54,9 @@ const CreatePost: React.FC = () => {
   //========  begin call api post =======
   const baseUrl = "http://20.188.111.70:12348";
   const [content, setContent] = useState("");
-  const [alumniId, setAlumniId] = useState(1);
+  const [title, setTitle] = useState("");
+  const [adminId, setAdminId] = useState(1);
+  const [schoolId, setSchoolId] = useState(5);
   const [createAt, setCreateAt] = useState(new Date());
   const [status, setStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,27 +66,38 @@ const CreatePost: React.FC = () => {
   const OnChangeContentHandler = (content) => {
     setContent(content);
   };
+  const OnChangeTitleHandler = (title) => {
+    setContent(content);
+  };
   const onSubmitFormHandler = async (event) => {
     if (!content.trim()) {
-      alert("Please Write something");
+      alert("Không được bỏ trống");
+      return;
+    }
+    if (!title.trim()) {
+      alert("Không được bỏ trống ");
       return;
     }
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/Posts`, {
-        alumniId,
+      const response = await axios.post(`${baseUrl}/api/v1/news`, {
+        schoolId,
+        adminId,
+        title,
         content,
         createAt,
         status,
       });
       if (response.status === 200) {
         setContent("");
-        alert("Creat Post Success");
+        setTitle("")
+        alert("Tạo Bài Viết Thành Công");
+        navigation.navigate('Trang Chủ')
         setTimeout(function () {
           setModalVisible(false);
         }, 2);
       }
     } catch (error) {
-      alert("An error has occurred");
+      alert("Có lỗi xảy ra ! Vui lòng kiểm tra lại");
     }
   };
   //=======End call api create post =========
@@ -127,6 +140,23 @@ const CreatePost: React.FC = () => {
             </TouchableOpacity>
           </View>
           <View>
+            {/* ======Title===== */}
+            <TextInput
+              multiline
+              placeholder="Tiêu Đề"
+              editable={!isLoading}
+              value={title}
+              onChangeText={(title) => setTitle(title)}
+             style={{
+               borderRadius: 10,
+               borderColor: "#d0d0d0",
+               borderWidth: 1,
+               backgroundColor: "#f5f4f9",
+               padding: 10,
+               height: 50,
+               marginBottom: 10,
+               marginTop: 10
+            }}  />
             <TextInput
               style={{
                 borderRadius: 10,
@@ -138,7 +168,7 @@ const CreatePost: React.FC = () => {
               }}
               scrollEnabled
               multiline
-              placeholder="Write something"
+              placeholder="Viết Nội Dung"
               value={content}
               editable={!isLoading}
               onChangeText={OnChangeContentHandler}

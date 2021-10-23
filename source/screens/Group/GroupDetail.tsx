@@ -80,15 +80,6 @@ const GroupDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
-  // useEffect(() => {
-  //   fetch(groupURL + route.params.id)
-  //     .then((response) =>
-  //       response.json().then((res) => {
-  //         setGroupDetail(res);
-  //       })
-  //     )
-  //     .catch((error) => alert(error));
-  // });
   async function featchGroupDetail() {
     try {
       const response = await axios.get(groupURL + route.params.id);
@@ -103,16 +94,6 @@ const GroupDetail = () => {
   const [isLoading, setLoading] = useState(true);
   const postURL = `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=5`;
   const [data, setData] = useState({});
-  // useEffect(() => {
-  //   fetch(postURL)
-  //     .then((response) =>
-  //       response.json().then((res) => {
-  //         setData(res);
-  //       })
-  //     )
-  //     .catch((error) => alert(error))
-  //     .finally(() => setLoading(false));
-  // });
 
   async function featchPosts() {
     try {
@@ -128,28 +109,24 @@ const GroupDetail = () => {
     featchPosts();
   }, []);
   //====== begin detele post =======
-  const [content, setContent] = useState("");
-  const [alumniId, setAlumniId] = useState(1);
-  const [createAt, setCreateAt] = useState(new Date());
-  const [modifiedAt, setModifiedAt] = useState(null);
-  const [status, setStatus] = useState(true);
   const onSubmitFormHandler = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/posts/` + id);
+      const response = await axios.delete(`${baseUrl}/api/v1/posts/`+id);
+
       if (response.status === 200) {
-        alert("Delete Post Success");
+        alert("Xoá Bài Viết Thành Công ");
+        navigation.navigate('Group')
         setTimeout(function () {
           setVisible(false);
         }, 2);
         // setVisible(false)
       }
     } catch (error) {
-      alert("Failed to delete resource");
+      alert("Bị Lỗi Không Xoá Được ");
       setLoading(false);
     }
   };
-
   // ======Format Date====
   const formatDate = (date) => {
     const day = new Date(date);
@@ -362,8 +339,6 @@ const GroupDetail = () => {
                 return (
                   <View
                     style={{
-                      // height: 450,
-                      height: 200,
                       backgroundColor: COLORS.white2,
                       shadowOpacity: 0.4,
                       marginBottom: 16,
@@ -418,75 +393,69 @@ const GroupDetail = () => {
                               </View>
                             </View>
 
-                            <View
+                            <TouchableOpacity
                               style={{
                                 flexDirection: "row",
                                 alignItems: "center",
                               }}
+                              onPress={() =>
+                                navigation.navigate("Edit Post", {
+                                  id: item.id,
+                                })
+                              }
                             >
-                              <TouchableOpacity
-                                onPress={() =>
-                                  navigation.navigate("EditPost", {
-                                    id: item.id,
-                                  })
-                                }
-                              >
-                                <Image
-                                  source={require("../../assets/icons/edit.png")}
-                                  style={{
-                                    height: 20,
-                                    width: 20,
-                                    marginVertical: 10,
-                                    marginLeft: 10,
-                                    marginRight: 10,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                              <Text>Edit Post</Text>
-                            </View>
+                              <Image
+                                source={require("../../assets/icons/edit.png")}
+                                style={{
+                                  height: 20,
+                                  width: 20,
+                                  marginVertical: 10,
+                                  marginLeft: 10,
+                                  marginRight: 10,
+                                }}
+                              />
+                              <Text>Chỉnh Sửa Bài Đăng </Text>
+                            </TouchableOpacity>
+
                             {/* delete */}
-                            <View
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                              onPress={() => onSubmitFormHandler(item.id)}
+                            >
+                              <Image
+                                source={require("../../assets/icons/delete.png")}
+                                style={{
+                                  height: 20,
+                                  width: 20,
+                                  marginVertical: 10,
+                                  marginLeft: 10,
+                                  marginRight: 10,
+                                }}
+                              />
+                              <Text>Xoá Bài Đăng</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
                               style={{
                                 flexDirection: "row",
                                 alignItems: "center",
                               }}
                             >
-                              <TouchableOpacity
-                                onPress={() => onSubmitFormHandler(item.id)}
-                              >
-                                <Image
-                                  source={require("../../assets/icons/delete.png")}
-                                  style={{
-                                    height: 20,
-                                    width: 20,
-                                    marginVertical: 10,
-                                    marginLeft: 10,
-                                    marginRight: 10,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                              <Text>Delete Post</Text>
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <TouchableOpacity>
-                                <Image
-                                  source={require("../../assets/icons/edit.png")}
-                                  style={{
-                                    height: 20,
-                                    width: 20,
-                                    marginVertical: 10,
-                                    marginLeft: 10,
-                                    marginRight: 10,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                              <Text>Edit Privacy</Text>
-                            </View>
+                              <Image
+                                source={require("../../assets/icons/edit.png")}
+                                style={{
+                                  height: 20,
+                                  width: 20,
+                                  marginVertical: 10,
+                                  marginLeft: 10,
+                                  marginRight: 10,
+                                }}
+                              />
+                              <Text>Chỉnh Sửa Chế Độ Xem</Text>
+                            </TouchableOpacity>
                           </ModalPoup>
                           <TouchableOpacity onPress={() => setVisible(true)}>
                             <Image

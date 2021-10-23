@@ -42,7 +42,12 @@ const send = require('../assets/icons/send.png');
 const gif = require('../assets/icons/gif.png');
 const fmale = require('../assets/icons/assistant.png');
 const search = require('../assets/icons/search.png');
+
+const calendar = require('../assets/icons/calendar.png');
+const nTitle = require('../assets/icons/notification.png');
 export default {
+  nTitle,
+  calendar,
   search,
   smile_face,
   send,gif,fmale,

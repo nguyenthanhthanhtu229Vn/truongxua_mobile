@@ -21,6 +21,7 @@ import { Image, View } from "react-native";
 import GroupPostDetail from "../Group/GroupPostDetails";
 import Home from "../Home/Home";
 import EditPostModal from "../Home/EditModal";
+import EditPostGroup from "../Group/EditModal";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -78,7 +79,8 @@ const RootNavigator = () => {
         options={{ headerShown: false }}
       />
       {/* ======= Group Post ========= */}
-      <Stack.Screen name="EditPost" component={EditPostModal} />
+      <Stack.Screen name="Edit New" component={EditPostModal} />
+      <Stack.Screen name="Edit Post" component={EditPostGroup} />
       <Stack.Screen name="NewGroup" component={AddGroup} />
       <Stack.Screen name="GroupDetails" component={GroupDetail} />
       <Stack.Screen name="GroupPostDetail" component={GroupPostDetail} />

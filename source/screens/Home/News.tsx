@@ -69,12 +69,7 @@ const News: React.FC = () => {
       .catch((error) => alert(error))
       .finally(() => setLoading(false));
   });
-  // delete post
-  const [content, setContent] = useState("");
-  const [alumniId, setAlumniId] = useState(1);
-  const [createAt, setCreateAt] = useState(new Date());
-  const [modifiedAt, setModifiedAt] = useState(null);
-  const [status, setStatus] = useState(true);
+
   const formatDate = (date) => {
     const day = new Date(date);
     return (
@@ -96,14 +91,14 @@ const News: React.FC = () => {
       const response = await axios.delete(`${baseUrl}/api/v1/news/` + id);
 
       if (response.status === 200) {
-        alert("Delete Post Success");
+        alert("Xoá Bài Viết Thành Công ");
         setTimeout(function () {
           setVisible(false);
         }, 2);
         // setVisible(false)
       }
     } catch (error) {
-      alert("Failed to delete resource");
+      alert("Bị Lỗi Không Xoá Được ");
       setLoading(false);
     }
   };
@@ -119,7 +114,7 @@ const News: React.FC = () => {
             <View
               style={{
                 // height: 450,
-                height: 200,
+                // height: 200,
                 backgroundColor: COLORS.white2,
                 shadowOpacity: 0.2,
                 marginBottom: 16,
@@ -134,15 +129,7 @@ const News: React.FC = () => {
                 }}
               >
                 <View style={{ flexDirection: "row" }}>
-                  <Image
-                    source={require("../../assets/images/avatar.jpeg")}
-                    style={{
-                      height: 60,
-                      width: 60,
-                      borderRadius: SIZES.largeTitle,
-                    }}
-                  />
-                  <Text
+                  {/* <Text
                     style={{
                       color: COLORS.blue,
                       marginLeft: 4,
@@ -151,7 +138,15 @@ const News: React.FC = () => {
                     }}
                   >
                     Quang Huy
+                  </Text> */}
+                  <Image
+                    source={icons.calendar}
+                    style={{ height: 16, width: 16 }}
+                  />
+                  <Text style={{ marginLeft: 8 }}>
+                    {formatDate(item.createAt)}
                   </Text>
+
                   {/* begin modal */}
                   <View
                     style={{
@@ -166,68 +161,65 @@ const News: React.FC = () => {
                           <TouchableOpacity onPress={() => setVisible(false)}>
                             <Image
                               source={require("../../assets/icons/error.png")}
-                              style={{ height: 30, width: 30 }}
+                              style={{ height: 30, width: 30,}}
                             />
                           </TouchableOpacity>
                         </View>
                       </View>
 
-                      <View
+                      {/* =====Update Bai Viet===== */}
+                      <TouchableOpacity
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                        onPress={() => navigation.navigate("Edit New",{
+                          id:item.id
+                        })}
+                      >
+                        <Image
+                          source={require("../../assets/icons/edit.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                        <Text>Chỉnh Sửa Bài Viết </Text>
+                      </TouchableOpacity>
+
+                      {/*=====delete ===== */}
+                      <TouchableOpacity
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                        onPress={() => onSubmitFormHandler(item.id)}
+                      >
+                        <Image
+                          source={require("../../assets/icons/delete.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                        <Text>Xoá Bài Viết</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        <TouchableOpacity
-                          onPress={() => navigation.navigate("Edit Post")}
-                        >
-                          <Image
-                            source={require("../../assets/icons/edit.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <Text>Edit Post</Text>
-                      </View>
-                      {/* delete */}
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => onSubmitFormHandler(item.id)}
-                        >
-                          <Image
-                            source={require("../../assets/icons/delete.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <Text>Delete Post</Text>
-                      </View>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <TouchableOpacity>
-                          <Image
-                            source={require("../../assets/icons/edit.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <Text>Edit Privacy</Text>
-                      </View>
+                        <Image
+                          source={require("../../assets/icons/edit.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                        <Text>Chỉnh Sửa Chế Độ Xem</Text>
+                      </TouchableOpacity>
                     </ModalPoup>
                     <TouchableOpacity onPress={() => setVisible(true)}>
                       <Image
@@ -247,33 +239,22 @@ const News: React.FC = () => {
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: -34,
-                    marginLeft: 64,
+                    marginTop: -20,
+                    alignItems:'center'
                   }}
                 >
-                  <Image
-                    source={icons.globe}
-                    style={{ height: 20, width: 20 }}
-                  />
-                  <Text style={{ marginLeft: 8 }}>
-                    {formatDate(item.createAt)}
-                  </Text>
+                  <Image source={icons.nTitle} style={{height: 14, width: 14}} />
+                  <Text style={{ ...FONTS.h3, color:COLORS.black, fontWeight:'500'}}>{item.title}</Text>
                 </View>
+
                 <Text
                   style={{
-                    marginTop: 20,
                     ...FONTS.h3,
                     color: COLORS.black,
-                    marginBottom: 10,
                   }}
                 >
                   {item.content}
                 </Text>
-                <Image
-                  source={item.images}
-                  style={{ width: "100%" }}
-                  resizeMode="cover"
-                />
               </View>
             </View>
           );

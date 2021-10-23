@@ -30,7 +30,7 @@ const UpdateProfile: React.FC = () => {
   );
   const [status, setStatus] = useState<boolean>(true);
   const [groupId, setGroupId] = useState(33);
-  const [schoolId, setSchoolId] = useState();
+  const [schoolId, setSchoolId] = useState(5);
   const [alumni, setAlumni] = useState<string>("");
   const [error, setError] = useState("");
 
@@ -56,24 +56,24 @@ const UpdateProfile: React.FC = () => {
   useEffect(() => {
     tokenForAuthor();
     getAlumni(id);
-    if (alumni.name != null) {
-      setName(alumni.name);
-    }
+    // if (alumni.name != null) {
+    //   setName(alumni.name);
+    // }
     if (alumni.password != null) {
       setPassword(alumni.password);
     }
     if (alumni.email != null) {
       setEmail(alumni.email);
     }
-    if (alumni.address != null) {
-      setAddress(alumni.address);
-    }
-    if (alumni.phone != null) {
-      setPhone(alumni.phone);
-    }
-    if (alumni.bio != null) {
-      setBio(alumni.bio);
-    }
+    // if (alumni.address != null) {
+    //   setAddress(alumni.address);
+    // }
+    // if (alumni.phone != null) {
+    //   setPhone(alumni.phone);
+    // }
+    // if (alumni.bio != null) {
+    //   setBio(alumni.bio);
+    // }
     if (alumni.img != null) {
       setImg(alumni.img);
     }
@@ -86,20 +86,20 @@ const UpdateProfile: React.FC = () => {
   });
 
   const UpdateProfile = async () => {
-    // if (
-    //   name.length == 0 ||
-    //   address.length == 0 ||
-    //   phone.length == 0 ||
-    //   bio.length == 0
-    // ) {
-    //   setError("Không Được Để Trống");
-    //   // setRegistering(false);
-    // } else if (phone.length != 10) {
-    //   setError("Số điện thoại 10 chữ số");
-    //   // setRegistering(false);
-    // }else{
-      // if (error !== ""){
-      //   setRegistering(true);
+    if (
+      name.length == 0 ||
+      address.length == 0 ||
+      phone.length == 0 ||
+      bio.length == 0
+    ) {
+      setError("Không Được Để Trống");
+      setRegistering(false);
+    } else if (phone.length != 10) {
+      setError("Số điện thoại 10 chữ số");
+      setRegistering(false);
+    }else{
+      if (error !== ""){
+        setRegistering(true);
         axios({
           url: "http://20.188.111.70:12348/api/v1/alumni?id=" + id,
           method: "PUT",
@@ -121,15 +121,16 @@ const UpdateProfile: React.FC = () => {
               alert("Cập Nhập Thành Công");
               navigation.navigate("MyTabs");
             } else {
-              throw new Error("An error has occurred");
+              throw new Error("Đã Xảy Ra Lỗi ");
             }
           })
           .catch((error) => {
             alert(error);
             setRegistering(false);
           });
-      // }
       }
+}
+}
   return (
     <View style={{ flex: 1, padding: 20, marginTop: 30 }}>
       <ScrollView>
@@ -138,7 +139,6 @@ const UpdateProfile: React.FC = () => {
             position: "absolute",
             top: 0,
             left: 0,
-            // backgroundColor: "black",
             opacity: 0.5,
             width: width,
             bottom: 0,
@@ -270,6 +270,7 @@ const UpdateProfile: React.FC = () => {
             }}
           />
         </View>
+        <Error error={error} />
         <TouchableOpacity onPress={UpdateProfile}>
           <View
             style={{
