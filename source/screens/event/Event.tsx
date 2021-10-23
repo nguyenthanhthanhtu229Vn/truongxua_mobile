@@ -7,27 +7,74 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { COLORS, FONTS,SIZES } from "../../constant";
+import { COLORS, FONTS, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";
 import { Foundation } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/core";
+import axios from "axios";
 
 const Event: React.FC = (props) => {
   const [isLoading, setLoading] = useState(true);
-  const eventURL = "http://20.188.111.70:12348/api/v1/Events";
+  const eventURL =
+    "http://20.188.111.70:12348/api/v1/events?pageNumber=0&pageSize=0";
+  const imageURL =
+    "http://20.188.111.70:12348/api/v1/images?pageNumber=0&pageSize=0";
   const [event, setData] = useState({});
-  // console.log(event);
+  const [listImg, setListImg] = useState<string>();
+
+  const getImageByEvent = (eventID) => {
+    let imgLink = "";
+    for (let i = 0; i < listImg?.length; i++) {
+      if (listImg[i].eventId == eventID) {
+        imgLink = listImg[i].imageUrl;
+        break;
+      }
+    }
+    return imgLink;
+  };
   useEffect(() => {
-    fetch(eventURL)
-      .then((response) =>
-        response.json().then((res) => {
-          setData(res);
-        })
-      )
-      .catch((error) => alert(error))
-      .finally(() => setLoading(false));
-  });
+    async function featchEvent() {
+      try {
+        const response = await axios.get(eventURL);
+        if (response.status === 200) {
+          setData(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    async function featchImageEvent() {
+      try {
+        const response = await axios.get(imageURL);
+        if (response.status === 200) {
+          setListImg(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    featchEvent();
+    featchImageEvent();
+  }, []);
+
+  // ======Format Date====
+  const formatDate = (date) => {
+    const day = new Date(date);
+    return (
+      "Vào lúc: " +
+      day.getDate() +
+      "/" +
+      (day.getMonth() + 1) +
+      "/" +
+      day.getFullYear() +
+      ", " +
+      day.getHours() +
+      ":" +
+      day.getMinutes()
+    );
+  };
 
   const navigation = useNavigation();
   // const { banner } = props;
@@ -37,9 +84,12 @@ const Event: React.FC = (props) => {
         <MyCarousel />
 
         {/* Plust Btn */}
-        <TouchableOpacity style={style.plusBtn} onPress= {() => {
-          navigation.navigate('NewEvent')
-        }} >
+        <TouchableOpacity
+          style={style.plusBtn}
+          onPress={() => {
+            navigation.navigate("NewEvent");
+          }}
+        >
           <Foundation name="plus" style={style.textPlus}></Foundation>
         </TouchableOpacity>
 
@@ -48,6 +98,7 @@ const Event: React.FC = (props) => {
             contentContainerStyle={{
               flexDirection: "column",
             }}
+            keyExtractor={({ id }, index) => id}
             data={event}
             renderItem={({ item, index }) => {
               return (
@@ -56,20 +107,22 @@ const Event: React.FC = (props) => {
                     flexDirection: "row",
                     paddingBottom: 20,
                     alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                   key={item.id}
                 >
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("EventDetail");
+                      navigation.navigate("EventDetail", { id: item.id });
                     }}
                   >
                     <Image
-                      source={require("../../assets/images/party1.jpg")}
+                      source={{ uri: getImageByEvent(item.id) }}
                       style={{
                         height: SIZES.height / 5,
                         borderRadius: 5,
                         width: SIZES.width / 3,
+                        resizeMode: "cover",
                       }}
                     />
                   </TouchableOpacity>
@@ -112,7 +165,7 @@ const Event: React.FC = (props) => {
                         fontWeight: "500",
                       }}
                     >
-                      {item.startDate}
+                      {formatDate(item.startDate)}
                     </Text>
                     <View
                       style={{

@@ -57,8 +57,7 @@ const News: React.FC = () => {
   const baseUrl = "http://20.188.111.70:12348";
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const postURL =
-    `${baseUrl}/api/v1/news?sort=desc&pageNumber=0&pageSize=5`;
+  const postURL = `${baseUrl}/api/v1/news?sort=desc&pageNumber=0&pageSize=5`;
   const [data, setData] = useState({});
   useEffect(() => {
     fetch(postURL)
@@ -94,7 +93,7 @@ const News: React.FC = () => {
   const onSubmitFormHandler = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/news/` + id)
+      const response = await axios.delete(`${baseUrl}/api/v1/news/` + id);
 
       if (response.status === 200) {
         alert("Delete Post Success");
@@ -114,7 +113,7 @@ const News: React.FC = () => {
     <View style={{ marginTop: 150 }}>
       <FlatList
         data={data}
-        keyExtractor={({ id }, index) => id}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => {
           return (
             <View
@@ -196,8 +195,9 @@ const News: React.FC = () => {
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        
-                        <TouchableOpacity onPress={() => onSubmitFormHandler(item.id)}>
+                        <TouchableOpacity
+                          onPress={() => onSubmitFormHandler(item.id)}
+                        >
                           <Image
                             source={require("../../assets/icons/delete.png")}
                             style={{

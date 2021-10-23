@@ -42,7 +42,7 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
       }).start();
     }
   };
-  return(
+  return (
     <Modal transparent visible={showModal}>
       <View style={style.modalBackGround}>
         <Animated.View
@@ -80,55 +80,75 @@ const GroupDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
-  useEffect(() => {
-    fetch(groupURL + route.params.id)
-      .then((response) =>
-        response.json().then((res) => {
-          setGroupDetail(res);
-        })
-      )
-      .catch((error) => alert(error));
-  });
+  // useEffect(() => {
+  //   fetch(groupURL + route.params.id)
+  //     .then((response) =>
+  //       response.json().then((res) => {
+  //         setGroupDetail(res);
+  //       })
+  //     )
+  //     .catch((error) => alert(error));
+  // });
+  async function featchGroupDetail() {
+    try {
+      const response = await axios.get(groupURL + route.params.id);
+      setGroupDetail(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  // =======Begin Call Api Post 
+  // =======Begin Call Api Post
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const postURL =
-    `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=5`;
+  const postURL = `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=5`;
   const [data, setData] = useState({});
-  useEffect(() => {
-    fetch(postURL)
-      .then((response) =>
-        response.json().then((res) => {
-          setData(res);
-        })
-      )
-      .catch((error) => alert(error))
-      .finally(() => setLoading(false));
-  });
+  // useEffect(() => {
+  //   fetch(postURL)
+  //     .then((response) =>
+  //       response.json().then((res) => {
+  //         setData(res);
+  //       })
+  //     )
+  //     .catch((error) => alert(error))
+  //     .finally(() => setLoading(false));
+  // });
 
-    //====== begin detele post =======
+  async function featchPosts() {
+    try {
+      const response = await axios.get(postURL);
+      setData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    featchGroupDetail();
+    featchPosts();
+  }, []);
+  //====== begin detele post =======
   const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
   const [createAt, setCreateAt] = useState(new Date());
   const [modifiedAt, setModifiedAt] = useState(null);
   const [status, setStatus] = useState(true);
-    const onSubmitFormHandler = async (id) => {
-      setLoading(true);
-      try {
-        const response = await axios.delete(`${baseUrl}/api/v1/posts/`+ id )
-        if (response.status === 200) {
-          alert("Delete Post Success");
-          setTimeout(function () {
-            setVisible(false);
-          }, 2);
-          // setVisible(false)
-        }
-      } catch (error) {
-        alert("Failed to delete resource");
-        setLoading(false);
+  const onSubmitFormHandler = async (id) => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(`${baseUrl}/api/v1/posts/` + id);
+      if (response.status === 200) {
+        alert("Delete Post Success");
+        setTimeout(function () {
+          setVisible(false);
+        }, 2);
+        // setVisible(false)
       }
-    };
+    } catch (error) {
+      alert("Failed to delete resource");
+      setLoading(false);
+    }
+  };
 
   // ======Format Date====
   const formatDate = (date) => {
@@ -153,16 +173,19 @@ const GroupDetail = () => {
         <View style={{ position: "relative" }}>
           <Image
             // source={{ uri: groupDetail.backgroundImg }}
-            source={require('../../assets/images/event.jpg')}
+            source={require("../../assets/images/event.jpg")}
             style={{ width: width, height: 200 }}
           />
           {/*=======button add =====  */}
-          <TouchableOpacity style={style.plusBtn} onPress= {() => {
-          navigation.navigate('Create Post In Group')
-        }} >
-          <Foundation name="plus" style={style.textPlus}></Foundation>
-        </TouchableOpacity>
-        
+          <TouchableOpacity
+            style={style.plusBtn}
+            onPress={() => {
+              navigation.navigate("Create Post In Group");
+            }}
+          >
+            <Foundation name="plus" style={style.textPlus}></Foundation>
+          </TouchableOpacity>
+
           <View
             style={{
               flexDirection: "row",
@@ -330,203 +353,239 @@ const GroupDetail = () => {
         </View>
 
         <View style={{ marginTop: -170 }}>
-         {/* ======Begin News ==== */}
-         <View style={{ marginTop: 150 }}>
-      <FlatList
-        data={data}
-        keyExtractor={({ id }, index) => id}
-        renderItem={({ item, index }) => {
-          return (
-            <View
-              style={{
-                // height: 450,
-                height: 200,
-                backgroundColor: COLORS.white2,
-                shadowOpacity: 0.4,
-                marginBottom: 16,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "column",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  marginTop: 20,
-                }}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <Image
-                    source={require("../../assets/images/avatar.jpeg")}
-                    style={{
-                      height: 60,
-                      width: 60,
-                      borderRadius: SIZES.largeTitle,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      color: COLORS.blue,
-                      marginLeft: 4,
-                      ...FONTS.h3,
-                      fontWeight: "500",
-                    }}
-                  >
-                    Quang Huy
-                  </Text>
-                  {/* ====begin modal====== */}
+          {/* ======Begin News ==== */}
+          <View style={{ marginTop: 150 }}>
+            <FlatList
+              data={data}
+              keyExtractor={({ id }, index) => id}
+              renderItem={({ item, index }) => {
+                return (
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
+                      // height: 450,
+                      height: 200,
+                      backgroundColor: COLORS.white2,
+                      shadowOpacity: 0.4,
+                      marginBottom: 16,
                     }}
                   >
-                    <ModalPoup visible={visible}>
-                      <View style={{ alignItems: "center" }}>
-                        <View style={style.header}>
-                          <TouchableOpacity onPress={() => setVisible(false)}>
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        marginTop: 20,
+                      }}
+                    >
+                      <View style={{ flexDirection: "row" }}>
+                        <Image
+                          source={require("../../assets/images/avatar.jpeg")}
+                          style={{
+                            height: 60,
+                            width: 60,
+                            borderRadius: SIZES.largeTitle,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            color: COLORS.blue,
+                            marginLeft: 4,
+                            ...FONTS.h3,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Quang Huy
+                        </Text>
+                        {/* ====begin modal====== */}
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <ModalPoup visible={visible}>
+                            <View style={{ alignItems: "center" }}>
+                              <View style={style.header}>
+                                <TouchableOpacity
+                                  onPress={() => setVisible(false)}
+                                >
+                                  <Image
+                                    source={require("../../assets/icons/error.png")}
+                                    style={{ height: 30, width: 30 }}
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <TouchableOpacity
+                                onPress={() =>
+                                  navigation.navigate("EditPost", {
+                                    id: item.id,
+                                  })
+                                }
+                              >
+                                <Image
+                                  source={require("../../assets/icons/edit.png")}
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    marginVertical: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                              <Text>Edit Post</Text>
+                            </View>
+                            {/* delete */}
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <TouchableOpacity
+                                onPress={() => onSubmitFormHandler(item.id)}
+                              >
+                                <Image
+                                  source={require("../../assets/icons/delete.png")}
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    marginVertical: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                              <Text>Delete Post</Text>
+                            </View>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <TouchableOpacity>
+                                <Image
+                                  source={require("../../assets/icons/edit.png")}
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    marginVertical: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                              <Text>Edit Privacy</Text>
+                            </View>
+                          </ModalPoup>
+                          <TouchableOpacity onPress={() => setVisible(true)}>
                             <Image
-                              source={require("../../assets/icons/error.png")}
-                              style={{ height: 30, width: 30 }}
+                              source={require("../../assets/icons/menu.png")}
+                              style={{
+                                height: 14,
+                                width: 14,
+                                marginLeft: 170,
+                                marginBottom: 34,
+                              }}
                             />
                           </TouchableOpacity>
                         </View>
+                        {/* end modal */}
                       </View>
 
                       <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                        style={{
+                          flexDirection: "row",
+                          marginTop: -34,
+                          marginLeft: 64,
+                        }}
                       >
+                        <Image
+                          source={icons.globe}
+                          style={{ height: 20, width: 20 }}
+                        />
+                        <Text style={{ marginLeft: 8 }}>
+                          {formatDate(item.createAt)}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          marginTop: 20,
+                          ...FONTS.h3,
+                          color: COLORS.black,
+                          marginBottom: 10,
+                        }}
+                      >
+                        {item.content}
+                      </Text>
+                      {/* ======comment ==== */}
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 14,
+                          alignItems: "center",
+                          marginLeft: 8,
+                        }}
+                      >
+                        <Image source={icons.thumpUp} style={style.iconf} />
+                        <Image source={icons.heart} style={style.iconf} />
+                        <Image source={icons.angry} style={style.iconf} />
+                        <Image source={icons.sad} style={style.iconf} />
+                        <Text>10+</Text>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 10,
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <TouchableOpacity style={style.btn}>
+                          <Image source={icons.like} style={style.icon}></Image>
+                          <Text style={style.text}>Like </Text>
+                        </TouchableOpacity>
+
                         <TouchableOpacity
-                          onPress={() => navigation.navigate("Edit Post" ,{
-                            id: item.id
-                          })}
+                          style={style.btn}
+                          onPress={() => navigation.navigate("GroupPostDetail")}
                         >
                           <Image
-                            source={require("../../assets/icons/edit.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
+                            source={icons.comment}
+                            style={style.icon}
+                          ></Image>
+                          <Text style={style.text}>Comment</Text>
                         </TouchableOpacity>
-                        <Text>Edit Post</Text>
-                      </View>
-                      {/* delete */}
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <TouchableOpacity onPress={() => onSubmitFormHandler(item.id)}>
+                        <TouchableOpacity style={style.btn}>
                           <Image
-                            source={require("../../assets/icons/delete.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
+                            source={icons.share}
+                            style={style.icon}
+                          ></Image>
+                          <Text style={style.text}>Share</Text>
                         </TouchableOpacity>
-                        <Text>Delete Post</Text>
                       </View>
-                      <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <TouchableOpacity>
-                          <Image
-                            source={require("../../assets/icons/edit.png")}
-                            style={{
-                              height: 20,
-                              width: 20,
-                              marginVertical: 10,
-                              marginLeft: 10,
-                              marginRight: 10,
-                            }}
-                          />
-                        </TouchableOpacity>
-                        <Text>Edit Privacy</Text>
-                      </View>
-                    </ModalPoup>
-                    <TouchableOpacity onPress={() => setVisible(true)}>
+
                       <Image
-                        source={require("../../assets/icons/menu.png")}
-                        style={{
-                          height: 14,
-                          width: 14,
-                          marginLeft: 170,
-                          marginBottom: 34,
-                        }}
+                        source={item.images}
+                        style={{ width: "100%" }}
+                        resizeMode="cover"
                       />
-                    </TouchableOpacity>
+                    </View>
                   </View>
-                  {/* end modal */}
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: -34,
-                    marginLeft: 64,
-                  }}
-                >
-                  <Image
-                    source={icons.globe}
-                    style={{ height: 20, width: 20 }}
-                  />
-                  <Text style={{ marginLeft: 8 }}>
-                    {formatDate(item.createAt)}
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    marginTop: 20,
-                    ...FONTS.h3,
-                    color: COLORS.black,
-                    marginBottom: 10,
-                  }}
-                >
-                  {item.content}
-                </Text>
-                {/* ======comment ==== */}
-                <View style={{flexDirection: 'row',marginTop: 14, alignItems:'center',marginLeft: 8}}>
-                  <Image source={icons.thumpUp} style={style.iconf} />
-                  <Image source={icons.heart} style={style.iconf} />
-                  <Image source={icons.angry} style={style.iconf} />
-                  <Image source={icons.sad} style={style.iconf} />
-                  <Text>10+</Text>
-                </View>
-
-                <View style={{flexDirection: 'row', marginTop: 10, justifyContent: 'space-around'}}>
-                  <TouchableOpacity style={style.btn}>
-                    <Image source= {icons.like} style={style.icon}></Image>
-                    <Text style={style.text}>Like </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={style.btn} onPress={() => navigation.navigate('Group Post Detail')}>
-                    <Image source= {icons.comment} style={style.icon}></Image>
-                    <Text style={style.text}>Comment</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={style.btn}>
-                    <Image source= {icons.share} style={style.icon}></Image>
-                    <Text style={style.text}>Share</Text>
-                  </TouchableOpacity>
-                </View>
-                
-                <Image
-                  source={item.images}
-                  style={{ width: "100%" }}
-                  resizeMode="cover"
-                />
-
-              </View>
-            </View>
-          );
-        }}
-      />
-    </View>
+                );
+              }}
+            />
+          </View>
         </View>
       </View>
     </ScrollView>

@@ -60,45 +60,45 @@ function MyTabs() {
 }
 
 const RootNavigator = () => {
-    return (
-        <Stack.Navigator>
-        <Stack.Screen
-          name="SignIn"
-          component={SignIn}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SignUp"
-          component={SignUp}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MyTabs"
-          component={MyTabs}
-          options={{ headerShown: false }}
-        />
-        {/* ======= Group Post ========= */}
-        <Stack.Screen name = "Edit Post" component={EditPostModal} />
-        <Stack.Screen name="NewGroup" component={AddGroup} />
-        <Stack.Screen name="GroupDetails" component={GroupDetail} />
-        <Stack.Screen name="Group Post Detail" component={GroupPostDetail} />
-        <Stack.Screen name="Group" component={Group} />
-        <Stack.Screen name="Create Post In Group" component={CreatePostInGroup} />
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyTabs"
+        component={MyTabs}
+        options={{ headerShown: false }}
+      />
+      {/* ======= Group Post ========= */}
+      <Stack.Screen name="EditPost" component={EditPostModal} />
+      <Stack.Screen name="NewGroup" component={AddGroup} />
+      <Stack.Screen name="GroupDetails" component={GroupDetail} />
+      <Stack.Screen name="GroupPostDetail" component={GroupPostDetail} />
+      <Stack.Screen name="Group" component={Group} />
+      <Stack.Screen name="Create Post In Group" component={CreatePostInGroup} />
 
-        {/* ======Event ======= */}
-        <Stack.Screen name="Event" component={Event} />
-        <Stack.Screen name="EventDetail" component={EventDetail} />
+      {/* ======Event ======= */}
+      <Stack.Screen name="Event" component={Event} />
+      <Stack.Screen name="EventDetail" component={EventDetail} />
 
-        {/*=======Alumini ======  */}
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Update Profile" component={UpdateProfile} />
+      {/*=======Alumini ======  */}
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Update Profile" component={UpdateProfile} />
 
-        {/* =======Other====== */}
-        <Stack.Screen name="BlogDetail" component={BlogDetail} />
-        <Stack.Screen name="BlogPost" component={BlogPost} />
-        <Stack.Screen name="Setting" component={Setting} />
-      </Stack.Navigator>
-    )
-}
+      {/* =======Other====== */}
+      <Stack.Screen name="BlogDetail" component={BlogDetail} />
+      <Stack.Screen name="BlogPost" component={BlogPost} />
+      <Stack.Screen name="Setting" component={Setting} />
+    </Stack.Navigator>
+  );
+};
 
 export default RootNavigator;

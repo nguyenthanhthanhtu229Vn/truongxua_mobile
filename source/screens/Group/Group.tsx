@@ -101,7 +101,9 @@ const Group = () => {
   async function featchGroups(headers) {
     try {
       const response = await axios.get(groupURL, { headers });
-      setGroup(response.data);
+      if (response.status === 200) {
+        setGroup(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -110,14 +112,16 @@ const Group = () => {
   async function featchAlumni(headers) {
     try {
       const response = await axios.get(alumniURL, { headers });
-      setUser(response.data);
+      if (response.status == 200) {
+        setUser(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
   }
   useEffect(() => {
     tokenForAuthor();
-  });
+  }, []);
 
   const countAlumniInGroup = (idGroup) => {
     let count = 0;
@@ -169,6 +173,7 @@ const Group = () => {
         {/*=====FlatList Group=========  */}
         <View>
           <FlatList
+            keyExtractor={({ id }, index) => id}
             data={groups}
             numColumns={2}
             renderItem={({ item, index }) => {
@@ -246,6 +251,7 @@ const Group = () => {
             <View style={style.line} />
             <Text style={style.header}>Đã Tham Gia Nhóm</Text>
             <FlatList
+              keyExtractor={({ id }, index) => id}
               data={JOINED_GROUP}
               renderItem={({ item, index }) => {
                 return (
@@ -292,6 +298,7 @@ const Group = () => {
             <View style={style.line} />
             <Text style={style.header}>Suggested Groups </Text>
             <FlatList
+              keyExtractor={({ id }, index) => id}
               showsHorizontalScrollIndicator={false}
               pagingEnabled
               horizontal
