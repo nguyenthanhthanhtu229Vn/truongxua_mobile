@@ -22,6 +22,7 @@ import GroupPostDetail from "../Group/GroupPostDetails";
 import Home from "../Home/Home";
 import EditPostModal from "../Home/EditModal";
 import EditPostGroup from "../Group/EditModal";
+import AboutSchool from "../School/AboutSchool";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -99,6 +100,9 @@ const RootNavigator = () => {
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
       <Stack.Screen name="BlogPost" component={BlogPost} />
       <Stack.Screen name="Setting" component={Setting} />
+
+      {/* =====School== */}
+      <Stack.Screen name= "About School" component={AboutSchool} />
     </Stack.Navigator>
   );
 };
