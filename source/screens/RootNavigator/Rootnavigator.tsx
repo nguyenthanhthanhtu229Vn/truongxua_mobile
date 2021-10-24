@@ -79,13 +79,13 @@ const RootNavigator = () => {
         options={{ headerShown: false }}
       />
       {/* ======= Group Post ========= */}
-      <Stack.Screen name="Edit New" component={EditPostModal} />
-      <Stack.Screen name="Edit Post" component={EditPostGroup} />
+      <Stack.Screen name="EditNew" component={EditPostModal} />
+      <Stack.Screen name="EditPost" component={EditPostGroup} />
       <Stack.Screen name="NewGroup" component={AddGroup} />
       <Stack.Screen name="GroupDetails" component={GroupDetail} />
       <Stack.Screen name="GroupPostDetail" component={GroupPostDetail} />
       <Stack.Screen name="Group" component={Group} />
-      <Stack.Screen name="Create Post In Group" component={CreatePostInGroup} />
+      <Stack.Screen name="CreatePostInGroup" component={CreatePostInGroup} />
 
       {/* ======Event ======= */}
       <Stack.Screen name="Event" component={Event} />
@@ -93,7 +93,7 @@ const RootNavigator = () => {
 
       {/*=======Alumini ======  */}
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Update Profile" component={UpdateProfile} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
 
       {/* =======Other====== */}
       <Stack.Screen name="BlogDetail" component={BlogDetail} />

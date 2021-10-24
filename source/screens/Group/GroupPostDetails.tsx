@@ -1,4 +1,6 @@
-import React from "react";
+import { useNavigation, useRoute } from "@react-navigation/core";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,127 +9,566 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  Modal,
+  AsyncStorage,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { COLORS, icons } from "../../constant";
+import { ScrollView } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { COLORS, FONTS, icons, SIZES } from "../../constant";
 
-const comment = [
-  {
-    rating: "12",
-    img: require("../../assets/images/event.jpg"),
-    user: "Bryan",
-    content:
-      "Last summer, as Portland, Oregon, began to sizzle under a brutal, triple-digit heat wave, Vivek Shandas installed a window air conditioner in the bedroom of his home.",
-  },
-];
 const GroupPostDetail = () => {
+  const route = useRoute();
+  const [post, setPost] = useState<string>("");
+  const navigation = useNavigation();
+  const width = Dimensions.get("window").width;
+  const [visible, setVisible] = useState(false);
+  // ========= Start Modal=========
+  const ModalPoup = ({
+    visible,
+    children,
+  }: {
+    visible: any;
+    children: any;
+  }) => {
+    const [showModal, setShowModal] = React.useState(visible);
+    const scaleValue = React.useRef(new Animated.Value(0)).current;
+    React.useEffect(() => {
+      toggleModal();
+    }, [visible]);
+    const toggleModal = () => {
+      if (visible) {
+        setShowModal(true);
+        Animated.spring(scaleValue, {
+          toValue: 1,
+          delay: 300,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        setTimeout(() => setShowModal(false), 200);
+        Animated.timing(scaleValue, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      }
+    };
+    return (
+      <Modal transparent visible={showModal}>
+        <View style={style.modalBackGround}>
+          <Animated.View
+            style={[
+              style.modalContainer,
+              { transform: [{ scale: scaleValue }] },
+            ]}
+          >
+            {children}
+          </Animated.View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // Call Post API
+  async function featchPosts() {
+    try {
+      const response = await axios.get(
+        "http://20.188.111.70:12348/api/v1/posts/" + route.params.id
+      );
+      if (response.status === 200) {
+        setPost(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // Call Img API
+  const [listImg, setListImg] = useState<string>("");
+  const featchImageEvent = async () => {
+    try {
+      const response = await axios.get(
+        "http://20.188.111.70:12348/api/v1/images?pageNumber=0&pageSize=0"
+      );
+      if (response.status === 200) {
+        setListImg(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async () => {
+    try {
+      const response = await axios.get(alumniURL);
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Get Avt and Name for Post
+  const getAvtAlumni = (alumniId) => {
+    let avt = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        avt = alumni[i].img;
+        break;
+      }
+    }
+    return avt;
+  };
+
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
+  };
+  //=====Call Api Comment=======
+  const [comment, setComment] = useState<string>("");
+  const commentURL =
+    "http://20.188.111.70:12348/api/v1/posts/comments?sort=desc&pageNumber=0&pageSize=0";
+  const featchComment = async () => {
+    try {
+      const response = await axios.get(commentURL);
+      if (response.status === 200) {
+        setComment(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // ======Format Date====
+  const formatDate = (date) => {
+    const day = new Date(date);
+    return (
+      String(day.getDate()).padStart(2, "0") +
+      " tháng " +
+      String(day.getMonth() + 1).padStart(2, "0") +
+      ", " +
+      day.getFullYear() +
+      " lúc " +
+      String(day.getHours()).padStart(2, "0") +
+      ":" +
+      String(day.getMinutes()).padStart(2, "0")
+    );
+  };
+  const formatDateComment = (date) => {
+    const day = new Date(date);
+    return (
+      "Lúc " +
+      String(day.getDate()).padStart(2, "0") +
+      "/" +
+      String(day.getMonth() + 1).padStart(2, "0") +
+      "/" +
+      day.getFullYear() +
+      ", " +
+      String(day.getHours()).padStart(2, "0") +
+      ":" +
+      String(day.getMinutes()).padStart(2, "0")
+    );
+  };
+
+  // Get My Info
+  const [alumniId, setAlumniId] = useState<string>("");
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setAlumniId(objUser.Id);
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+  };
+
+  // Create Comment
+  const [content, setContent] = useState<string>("");
+  const [createAt, setCreateAt] = useState(new Date());
+  const [modifiedAt, setModifiedAt] = useState(new Date());
+  const [postId, setPostId] = useState<string>();
+  const createComment = async () => {
+    try {
+      const response = await axios.post(
+        `http://20.188.111.70:12348/api/v1/posts/comments`,
+        {
+          alumniId,
+          postId,
+          content,
+          createAt,
+        }
+      );
+      if (response.status === 200) {
+        await featchComment();
+        // navigation.navigate("GroupPostDetail");
+        setContent("");
+      }
+    } catch (error) {
+      alert("Ghi bình luận không thành công");
+    }
+  };
+  useEffect(() => {
+    setPostId(route.params.id);
+    featchPosts();
+    featchImageEvent();
+    featchAlumni();
+    featchComment();
+    tokenForAuthor();
+  }, []);
+
   return (
-    <View style={{ marginHorizontal: 12, marginTop: 10, position: 'relative',backgroundColor:'white' }}>
-      <FlatList
-        data={comment}
-        renderItem={({ item, index }) => {
-          return (
-            <View>
-              <View style={{ flexDirection: "row", marginBottom: 40 }}>
-                <Image source={item.img} style={style.img} />
-                <View
+    <View>
+      <ScrollView
+        style={{
+          position: "relative",
+          backgroundColor: "white",
+        }}
+      >
+        <View>
+          <View
+            style={{
+              backgroundColor: COLORS.white2,
+              marginTop: 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "column",
+                paddingLeft: 10,
+                paddingRight: 10,
+                marginTop: 20,
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <Image
+                  source={{ uri: getAvtAlumni(post.alumniId) }}
                   style={{
-                    height: Dimensions.get("window").height / 8,
-                    backgroundColor: "#f1eeee",
-                    width: 320,
-                    borderRadius: 8,
-                    marginLeft: 10,
+                    height: 60,
+                    width: 60,
+                    borderRadius: SIZES.largeTitle,
+                  }}
+                />
+                <Text
+                  style={{
+                    color: COLORS.blue,
+                    marginLeft: 4,
+                    ...FONTS.h3,
+                    fontWeight: "500",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "500",
-                      color: COLORS.black,
-                    }}
-                  >
-                    {item.user}
-                  </Text>
-                  <Text
-                    style={{
-                      color: COLORS.black,
-                      fontWeight: "300",
-                      fontSize: 16,
-                    }}
-                  >
-                    {item.content}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginTop: 12,
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {/* ====== text hour and like and reply */}
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Text style={style.text}>18h</Text>
-                      <TouchableOpacity onPress={() => console.log("like")}>
-                        <Text style={style.text}>Thích</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => console.log("reply")}>
-                        <Text style={style.text}>Trả Lời</Text>
-                      </TouchableOpacity>
+                  {getNameAlumni(post.alumniId)}
+                </Text>
+                {/* ====begin modal====== */}
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ModalPoup visible={visible}>
+                    <View style={{ alignItems: "center" }}>
+                      <View style={style.header}>
+                        <TouchableOpacity onPress={() => setVisible(false)}>
+                          <Image
+                            source={require("../../assets/icons/error.png")}
+                            style={{ height: 30, width: 30 }}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
 
-                    {/* =====Rating and Icons===== */}
                     <View
                       style={{
                         flexDirection: "row",
-                        marginRight: 10,
+                        alignItems: "center",
                       }}
                     >
-                      <Text style={{ fontSize: 16, marginRight: 6 }}>
-                        {item.rating}
-                      </Text>
-                      <Image source={icons.thumpUp} style={style.iconf} />
-                      <Image source={icons.heart} style={style.iconf} />
-                      <Image source={icons.angry} style={style.iconf} />
-                      <Image source={icons.sad} style={style.iconf} />
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("EditPost", {
+                            id: post.id,
+                          })
+                        }
+                      >
+                        <Image
+                          source={require("../../assets/icons/edit.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <Text>Edit Post</Text>
                     </View>
-                  </View>
+                    {/* delete */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => onSubmitFormHandler(post.id)}
+                      >
+                        <Image
+                          source={require("../../assets/icons/delete.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <Text>Delete Post</Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity>
+                        <Image
+                          source={require("../../assets/icons/edit.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            marginVertical: 10,
+                            marginLeft: 10,
+                            marginRight: 10,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <Text>Edit Privacy</Text>
+                    </View>
+                  </ModalPoup>
+                  <TouchableOpacity onPress={() => setVisible(true)}>
+                    <Image
+                      source={require("../../assets/icons/menu.png")}
+                      style={{
+                        height: 14,
+                        width: 14,
+                        marginLeft: 170,
+                        marginBottom: 34,
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
+                {/* end modal */}
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: -34,
+                  marginLeft: 64,
+                }}
+              >
+                <Image source={icons.globe} style={{ height: 20, width: 20 }} />
+                <Text style={{ marginLeft: 8 }}>
+                  {formatDate(post.createAt)}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  marginTop: 30,
+                  ...FONTS.h3,
+                  color: COLORS.black,
+                  marginBottom: 10,
+                }}
+              >
+                {post.content}
+              </Text>
+              <ScrollView horizontal style={{ flexDirection: "row" }}>
+                <FlatList
+                  numColumns={10}
+                  data={listImg}
+                  keyExtractor={({ id }, index) => id}
+                  renderItem={({ item, index }) => {
+                    if (post.id == item.postId) {
+                      return (
+                        <Image
+                          style={{
+                            width: 400,
+                            height: 240,
+                            marginRight: 20,
+                            resizeMode: "cover",
+                          }}
+                          source={{ uri: item.imageUrl }}
+                        ></Image>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+              </ScrollView>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 14,
+                  alignItems: "center",
+                  marginLeft: 8,
+                }}
+              >
+                <Image source={icons.thumpUp} style={style.iconf} />
+                <Image source={icons.heart} style={style.iconf} />
+                <Image source={icons.angry} style={style.iconf} />
+                <Image source={icons.sad} style={style.iconf} />
+                <Text>10+</Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10,
+                  justifyContent: "space-around",
+                  marginBottom: 10,
+                  borderTopColor: "#ececec",
+                  borderTopWidth: 1,
+                  paddingTop: 10,
+                }}
+              >
+                <TouchableOpacity style={style.btn}>
+                  <Image source={icons.like} style={style.icon}></Image>
+                  <Text style={style.text}>Thích </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={style.btn}>
+                  <Image source={icons.comment} style={style.icon}></Image>
+                  <Text style={style.text}>Bình luận</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={style.btn}>
+                  <Image source={icons.share} style={style.icon}></Image>
+                  <Text style={style.text}>Chia sẽ</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          );
-        }}
-      />
-      {/* ======Write Comment===== */}
+          </View>
+        </View>
+        {/* ======comment ==== */}
+        <View
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: "#ececec",
+            paddingTop: 20,
+            paddingLeft: 10,
+            paddingRight: 10,
+            marginBottom: 80,
+          }}
+        >
+          <FlatList
+            data={comment}
+            keyExtractor={({ id }, index) => id}
+            renderItem={({ item, index }) => {
+              if (post.id == item.postId) {
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginBottom: 40,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Image
+                      source={{ uri: getAvtAlumni(item.alumniId) }}
+                      style={style.img}
+                    />
+                    <View
+                      style={{
+                        padding: 10,
+                        backgroundColor: "#f1eeee",
+                        width: 350,
+                        borderRadius: 20,
+                        marginLeft: 10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "500",
+                          color: COLORS.black,
+                        }}
+                      >
+                        {getNameAlumni(item.alumniId)}
+                      </Text>
+                      <Text
+                        style={{
+                          color: COLORS.black,
+                          fontWeight: "300",
+                          fontSize: 16,
+                          marginTop: 10,
+                        }}
+                      >
+                        {item.content}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 12,
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {/* ====== text hour and like and reply */}
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Text style={style.text2}>
+                            {formatDateComment(item.createAt)}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                );
+              }
+              return null;
+            }}
+          />
+        </View>
+        {/* ======Write Comment===== */}
+      </ScrollView>
       <View
         style={{
-          height: 80,
-          width: 400 ,
+          height: 90,
+          width: width,
           backgroundColor: "white",
           shadowOpacity: 0.1,
-          marginHorizontal: -14,
-          // marginTop: 60,
-          position: 'absolute',
-          top: 640,
-          // zIndex:100
+          position: "absolute",
+          bottom: 0,
+          padding: 10,
         }}
       >
         <TextInput
-          placeholder={"Viết Bình Luận ....."}
+          placeholder={"  Viết Bình Luận ..."}
           multiline
+          value={content}
           style={{
             borderWidth: 0.1,
             backgroundColor: "#e7e6e6",
-            paddingLeft: 8,
-            paddingTop: 10,
             height: 40,
             borderRadius: 10,
             marginHorizontal: 8,
-            marginTop: 6,
-            marginRight: 10
           }}
+          onChangeText={(content) => setContent(content)}
         />
         {/* =====icons image and button comment ====== */}
         <View
@@ -151,7 +592,7 @@ const GroupPostDetail = () => {
             <Image source={icons.smile_face} style={style.icon_comment} />
             <Image source={icons.fmale} style={style.icon_comment} />
           </View>
-          <TouchableOpacity onPress={() => console.log('Post Comment')}>
+          <TouchableOpacity onPress={() => createComment()}>
             <Image
               source={icons.send}
               style={{ height: 20, width: 20, marginRight: 18 }}
@@ -169,19 +610,80 @@ const style = StyleSheet.create({
     width: 40,
     borderRadius: 20,
   },
-  iconf: {
-    height: 16,
-    width: 16,
-  },
   icon_comment: {
     height: 20,
     width: 20,
   },
+  icon: {
+    height: 20,
+    width: 20,
+  },
+  msg: {
+    ...FONTS.h3,
+    fontSize: 18,
+    fontWeight: "600",
+    marginLeft: 10,
+    marginRight: 65,
+    color: COLORS.black,
+  },
+  btn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    // shadowOpacity: 0.2,
+  },
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
+  },
+  header: {
+    width: "100%",
+    height: 40,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  plusBtn: {
+    backgroundColor: "#088dcd",
+    height: 45,
+    width: 45,
+    borderRadius: SIZES.largeTitle,
+    position: "absolute",
+    right: 10,
+    top: 170,
+  },
+  textPlus: {
+    position: "absolute",
+    fontSize: 18,
+    top: 14,
+    left: 16,
+    zIndex: 2,
+    color: "white",
+  },
+  iconf: {
+    height: 20,
+    width: 20,
+  },
+  text2: {
+    fontSize: 12,
+    position: "absolute",
+    bottom: -30,
+    color: "gray",
+  },
   text: {
     fontSize: 16,
-    color: "#8d8c8c",
-    marginRight: 6,
-    fontWeight: "400",
+    fontWeight: "500",
+    marginLeft: 10,
   },
 });
 

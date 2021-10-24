@@ -83,7 +83,9 @@ const GroupDetail = () => {
   async function featchGroupDetail() {
     try {
       const response = await axios.get(groupURL + route.params.id);
-      setGroupDetail(response.data);
+      if (response.status === 200) {
+        setGroupDetail(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -92,31 +94,88 @@ const GroupDetail = () => {
   // =======Begin Call Api Post
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const postURL = `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=5`;
+  const postURL = `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=0`;
   const [data, setData] = useState({});
 
   async function featchPosts() {
     try {
       const response = await axios.get(postURL);
-      setData(response.data);
+      if (response.status === 200) {
+        setData(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
   }
 
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async () => {
+    try {
+      const response = await axios.get(alumniURL);
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Call Api Image for Post
+  const [listImg, setListImg] = useState<string>("");
+  const featchImageEvent = async () => {
+    try {
+      const response = await axios.get(
+        "http://20.188.111.70:12348/api/v1/images?pageNumber=0&pageSize=0"
+      );
+      if (response.status === 200) {
+        setListImg(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     featchGroupDetail();
     featchPosts();
+    featchAlumni();
+    featchImageEvent();
   }, []);
+
+  //========== Get Alumni create Post ===========
+  const getAvtAlumni = (alumniId) => {
+    let avt = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        avt = alumni[i].img;
+        break;
+      }
+    }
+    return avt;
+  };
+
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
+  };
+
   //====== begin detele post =======
   const onSubmitFormHandler = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/posts/`+id);
+      const response = await axios.delete(`${baseUrl}/api/v1/posts/` + id);
 
       if (response.status === 200) {
         alert("Xoá Bài Viết Thành Công ");
-        navigation.navigate('Group')
+        navigation.navigate("Group");
         setTimeout(function () {
           setVisible(false);
         }, 2);
@@ -131,15 +190,15 @@ const GroupDetail = () => {
   const formatDate = (date) => {
     const day = new Date(date);
     return (
-      day.getDate() +
+      String(day.getDate()).padStart(2, "0") +
       " tháng " +
-      (day.getMonth() + 1) +
+      String(day.getMonth() + 1).padStart(2, "0") +
       ", " +
       day.getFullYear() +
       " lúc " +
-      day.getHours() +
+      String(day.getHours()).padStart(2, "0") +
       ":" +
-      day.getMinutes()
+      String(day.getMinutes()).padStart(2, "0")
     );
   };
 
@@ -157,7 +216,7 @@ const GroupDetail = () => {
           <TouchableOpacity
             style={style.plusBtn}
             onPress={() => {
-              navigation.navigate("Create Post In Group");
+              navigation.navigate("CreatePostInGroup");
             }}
           >
             <Foundation name="plus" style={style.textPlus}></Foundation>
@@ -329,19 +388,18 @@ const GroupDetail = () => {
           </View>
         </View>
 
-        <View style={{ marginTop: -170 }}>
-          {/* ======Begin News ==== */}
-          <View style={{ marginTop: 150 }}>
-            <FlatList
-              data={data}
-              keyExtractor={({ id }, index) => id}
-              renderItem={({ item, index }) => {
+        {/* ======Begin Post ==== */}
+        <View>
+          <FlatList
+            data={data}
+            keyExtractor={({ id }, index) => id}
+            renderItem={({ item, index }) => {
+              if (item.groupId == route.params.id) {
                 return (
                   <View
                     style={{
                       backgroundColor: COLORS.white2,
-                      shadowOpacity: 0.4,
-                      marginBottom: 16,
+                      marginTop: 10,
                     }}
                   >
                     <View
@@ -354,7 +412,7 @@ const GroupDetail = () => {
                     >
                       <View style={{ flexDirection: "row" }}>
                         <Image
-                          source={require("../../assets/images/avatar.jpeg")}
+                          source={{ uri: getAvtAlumni(item.alumniId) }}
                           style={{
                             height: 60,
                             width: 60,
@@ -369,7 +427,7 @@ const GroupDetail = () => {
                             fontWeight: "500",
                           }}
                         >
-                          Quang Huy
+                          {getNameAlumni(item.alumniId)}
                         </Text>
                         {/* ====begin modal====== */}
                         <View
@@ -399,7 +457,7 @@ const GroupDetail = () => {
                                 alignItems: "center",
                               }}
                               onPress={() =>
-                                navigation.navigate("Edit Post", {
+                                navigation.navigate("EditPost", {
                                   id: item.id,
                                 })
                               }
@@ -489,7 +547,7 @@ const GroupDetail = () => {
                       </View>
                       <Text
                         style={{
-                          marginTop: 20,
+                          marginTop: 30,
                           ...FONTS.h3,
                           color: COLORS.black,
                           marginBottom: 10,
@@ -497,6 +555,31 @@ const GroupDetail = () => {
                       >
                         {item.content}
                       </Text>
+                      {/* =======img for post==== */}
+                      <ScrollView horizontal style={{ flexDirection: "row" }}>
+                        <FlatList
+                          numColumns={10}
+                          data={listImg}
+                          keyExtractor={({ id }, index) => id}
+                          renderItem={({ item2, index }) => {
+                            if (item.id == listImg[index].postId) {
+                              return (
+                                <Image
+                                  style={{
+                                    width: 400,
+                                    height: 240,
+                                    marginRight: 20,
+                                    resizeMode: "cover",
+                                  }}
+                                  source={{ uri: listImg[index].imageUrl }}
+                                ></Image>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                      </ScrollView>
+
                       {/* ======comment ==== */}
                       <View
                         style={{
@@ -518,43 +601,46 @@ const GroupDetail = () => {
                           flexDirection: "row",
                           marginTop: 10,
                           justifyContent: "space-around",
+                          marginBottom: 10,
+                          borderTopColor: "#ececec",
+                          borderTopWidth: 1,
+                          paddingTop: 10,
                         }}
                       >
                         <TouchableOpacity style={style.btn}>
                           <Image source={icons.like} style={style.icon}></Image>
-                          <Text style={style.text}>Like </Text>
+                          <Text style={style.text}>Thích </Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                           style={style.btn}
-                          onPress={() => navigation.navigate("GroupPostDetail")}
+                          onPress={() =>
+                            navigation.navigate("GroupPostDetail", {
+                              id: item.id,
+                            })
+                          }
                         >
                           <Image
                             source={icons.comment}
                             style={style.icon}
                           ></Image>
-                          <Text style={style.text}>Comment</Text>
+                          <Text style={style.text}>Bình luận</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={style.btn}>
                           <Image
                             source={icons.share}
                             style={style.icon}
                           ></Image>
-                          <Text style={style.text}>Share</Text>
+                          <Text style={style.text}>Chia sẽ</Text>
                         </TouchableOpacity>
                       </View>
-
-                      <Image
-                        source={item.images}
-                        style={{ width: "100%" }}
-                        resizeMode="cover"
-                      />
                     </View>
                   </View>
                 );
-              }}
-            />
-          </View>
+              }
+              return null;
+            }}
+          />
         </View>
       </View>
     </ScrollView>
@@ -568,8 +654,8 @@ const style = StyleSheet.create({
     bottom: 4,
   },
   icon: {
-    height: 22,
-    width: 22,
+    height: 20,
+    width: 20,
   },
   msg: {
     ...FONTS.h3,
@@ -580,20 +666,17 @@ const style = StyleSheet.create({
     color: COLORS.black,
   },
   btn: {
-    width: 100,
-    height: 30,
-    backgroundColor: "#eeecec",
-    flexDirection: "row",
+    display: "flex",
     alignItems: "center",
-    borderRadius: 6,
-    shadowOpacity: 0.2,
+    justifyContent: "space-between",
+    flexDirection: "row",
   },
   iconf: {
     height: 20,
     width: 20,
   },
   text: {
-    ...FONTS.h4,
+    fontSize: 16,
     fontWeight: "500",
     marginLeft: 10,
   },

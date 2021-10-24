@@ -64,15 +64,15 @@ const Event: React.FC = (props) => {
     const day = new Date(date);
     return (
       "Vào lúc: " +
-      day.getDate() +
+      String(day.getDate()).padStart(2, "0") +
       "/" +
-      (day.getMonth() + 1) +
+      String(day.getMonth() + 1).padStart(2, "0") +
       "/" +
       day.getFullYear() +
       ", " +
-      day.getHours() +
+      String(day.getHours()).padStart(2, "0") +
       ":" +
-      day.getMinutes()
+      String(day.getMinutes()).padStart(2, "0")
     );
   };
 

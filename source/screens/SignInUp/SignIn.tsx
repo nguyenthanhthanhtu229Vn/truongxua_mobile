@@ -67,7 +67,7 @@ const SignIn: React.FC = () => {
           alumni.data.phone == "" ||
           alumni.data.bio == ""
         ) {
-          navigation.navigate("Update Profile");
+          navigation.navigate("UpdateProfile");
         } else {
           navigation.navigate("MyTabs");
         }

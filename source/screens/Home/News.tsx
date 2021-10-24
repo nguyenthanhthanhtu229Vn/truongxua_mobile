@@ -68,20 +68,20 @@ const News: React.FC = () => {
       )
       .catch((error) => alert(error))
       .finally(() => setLoading(false));
-  });
+  }, []);
 
   const formatDate = (date) => {
     const day = new Date(date);
     return (
-      day.getDate() +
+      String(day.getDate()).padStart(2, "0") +
       " tháng " +
-      (day.getMonth() + 1) +
+      String(day.getMonth() + 1).padStart(2, "0") +
       ", " +
       day.getFullYear() +
       " lúc " +
-      day.getHours() +
+      String(day.getHours()).padStart(2, "0") +
       ":" +
-      day.getMinutes()
+      String(day.getMinutes()).padStart(2, "0")
     );
   };
   // ====== begin detele post =======
@@ -161,7 +161,7 @@ const News: React.FC = () => {
                           <TouchableOpacity onPress={() => setVisible(false)}>
                             <Image
                               source={require("../../assets/icons/error.png")}
-                              style={{ height: 30, width: 30,}}
+                              style={{ height: 30, width: 30 }}
                             />
                           </TouchableOpacity>
                         </View>
@@ -170,9 +170,11 @@ const News: React.FC = () => {
                       {/* =====Update Bai Viet===== */}
                       <TouchableOpacity
                         style={{ flexDirection: "row", alignItems: "center" }}
-                        onPress={() => navigation.navigate("Edit New",{
-                          id:item.id
-                        })}
+                        onPress={() =>
+                          navigation.navigate("EditNew", {
+                            id: item.id,
+                          })
+                        }
                       >
                         <Image
                           source={require("../../assets/icons/edit.png")}
@@ -240,11 +242,22 @@ const News: React.FC = () => {
                   style={{
                     flexDirection: "row",
                     marginTop: -20,
-                    alignItems:'center'
+                    alignItems: "center",
                   }}
                 >
-                  <Image source={icons.nTitle} style={{height: 14, width: 14}} />
-                  <Text style={{ ...FONTS.h3, color:COLORS.black, fontWeight:'500'}}>{item.title}</Text>
+                  <Image
+                    source={icons.nTitle}
+                    style={{ height: 14, width: 14 }}
+                  />
+                  <Text
+                    style={{
+                      ...FONTS.h3,
+                      color: COLORS.black,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {item.title}
+                  </Text>
                 </View>
 
                 <Text
