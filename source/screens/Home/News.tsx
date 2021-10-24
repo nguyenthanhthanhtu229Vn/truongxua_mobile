@@ -57,7 +57,7 @@ const News: React.FC = () => {
   const baseUrl = "http://20.188.111.70:12348";
   const [visible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const postURL = `${baseUrl}/api/v1/news?sort=desc&pageNumber=0&pageSize=5`;
+  const postURL = `${baseUrl}/api/v1/news?sort=desc&pageNumber=0&pageSize=0`;
   const [data, setData] = useState({});
   useEffect(() => {
     fetch(postURL)

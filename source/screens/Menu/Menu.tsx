@@ -1,7 +1,7 @@
 // /* eslint-disable react-native/no-inline-styles */
 import React from "react";
-import { Dimensions, View } from "react-native";
-import { COLORS, icons } from "../../constant";
+import { View } from "react-native";
+import { icons } from "../../constant";
 import constant from "../../constant/constant";
 import CategoryMenu from "./Category";
 import { StyleSheet } from "react-native";
@@ -9,13 +9,13 @@ import { useNavigation } from "@react-navigation/core";
 const Menu: React.FC = () => {
   const navigation = useNavigation();
   return (
-    <View
-      style={{
-        // height: Dimensions.get("window").height,
-        backgroundColor: COLORS.white,
-      }}
-    >
+    <View style={{ flex: 1, marginTop: 90, marginLeft: 44 }}>
       <View style={style.container}>
+        <CategoryMenu
+          icon={icons.home_m}
+          label={constant.screens.home}
+          onPress={() => navigation.navigate("Trang Chủ")}
+        />
         <CategoryMenu
           icon={icons.profile_m}
           label={constant.screens.profile}
@@ -28,19 +28,15 @@ const Menu: React.FC = () => {
           label={constant.screens.group}
           onPress={() => navigation.navigate("Group")}
         />
+      </View>
+      <View style={style.container}>
+        {/* <CategoryMenu icon={icons.videos} label={constant.screens.video} /> */}
         <CategoryMenu
           icon={icons.event}
           label={constant.screens.event}
           onPress={() => {
             navigation.navigate("Event");
           }}
-        />
-      </View>
-      <View style={style.container}>
-        <CategoryMenu
-          icon={icons.school}
-          label={constant.screens.school}
-          onPress={() => navigation.navigate("About School")}
         />
         <CategoryMenu
           icon={icons.pages}
@@ -57,7 +53,16 @@ const Menu: React.FC = () => {
           }}
         />
       </View>
+      {/* <View style={style.container}>
+        <CategoryMenu
+          icon={icons.setting}
+          label={constant.screens.setting}
+          onPress={() => {
+            navigation.navigate("Setting");
+          }}
+        /> */}
     </View>
+    // </View>
   );
 };
 const style = StyleSheet.create({

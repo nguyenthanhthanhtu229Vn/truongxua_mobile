@@ -199,6 +199,7 @@ const GroupPostDetail = () => {
   const [createAt, setCreateAt] = useState(new Date());
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [postId, setPostId] = useState<string>();
+  const [status, setStatus] = useState<boolean>(true);
   const createComment = async () => {
     try {
       const response = await axios.post(
@@ -208,6 +209,7 @@ const GroupPostDetail = () => {
           postId,
           content,
           createAt,
+          status,
         }
       );
       if (response.status === 200) {
@@ -266,6 +268,7 @@ const GroupPostDetail = () => {
                     marginLeft: 4,
                     ...FONTS.h3,
                     fontWeight: "500",
+                    width: 280,
                   }}
                 >
                   {getNameAlumni(post.alumniId)}
@@ -366,7 +369,6 @@ const GroupPostDetail = () => {
                       style={{
                         height: 14,
                         width: 14,
-                        marginLeft: 170,
                         marginBottom: 34,
                       }}
                     />
@@ -529,11 +531,24 @@ const GroupPostDetail = () => {
                       >
                         {/* ====== text hour and like and reply */}
                         <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
                         >
                           <Text style={style.text2}>
                             {formatDateComment(item.createAt)}
                           </Text>
+                          {alumniId == item.alumniId ? (
+                            <View>
+                              <TouchableOpacity style={style.btnDeletCmt}>
+                                <Text style={style.text3}>Xóa</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity style={style.btnEditCmt}>
+                                <Text style={style.text4}>Chỉnh sửa</Text>
+                              </TouchableOpacity>
+                            </View>
+                          ) : null}
                         </View>
                       </View>
                     </View>
@@ -558,7 +573,7 @@ const GroupPostDetail = () => {
         }}
       >
         <TextInput
-          placeholder={"  Viết Bình Luận ..."}
+          placeholder={" Viết Bình Luận ..."}
           multiline
           value={content}
           style={{
@@ -567,6 +582,7 @@ const GroupPostDetail = () => {
             height: 40,
             borderRadius: 10,
             marginHorizontal: 8,
+            padding: 10,
           }}
           onChangeText={(content) => setContent(content)}
         />
@@ -679,6 +695,24 @@ const style = StyleSheet.create({
     position: "absolute",
     bottom: -30,
     color: "gray",
+  },
+  text3: {
+    fontSize: 14,
+    color: "gray",
+  },
+  btnDeletCmt: {
+    position: "absolute",
+    bottom: -30,
+    right: 30,
+  },
+  text4: {
+    fontSize: 14,
+    color: "gray",
+  },
+  btnEditCmt: {
+    position: "absolute",
+    bottom: -30,
+    right: 80,
   },
   text: {
     fontSize: 16,

@@ -169,10 +169,12 @@ const GroupDetail = () => {
 
   //====== begin detele post =======
   const onSubmitFormHandler = async (id) => {
+    console.log(id);
     setLoading(true);
     try {
-      const response = await axios.delete(`${baseUrl}/api/v1/posts/` + id);
-
+      const response = await axios.delete(
+        "http://20.188.111.70:12348/api/v1/posts/" + id
+      );
       if (response.status === 200) {
         alert("Xoá Bài Viết Thành Công ");
         navigation.navigate("Group");
@@ -182,6 +184,7 @@ const GroupDetail = () => {
         // setVisible(false)
       }
     } catch (error) {
+      console.log(error);
       alert("Bị Lỗi Không Xoá Được ");
       setLoading(false);
     }
@@ -216,7 +219,10 @@ const GroupDetail = () => {
           <TouchableOpacity
             style={style.plusBtn}
             onPress={() => {
-              navigation.navigate("CreatePostInGroup");
+              navigation.navigate("CreatePostInGroup", {
+                id: route.params.id,
+                numberAlumni: route.params.numberAlumni,
+              });
             }}
           >
             <Foundation name="plus" style={style.textPlus}></Foundation>
@@ -425,6 +431,7 @@ const GroupDetail = () => {
                             marginLeft: 4,
                             ...FONTS.h3,
                             fontWeight: "500",
+                            width: 280,
                           }}
                         >
                           {getNameAlumni(item.alumniId)}
@@ -521,7 +528,6 @@ const GroupDetail = () => {
                               style={{
                                 height: 14,
                                 width: 14,
-                                marginLeft: 170,
                                 marginBottom: 34,
                               }}
                             />
@@ -631,7 +637,7 @@ const GroupDetail = () => {
                             source={icons.share}
                             style={style.icon}
                           ></Image>
-                          <Text style={style.text}>Chia sẻ</Text>
+                          <Text style={style.text}>Chia sẽ</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
