@@ -8,7 +8,7 @@ const PostAnalysis = () => {
       style={{
         marginHorizontal: 10,
         marginTop: 30,
-        width: 370,
+        padding: 20,
         backgroundColor: COLORS.white,
         borderWidth: 0.5,
         borderColor: "#E1E8EC",

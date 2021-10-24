@@ -1,6 +1,6 @@
-import React from 'react';
-import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
-import {COLORS, FONTS, SIZES} from '../../constant'
+import React from "react";
+import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import { COLORS, FONTS, SIZES } from "../../constant";
 const CategoryMenu = ({
   label,
   icon,
@@ -11,19 +11,19 @@ const CategoryMenu = ({
   onPress?: any;
 }) => {
   return (
-    <View style={{position: 'relative',top: 40}}>
+    <View style={{ position: "relative", top: 40 }}>
       <TouchableOpacity
         onPress={onPress}
         style={{
-          flexDirection: 'column',
+          flexDirection: "column",
           height: 48,
           width: 48,
           marginBottom: SIZES.base,
           paddingLeft: SIZES.radius,
           borderRadius: SIZES.radius,
           backgroundColor: COLORS.white,
-          
-        }}>
+        }}
+      >
         <Image
           source={icon}
           style={{
@@ -36,13 +36,14 @@ const CategoryMenu = ({
       </TouchableOpacity>
       <Text
         style={{
-          textAlign: 'justify',
+          textAlign: "justify",
           color: COLORS.black,
           height: 20,
-          fontWeight: '400',
+          fontWeight: "400",
           ...FONTS.h3,
           width: 90,
-        }}>
+        }}
+      >
         {label}
       </Text>
     </View>

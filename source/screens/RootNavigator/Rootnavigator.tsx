@@ -102,7 +102,7 @@ const RootNavigator = () => {
       <Stack.Screen name="Setting" component={Setting} />
 
       {/* =====School== */}
-      <Stack.Screen name= "About School" component={AboutSchool} />
+      <Stack.Screen name="About School" component={AboutSchool} />
     </Stack.Navigator>
   );
 };

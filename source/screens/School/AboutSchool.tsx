@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,14 @@ import {
   Dimensions,
   ScrollView,
   FlatList,
+  AsyncStorage,
 } from "react-native";
 import { COLORS, icons } from "../../constant";
 import { StyleSheet } from "react-native";
 import ExploreEvent from "./ExplorEvent";
 import Member from "./Member";
 import PostAnalysis from "./PostAnalytics";
+import axios from "axios";
 
 const Information = ({
   header,
@@ -109,13 +111,41 @@ const Touchable = ({ icon, onPress }: { icon: any; onPress?: any }) => {
   );
 };
 const AboutSchool = () => {
+  const [school, setSchool] = useState<boolean>(false);
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    //
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    await featchSchool(objUser.SchoolId);
+  };
+  const featchSchool = async (id) => {
+    try {
+      const reponse = await axios.get(
+        "http://20.188.111.70:12348/api/v1/schools/" + id
+      );
+      if (reponse.status === 200) {
+        setSchool(reponse.data);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+  useEffect(() => {
+    tokenForAuthor();
+  }, []);
   return (
     <ScrollView>
       <View>
         {/* ======background image====== */}
         <View style={{ position: "relative" }}>
           <Image
-            source={require("../../assets/images/schools.jpg")}
+            source={{ uri: school.image }}
             style={{
               height: 200,
               width: Dimensions.get("window").width,
@@ -129,20 +159,30 @@ const AboutSchool = () => {
             flexDirection: "row",
             alignItems: "center",
             position: "absolute",
-            top: 50,
-            left: 10,
+            top: 40,
+            left: "50%",
+            transform: [{ translateX: "-100%" }],
           }}
         >
-          <Image
-            source={require("../../assets/images/event.jpg")}
-            style={{ width: 60, height: 60, borderRadius: 30 }}
-          />
           {/* =====and name and address=== */}
-          <View style={{ marginLeft: 10 }}>
+          <View
+            style={{
+              marginLeft: 10,
+              backgroundColor: "#088dcd",
+              padding: 10,
+              borderWidth: 1,
+              borderColor: "white",
+              borderRadius: 10,
+            }}
+          >
             <Text
-              style={{ fontWeight: "600", fontSize: 17, color: COLORS.white }}
+              style={{
+                fontWeight: "600",
+                fontSize: 17,
+                color: COLORS.white,
+              }}
             >
-              Trường THPT FPT
+              {school.name}
             </Text>
             <Text
               style={{ fontWeight: "500", fontSize: 16, color: COLORS.white }}
@@ -158,9 +198,10 @@ const AboutSchool = () => {
             alignItems: "center",
             position: "absolute",
             top: 120,
-            left: 13,
+            left: "46%",
+            transform: [{ translateX: "-100%" }],
             width: 250,
-            justifyContent: "space-between",
+            justifyContent: "space-evenly",
           }}
         >
           {/* ====Touchable invite=== */}
@@ -170,7 +211,7 @@ const AboutSchool = () => {
           {/* ====Touchable share=== */}
           <Touchable icon={icons.share_c} />
           {/* ====Touchable invite colleagues=== */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               height: 30,
               width: 100,
@@ -189,15 +230,14 @@ const AboutSchool = () => {
             >
               Mời Bạn
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         {/* ====Information==== */}
         <View
           style={{
             marginHorizontal: 10,
             marginTop: 30,
-            width: 370,
-            height: 400,
+            padding: 20,
             backgroundColor: COLORS.white,
             borderWidth: 0.5,
             borderColor: "#E1E8EC",
@@ -208,16 +248,16 @@ const AboutSchool = () => {
           <Information
             isHidden={true}
             header={"Thông Tin"}
-            text={"Địa Chỉ"}
-            msg={"51 Ly Phuc Man ,Phuong Binh Thuan Quan 7"}
+            text={"Mô tả"}
+            msg={school.description}
           />
-          <Information text={"Hiệu Trưởng"} msg={"Bryan Tran"} />
+          {/* <Information text={"Hiệu Trưởng"} msg={"Bryan Tran"} />
           <Information
             text={"Website"}
             msg={"http://www.huynhtanphat.edu.vn"}
           />
           <Information text={"Số Điện Thoại"} msg={"0977233394"} />
-          <Information text={"Fax"} msg={"0977233391"} />
+          <Information text={"Fax"} msg={"0977233391"} /> */}
         </View>
         {/* =====Explor exvent==== */}
         <ExploreEvent />
