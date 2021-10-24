@@ -45,7 +45,18 @@ const search = require('../assets/icons/search.png');
 
 const calendar = require('../assets/icons/calendar.png');
 const nTitle = require('../assets/icons/notification.png');
+const school = require('../assets/icons/school.png');
+
+const star_c = require('../assets/icons/star_c.png');
+const share_c = require('../assets/icons/share_c.png');
+const invite_c = require('../assets/icons/invitation_c.png');
+const dot = require('../assets/icons/dots.png');
 export default {
+  dot,
+  share_c,
+  star_c,
+  invite_c,
+  school,
   nTitle,
   calendar,
   search,

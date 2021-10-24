@@ -631,7 +631,7 @@ const GroupDetail = () => {
                             source={icons.share}
                             style={style.icon}
                           ></Image>
-                          <Text style={style.text}>Chia sẽ</Text>
+                          <Text style={style.text}>Chia sẻ</Text>
                         </TouchableOpacity>
                       </View>
                     </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, Text, TouchableOpacity, View} from 'react-native';
 import {COLORS, FONTS, SIZES} from '../../constant'
 const CategoryMenu = ({
   label,
@@ -11,7 +11,7 @@ const CategoryMenu = ({
   onPress?: any;
 }) => {
   return (
-    <View>
+    <View style={{position: 'relative',top: 40}}>
       <TouchableOpacity
         onPress={onPress}
         style={{
@@ -22,6 +22,7 @@ const CategoryMenu = ({
           paddingLeft: SIZES.radius,
           borderRadius: SIZES.radius,
           backgroundColor: COLORS.white,
+          
         }}>
         <Image
           source={icon}

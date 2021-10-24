@@ -10,6 +10,7 @@ const screens = {
     blog: 'Bài Đăng ',
     event: 'Sự Kiện ',
     setting: 'Cài Đặt',
+    school: 'Về Trường',
   };
   
   const menu = [
@@ -52,6 +53,10 @@ const screens = {
     {
       id: 9,
       label: screens.blog,
+    },
+    {
+      id: 10,
+      label: screens.school,
     },
   ];
   
