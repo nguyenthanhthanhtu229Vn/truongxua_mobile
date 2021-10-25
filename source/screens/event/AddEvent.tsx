@@ -1,33 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "../../../components/Themed";
-import { COLORS, FONTS,SIZES } from "../../constant";
+import { COLORS, FONTS, SIZES } from "../../constant";
 import {
   Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Image
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import DropDownPicker from "react-native-dropdown-picker";
+import { Foundation } from "@expo/vector-icons";
+
+const ImagePost = () => {
+  const [image, setImage] = useState(null);
+  useEffect(() => {
+    async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    };
+  }, []);
+  const pickImg = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+  return (
+    <View>
+      <TouchableOpacity onPress={pickImg}>
+        <Image
+          style={{ width: 25, height: 25 }}
+          source={require("../../assets/icons/imageGallery.png")}
+        />
+      </TouchableOpacity>
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
+      )}
+    </View>
+  );
+};
 
 const AddEvent = () => {
-  // Open image 
-  let openImagePickerAsync = async () => {
-    let permissionResult =
-      await ImagePicker.requestCameraRollPermissionsAsync();
 
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    console.log(pickerResult);
-  };
-
-// Open popup date
+  // Open popup date
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -50,153 +75,45 @@ const AddEvent = () => {
   const showTimepicker = () => {
     showMode("time");
   };
-// End  popup date
-
-// Data su kien 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Personal Event", value: "Personal Event" },
-    { label: "Public Event", value: "Public Event" },
-  ]);
-//  Data category
-  const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [cate, setCate] = useState([
-    { label: "Hop Lop", value: "Hop Lop" },
-    { label: "Hoi Thao", value: "Hoi Thao" },
-  ]);
+  // End  popup date
 
   return (
     <ScrollView>
       <View style={{ flexDirection: "column" }}>
-        <View
-          style={{
-            backgroundColor: "#088dcd",
-            height: 70,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              ...FONTS.h2,
-              color: COLORS.white2,
-              fontWeight: "700",
-              marginLeft: 10,
-            }}
-          >
-            Tạo Event
-          </Text>
-          <Text
-            style={{
-              ...FONTS.h3,
-              color: COLORS.white,
-              fontWeight: "400",
-              marginRight: 10,
-            }}
-          >
-            Tạo Sự Kiên/ Bài Viết
-          </Text>
-        </View>
         <View style={{ marginHorizontal: 16, marginVertical: 18 }}>
           <View style={style.line} />
           <Text style={style.header}>Tạo Sự Kiện </Text>
         </View>
         <View style={{ marginHorizontal: 16 }}>
-            {/* =======Drop down Event===== */}
-          <DropDownPicker
-            stickyHeader
-            style={style.input}
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-          />
           <TextInput placeholder="Tên Sự Kiện" style={style.input} />
-          {/* ======Drop down Category */}
-          <DropDownPicker
-            style={style.input}
-            open={open1}
-            value={value1}
-            items={cate}
-            setOpen={setOpen1}
-            setValue={setValue1}
-            setItems={setCate}
-          />
-          <View style={{ marginTop: 10, marginBottom: 30 }}>
-            {/* ======Touch Image ====== */}
-            <TouchableOpacity
-              onPress={openImagePickerAsync}
-              style={{
-                backgroundColor: "#088DCD",
-                width: 120,
-                height: 30,
-                borderRadius: 2,
-              }}
-            >
-              <Text style={style.buttonText}>Thêm Ảnh </Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput placeholder="Link Web" style={style.input} />
           <TextInput
+            scrollEnabled={true}
             multiline={true}
             placeholder="Miêu Tả "
             style={style.inputDes}
           />
 
           <View
-            style={{ flexDirection: "row" }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
-            <TextInput
-              placeholder="9:00"
-              style={{
-                backgroundColor: "white",
-                width: 354,
-                padding: 10,
-                borderWidth: 1,
-               
-                fontSize: 18,
-                borderColor: "#CCCCCC",
-                borderRadius: 10,
-                marginBottom: 10,
-              }}
-            />
-            {/* <TextInput
-              placeholder="9:00"
-              style={{
-                backgroundColor: "white",
-                width: 80,
-                padding: 10,
-                borderWidth: 1,
-               
-                fontSize: 18,
-                borderColor: "#CCCCCC",
-                borderRadius: 10,
-                marginBottom: 10,
-              }}
-            /> */}
-          </View>
-          {/* =====get data picker=======*/}
-
-          <View>
             <TouchableOpacity
               onPress={showDatepicker}
               style={{
                 backgroundColor: "white",
-                width: 350,
+                width: 140,
                 padding: 10,
                 borderWidth: 1,
                 borderColor: "#CCCCCC",
                 borderRadius: 10,
-                marginBottom: 10,
-                height: 64,
+                marginBottom: 20,
+                height: 60,
               }}
             >
-              <Text style={{ color: COLORS.gray }}>Pick a Date</Text>
+              <Text style={{ color: COLORS.gray }}>Ngày Bắt Đầu </Text>
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -207,12 +124,121 @@ const AddEvent = () => {
                 />
               )}
             </TouchableOpacity>
+            <TextInput
+              placeholder="Giờ "
+              style={{
+                backgroundColor: "white",
+                width: 100,
+                padding: 10,
+                borderWidth: 1,
+                fontSize: 18,
+                borderColor: "#CCCCCC",
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
+            />
+            <TextInput
+              placeholder="Phút "
+              style={{
+                backgroundColor: "white",
+                width: 100,
+                padding: 10,
+                borderWidth: 1,
+                fontSize: 18,
+                borderColor: "#CCCCCC",
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
+            />
           </View>
+          {/* ======ngay ket thuc ===== */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity
+              onPress={showDatepicker}
+              style={{
+                backgroundColor: "white",
+                width: 140,
+                padding: 10,
+                borderWidth: 1,
+                borderColor: "#CCCCCC",
+                borderRadius: 10,
+                marginBottom: 20,
+                height: 60,
+              }}
+            >
+              <Text style={{ color: COLORS.gray }}>Ngày Kết Thúc </Text>
+              {show && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
+            </TouchableOpacity>
+            <TextInput
+              placeholder="Giờ "
+              style={{
+                backgroundColor: "white",
+                width: 100,
+                padding: 10,
+                borderWidth: 1,
+                fontSize: 18,
+                borderColor: "#CCCCCC",
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
+            />
+            <TextInput
+              placeholder="Phút "
+              style={{
+                backgroundColor: "white",
+                width: 100,
+                padding: 10,
+                borderWidth: 1,
+                fontSize: 18,
+                borderColor: "#CCCCCC",
+                borderRadius: 10,
+                marginBottom: 10,
+              }}
+            />
+          </View>
+
+          <TextInput placeholder="Hoạt Động" style={{
+              backgroundColor: "white",
+              padding: 10,
+              borderWidth: 1,
+              fontSize: 18,
+              borderColor: "#CCCCCC",
+              borderRadius: 10,
+              marginBottom: 20,
+              width: 300
+          }} />
+
+          <TouchableOpacity style={style.plusBtn}>
+            <Foundation name="plus" style={style.textPlus}></Foundation>
+          </TouchableOpacity>
+
+          <TextInput
+            keyboardType="number-pad"
+            placeholder="Giá Vé"
+            style={style.input}
+          />
+          {/* ======Image Post===== */}
+          <ImagePost />
+
           {/* ======Button Create ====== */}
           <TouchableOpacity
             style={{
-              width: 330,
-              height: 40,
+              width: 340,
+              height: 50,
               backgroundColor: "#088DCD",
               marginHorizontal: 10,
               marginTop: 10,
@@ -224,7 +250,7 @@ const AddEvent = () => {
                 color: COLORS.white,
                 fontSize: 22,
                 textAlign: "center",
-                paddingTop: 4,
+                paddingTop: 10,
               }}
             >
               Tạo Sự Kiện
@@ -255,21 +281,19 @@ const style = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderWidth: 1,
-   
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   inputDes: {
     paddingLeft: 8,
     backgroundColor: "white",
     borderWidth: 1,
-   
     fontSize: 18,
     borderColor: "#CCCCCC",
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 20,
     height: 100,
   },
   buttonText: {
@@ -279,5 +303,23 @@ const style = StyleSheet.create({
     textAlign: "center",
     paddingTop: 2,
   },
+  plusBtn: {
+    backgroundColor: "#088dcd",
+    height: 45,
+    width: 45,
+    borderRadius: SIZES.largeTitle,
+    position: "absolute",
+    right: 0,
+    top: 340,
+  },
+  textPlus: {
+    position: "absolute",
+    fontSize: 18,
+    top: 14,
+    left: 16,
+    zIndex: 2,
+    color: "white",
+  },
 });
+
 export default AddEvent;

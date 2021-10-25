@@ -12,9 +12,13 @@ import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { COLORS, icons } from "../../constant";
 import Error from "../Error/Error";
+import DropDownPicker from "react-native-dropdown-picker";
+import { StyleSheet } from 'react-native';
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
   const baseUrl = "http://20.188.111.70:12348";
   const navigation = useNavigation();
   const [id, setId] = useState<string>("");
@@ -33,7 +37,21 @@ const UpdateProfile: React.FC = () => {
   const [schoolId, setSchoolId] = useState(5);
   const [alumni, setAlumni] = useState<string>("");
   const [error, setError] = useState("");
-
+  const [isLoading, setLoading] = useState(true);
+  // getAllSchool
+  const schoolURL = `${baseUrl}/api/v1/schools?sort=desc&pageNumber=0&pageSize=0`;
+  const [school, setSchool] = useState([]);
+  useEffect(() => {
+    fetch(schoolURL)
+      .then((response) =>
+        response.json().then((res) => {
+          setSchool(res);
+        })
+      )
+      .catch((error) => alert(error))
+      .finally(() => setLoading(false))
+  }, []);
+// console.log(school);
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -155,25 +173,16 @@ const UpdateProfile: React.FC = () => {
         >
           Cập Nhập Thông Tin
         </Text>
-        {/* =====Search School====== */}
         <View style={{ position: "relative", marginTop: 15 }}>
-          <Image
-            source={icons.search}
-            style={{ height: 14, width: 14, position: "absolute", right: 0 }}
-          />
-          <TextInput
-            keyboardType="default"
-            placeholder="Seach School Name ...."
-            onChangeText={(schoolName) => setName(schoolName)}
-            value={schoolId}
-            placeholderTextColor="#8e8e96"
-            style={{
-              borderBottomColor: "#8e8e96",
-              borderBottomWidth: 1,
-              marginBottom: 10,
-              fontSize: 18,
-              paddingBottom: 5,
-            }}
+        <DropDownPicker
+            stickyHeader
+            style={style.input}
+            open={open}
+            value={value}
+            items={school.map(item=> ({label:item.name,value:item.id}))}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setSchool}
           />
         </View>
         {/* =====End School Name ===== */}
@@ -297,5 +306,17 @@ const UpdateProfile: React.FC = () => {
     </View>
   );
 };
+
+const style = StyleSheet.create({
+  input: {
+    padding: 10,
+    borderWidth: 0.4,
+    fontSize: 18,
+    borderColor: "#CCCCCC",
+    borderRadius: 10,
+    marginBottom: 10,
+    marginTop: 140
+  },
+})
 
 export default UpdateProfile;

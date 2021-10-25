@@ -23,6 +23,7 @@ import Home from "../Home/Home";
 import EditPostModal from "../Home/EditModal";
 import EditPostGroup from "../Group/EditModal";
 import AboutSchool from "../School/AboutSchool";
+import AddEvent from "../event/AddEvent";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function MyTabs() {
@@ -91,7 +92,7 @@ const RootNavigator = () => {
       {/* ======Event ======= */}
       <Stack.Screen name="Event" component={Event} />
       <Stack.Screen name="EventDetail" component={EventDetail} />
-
+      <Stack.Screen name="Create Event" component={AddEvent} />
       {/*=======Alumini ======  */}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
