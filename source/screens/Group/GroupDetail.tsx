@@ -9,6 +9,7 @@ import {
   Animated,
   Modal,
   FlatList,
+  AsyncStorage,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -75,14 +76,33 @@ const TouchSocial = ({ icon, bg }: { icon: any; bg: string }) => {
 };
 
 const GroupDetail = () => {
-  const baseUrl = "http://20.188.111.70:12348";
-  const groupURL = `${baseUrl}/api/v1/groups/`;
+  const baseUrl = "https://truongxuaapp.online";
   const navigation = useNavigation();
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
-  async function featchGroupDetail() {
+  const [authorize, setAuthorize] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    //
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    setAuthorize(headers);
+    await featchGroupDetail(headers);
+    await featchAlumni(headers);
+    await featchPosts(headers);
+    await featchImageEvent(headers);
+  };
+
+  //Call API Group
+  const groupURL = `https://truongxuaapp.online/api/v1/groups/`;
+  async function featchGroupDetail(headers) {
     try {
-      const response = await axios.get(groupURL + route.params.id);
+      const response = await axios.get(groupURL + route.params.id, { headers });
       if (response.status === 200) {
         setGroupDetail(response.data);
       }
@@ -93,15 +113,22 @@ const GroupDetail = () => {
 
   // =======Begin Call Api Post
   const [visible, setVisible] = useState(false);
+  const [idPost, setIdPost] = useState();
   const [isLoading, setLoading] = useState(true);
-  const postURL = `${baseUrl}/api/v1/posts?sort=desc&pageNumber=0&pageSize=0`;
-  const [data, setData] = useState({});
+  const postURL = `https://truongxuaapp.online/api/v1/posts?sort=desc&pageNumber=0&pageSize=0`;
+  const [post, setPost] = useState();
 
-  async function featchPosts() {
+  //==========Update id first open Modal Popup
+  const updateValueForModalPopup = (id) => {
+    setVisible(true);
+    setIdPost(id);
+  };
+
+  async function featchPosts(headers) {
     try {
-      const response = await axios.get(postURL);
+      const response = await axios.get(postURL, { headers });
       if (response.status === 200) {
-        setData(response.data);
+        setPost(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -111,10 +138,10 @@ const GroupDetail = () => {
   // Call Api Alumni
   const [alumni, setAlumni] = useState<string>("");
   const alumniURL =
-    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
-  const featchAlumni = async () => {
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async (headers) => {
     try {
-      const response = await axios.get(alumniURL);
+      const response = await axios.get(alumniURL, { headers });
       if (response.status === 200) {
         setAlumni(response.data);
       }
@@ -125,10 +152,11 @@ const GroupDetail = () => {
 
   // Call Api Image for Post
   const [listImg, setListImg] = useState<string>("");
-  const featchImageEvent = async () => {
+  const featchImageEvent = async (headers) => {
     try {
       const response = await axios.get(
-        "http://20.188.111.70:12348/api/v1/images?pageNumber=0&pageSize=0"
+        "https://truongxuaapp.online/api/v1/images?pageNumber=0&pageSize=0",
+        { headers }
       );
       if (response.status === 200) {
         setListImg(response.data);
@@ -138,10 +166,7 @@ const GroupDetail = () => {
     }
   };
   useEffect(() => {
-    featchGroupDetail();
-    featchPosts();
-    featchAlumni();
-    featchImageEvent();
+    tokenForAuthor();
   }, []);
 
   //========== Get Alumni create Post ===========
@@ -168,16 +193,18 @@ const GroupDetail = () => {
   };
 
   //====== begin detele post =======
-  const onSubmitFormHandler = async (id) => {
+  const onSubmitFormHandler = async (id, headers) => {
     console.log(id);
     setLoading(true);
     try {
       const response = await axios.delete(
-        "http://20.188.111.70:12348/api/v1/posts/" + id
+        "https://truongxuaapp.online/api/v1/posts/" + id,
+        { headers }
       );
       if (response.status === 200) {
         alert("Xoá Bài Viết Thành Công ");
-        navigation.navigate("Group");
+        await setVisible(false);
+        await tokenForAuthor();
         setTimeout(function () {
           setVisible(false);
         }, 2);
@@ -206,13 +233,13 @@ const GroupDetail = () => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View>
+    <View>
+      <ScrollView>
         {/* =======HEADER====== */}
         <View style={{ position: "relative" }}>
           <Image
-            // source={{ uri: groupDetail.backgroundImg }}
-            source={require("../../assets/images/event.jpg")}
+            source={{ uri: groupDetail.backgroundImg }}
+            // source={require("../../assets/images/event.jpg")}
             style={{ width: width, height: 200 }}
           />
           {/*=======button add =====  */}
@@ -397,8 +424,7 @@ const GroupDetail = () => {
         {/* ======Begin Post ==== */}
         <View>
           <FlatList
-            data={data}
-            keyExtractor={({ id }, index) => id}
+            data={post}
             renderItem={({ item, index }) => {
               if (item.groupId == route.params.id) {
                 return (
@@ -444,6 +470,7 @@ const GroupDetail = () => {
                             alignItems: "center",
                           }}
                         >
+                          {/*  */}
                           <ModalPoup visible={visible}>
                             <View style={{ alignItems: "center" }}>
                               <View style={style.header}>
@@ -465,7 +492,7 @@ const GroupDetail = () => {
                               }}
                               onPress={() =>
                                 navigation.navigate("EditPost", {
-                                  id: item.id,
+                                  id: idPost,
                                 })
                               }
                             >
@@ -488,7 +515,9 @@ const GroupDetail = () => {
                                 flexDirection: "row",
                                 alignItems: "center",
                               }}
-                              onPress={() => onSubmitFormHandler(item.id)}
+                              onPress={() =>
+                                onSubmitFormHandler(idPost, authorize)
+                              }
                             >
                               <Image
                                 source={require("../../assets/icons/delete.png")}
@@ -502,27 +531,12 @@ const GroupDetail = () => {
                               />
                               <Text>Xoá Bài Đăng</Text>
                             </TouchableOpacity>
-
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Image
-                                source={require("../../assets/icons/edit.png")}
-                                style={{
-                                  height: 20,
-                                  width: 20,
-                                  marginVertical: 10,
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              />
-                              <Text>Chỉnh Sửa Chế Độ Xem</Text>
-                            </TouchableOpacity>
                           </ModalPoup>
-                          <TouchableOpacity onPress={() => setVisible(true)}>
+
+                          {/*  */}
+                          <TouchableOpacity
+                            onPress={() => updateValueForModalPopup(item.id)}
+                          >
                             <Image
                               source={require("../../assets/icons/menu.png")}
                               style={{
@@ -564,7 +578,7 @@ const GroupDetail = () => {
                       {/* =======img for post==== */}
                       <ScrollView horizontal style={{ flexDirection: "row" }}>
                         <FlatList
-                          numColumns={10}
+                          numColumns={1000}
                           data={listImg}
                           keyExtractor={({ id }, index) => id}
                           renderItem={({ item2, index }) => {
@@ -648,8 +662,8 @@ const GroupDetail = () => {
             }}
           />
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 

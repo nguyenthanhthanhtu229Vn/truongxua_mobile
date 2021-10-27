@@ -60,7 +60,7 @@ const Group = () => {
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
-    setIdUser(objUser.GroupId);
+    setGroupUser(objUser.GroupId);
     //
     const headers = {
       Authorization: "Bearer " + token,
@@ -71,12 +71,12 @@ const Group = () => {
   };
   const [groups, setGroup] = useState<boolean>(false);
   const navigation = useNavigation();
-  const [idUser, setIdUser] = useState<string>();
+  const [groupUser, setGroupUser] = useState<string>();
   const [user, setUser] = useState<string>("");
   const groupURL =
-    "http://20.188.111.70:12348/api/v1/groups?pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/groups?pageNumber=0&pageSize=0";
   const alumniURL =
-    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
   async function featchGroups(headers) {
     try {
       const response = await axios.get(groupURL, { headers });
@@ -156,7 +156,7 @@ const Group = () => {
             data={groups}
             numColumns={2}
             renderItem={({ item, index }) => {
-              if (idUser == item.id) {
+              if (groupUser == item.id) {
                 return (
                   <View
                     style={{

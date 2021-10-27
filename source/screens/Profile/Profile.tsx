@@ -30,11 +30,11 @@ const Profile: React.FC = () => {
   const [idGroup, setIdGroup] = useState<string>();
   const [myInfo, setMyInfo] = useState<boolean>(false);
   const eventURL =
-    "http://20.188.111.70:12348/api/v1/events?pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/events?pageNumber=0&pageSize=0";
   const groupURL =
-    "http://20.188.111.70:12348/api/v1/groups?pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/groups?pageNumber=0&pageSize=0";
   const alumniURL =
-    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -47,15 +47,16 @@ const Profile: React.FC = () => {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
-    await featchMyInfo(objUser.Id);
+    await featchMyInfo(objUser.Id, headers);
     await featchGroups(headers);
     await featchAlumni(headers);
   };
 
-  const featchMyInfo = async (id) => {
+  const featchMyInfo = async (id, headers) => {
     try {
       const reponse = await axios.get(
-        "http://20.188.111.70:12348/api/v1/alumni/" + id
+        "https://truongxuaapp.online/api/v1/alumni/" + id,
+        { headers }
       );
       if (reponse.status === 200) {
         setMyInfo(reponse.data);

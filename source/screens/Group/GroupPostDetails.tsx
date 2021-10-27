@@ -11,6 +11,7 @@ import {
   TextInput,
   Modal,
   AsyncStorage,
+  RefreshControl,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -70,10 +71,11 @@ const GroupPostDetail = () => {
   };
 
   // Call Post API
-  async function featchPosts() {
+  async function featchPosts(headers) {
     try {
       const response = await axios.get(
-        "http://20.188.111.70:12348/api/v1/posts/" + route.params.id
+        "https://truongxuaapp.online/api/v1/posts/" + route.params.id,
+        { headers }
       );
       if (response.status === 200) {
         setPost(response.data);
@@ -85,10 +87,11 @@ const GroupPostDetail = () => {
 
   // Call Img API
   const [listImg, setListImg] = useState<string>("");
-  const featchImageEvent = async () => {
+  const featchImagePost = async (headers) => {
     try {
       const response = await axios.get(
-        "http://20.188.111.70:12348/api/v1/images?pageNumber=0&pageSize=0"
+        "https://truongxuaapp.online/api/v1/images?pageNumber=0&pageSize=0",
+        { headers }
       );
       if (response.status === 200) {
         setListImg(response.data);
@@ -101,10 +104,10 @@ const GroupPostDetail = () => {
   // Call Api Alumni
   const [alumni, setAlumni] = useState<string>("");
   const alumniURL =
-    "http://20.188.111.70:12348/api/v1/alumni?pageNumber=0&pageSize=0";
-  const featchAlumni = async () => {
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async (headers) => {
     try {
-      const response = await axios.get(alumniURL);
+      const response = await axios.get(alumniURL, { headers });
       if (response.status === 200) {
         setAlumni(response.data);
       }
@@ -135,15 +138,31 @@ const GroupPostDetail = () => {
     }
     return name;
   };
+
+  // ======Call Api Delete Comment======
+  const deleteComment = async (id, headers) => {
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/posts/comments/" + id,
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchComment(authorize);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //=====Call Api Comment=======
   const [comment, setComment] = useState<string>("");
   const commentURL =
-    "http://20.188.111.70:12348/api/v1/posts/comments?sort=desc&pageNumber=0&pageSize=0";
-  const featchComment = async () => {
+    "https://truongxuaapp.online/api/v1/posts/comments?sort=desc&pageNumber=0&pageSize=0";
+  const featchComment = async (headers) => {
     try {
-      const response = await axios.get(commentURL);
+      const response = await axios.get(commentURL, { headers });
       if (response.status === 200) {
         setComment(response.data);
+        console.log("assaasa");
       }
     } catch (error) {
       console.log(error);
@@ -182,6 +201,7 @@ const GroupPostDetail = () => {
 
   // Get My Info
   const [alumniId, setAlumniId] = useState<string>("");
+  const [authorize, setAuthorize] = useState();
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -192,6 +212,11 @@ const GroupPostDetail = () => {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
+    setAuthorize(headers);
+    await featchPosts(headers);
+    await featchImagePost(headers);
+    await featchAlumni(headers);
+    await featchComment(headers);
   };
 
   // Create Comment
@@ -213,7 +238,7 @@ const GroupPostDetail = () => {
         }
       );
       if (response.status === 200) {
-        await featchComment();
+        await featchComment(authorize);
         // navigation.navigate("GroupPostDetail");
         setContent("");
       }
@@ -223,16 +248,15 @@ const GroupPostDetail = () => {
   };
   useEffect(() => {
     setPostId(route.params.id);
-    featchPosts();
-    featchImageEvent();
-    featchAlumni();
-    featchComment();
     tokenForAuthor();
   }, []);
 
   return (
     <View>
       <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={() => featchComment(authorize)} />
+        }
         style={{
           position: "relative",
           backgroundColor: "white",
@@ -480,7 +504,7 @@ const GroupPostDetail = () => {
             data={comment}
             keyExtractor={({ id }, index) => id}
             renderItem={({ item, index }) => {
-              if (post.id == item.postId) {
+              if (route.params.id == item.postId) {
                 return (
                   <View
                     style={{
@@ -541,7 +565,12 @@ const GroupPostDetail = () => {
                           </Text>
                           {alumniId == item.alumniId ? (
                             <View>
-                              <TouchableOpacity style={style.btnDeletCmt}>
+                              <TouchableOpacity
+                                style={style.btnDeletCmt}
+                                onPress={() =>
+                                  deleteComment(item.id, authorize)
+                                }
+                              >
                                 <Text style={style.text3}>Xóa</Text>
                               </TouchableOpacity>
                               <TouchableOpacity style={style.btnEditCmt}>

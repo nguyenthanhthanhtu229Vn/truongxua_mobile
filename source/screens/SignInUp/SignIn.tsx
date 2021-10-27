@@ -54,7 +54,7 @@ const SignIn: React.FC = () => {
   const getAccessToken = async (idToken) => {
     try {
       const response = await axios.post(
-        `http://20.188.111.70:12348/api/users/log-in?idToken=${idToken}`
+        `https://truongxuaapp.online/api/users/log-in?idToken=${idToken}`
       );
       if (response.status === 200) {
         await AsyncStorage.setItem("idToken", response.data);

@@ -65,8 +65,7 @@ const SignUp: React.FC = () => {
     if (password !== confirm) {
       setError("Mật khẩu không trùng khớp");
       setRegistering(false);
-    }
-    else {
+    } else {
       if (error !== "") setError("");
       setRegistering(true);
       auth
@@ -87,13 +86,51 @@ const SignUp: React.FC = () => {
     }
   };
 
+  const getAccessToken = async (idToken) => {
+    try {
+      const response = await axios.post(
+        `https://truongxuaapp.online/api/users/log-in?idToken=${idToken}`
+      );
+      if (response.status === 200) {
+        await AsyncStorage.setItem("idToken", response.data);
+        const decoded = jwtDecode(response.data);
+        await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
+        const alumni = await getAlumni(decoded.Id);
+        if (
+          alumni.data.name == "" ||
+          alumni.data.address == "" ||
+          alumni.data.phone == "" ||
+          alumni.data.bio == ""
+        ) {
+          navigation.navigate("UpdateProfile");
+        } else {
+          navigation.navigate("MyTabs");
+        }
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const getIdToken = () => {
+    firebase
+      .auth()
+      .currentUser?.getIdToken(/* forceRefresh */ true)
+      .then(function (idToken) {
+        getAccessToken(idToken);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   const signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
         androidClientId:
           "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         clientId:
-          "78169522021-qic4kukdgsplh1eh0v303pfl8413bkum.apps.googleusercontent.com",
+          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
         iosClientId:
           "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
         scopes: ["profile", "email"],
@@ -107,7 +144,7 @@ const SignUp: React.FC = () => {
           .auth()
           .signInWithCredential(googleCredential)
           .then(() => {
-            navigation.navigate("MyTabs");
+            getIdToken();
           })
           .catch((error) => {
             console.log(error);
