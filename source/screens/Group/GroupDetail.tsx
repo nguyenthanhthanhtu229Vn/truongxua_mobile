@@ -10,6 +10,7 @@ import {
   Modal,
   FlatList,
   AsyncStorage,
+  RefreshControl,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -194,7 +195,6 @@ const GroupDetail = () => {
 
   //====== begin detele post =======
   const onSubmitFormHandler = async (id, headers) => {
-    console.log(id);
     setLoading(true);
     try {
       const response = await axios.delete(
@@ -234,7 +234,9 @@ const GroupDetail = () => {
 
   return (
     <View>
-      <ScrollView>
+      <ScrollView
+        refreshControl={<RefreshControl onRefresh={() => tokenForAuthor()} />}
+      >
         {/* =======HEADER====== */}
         <View style={{ position: "relative" }}>
           <Image
@@ -493,6 +495,7 @@ const GroupDetail = () => {
                               onPress={() =>
                                 navigation.navigate("EditPost", {
                                   id: idPost,
+                                  numberAlumni: route.params.numberAlumni,
                                 })
                               }
                             >

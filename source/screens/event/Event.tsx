@@ -18,11 +18,13 @@ import axios from "axios";
 const Event: React.FC = (props) => {
   const [isLoading, setLoading] = useState(true);
   const [authorize, setAuthorize] = useState();
+  const [schoolId, setSchoolId] = useState();
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
+    setSchoolId(objUser.SchoolId);
     //
     const headers = {
       Authorization: "Bearer " + token,
@@ -30,8 +32,9 @@ const Event: React.FC = (props) => {
     };
     setAuthorize(headers);
 
-    featchEvent(headers);
-    featchImageEvent(headers);
+    await featchEvent(headers);
+    await featchImageEvent(headers);
+    return schoolId;
   };
   const eventURL =
     "https://truongxuaapp.online/api/v1/events?sort=desc&pageNumber=0&pageSize=0";
@@ -98,7 +101,6 @@ const Event: React.FC = (props) => {
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <MyCarousel />
-
         {/* Plust Btn */}
         <TouchableOpacity
           style={style.plusBtn}
@@ -114,82 +116,82 @@ const Event: React.FC = (props) => {
             contentContainerStyle={{
               flexDirection: "column",
             }}
-            keyExtractor={({ id }, index) => id}
             data={event}
             renderItem={({ item, index }) => {
-              return (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    paddingBottom: 20,
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                  key={item.id}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("EventDetail", { id: item.id });
+              if (schoolId == item.schoolId) {
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      paddingBottom: 20,
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
+                    key={item.id}
                   >
-                    <Image
-                      source={{ uri: getImageByEvent(item.id) }}
-                      style={{
-                        height: SIZES.height / 5,
-                        borderRadius: 5,
-                        width: SIZES.width / 3,
-                        resizeMode: "cover",
-                      }}
-                    />
-                  </TouchableOpacity>
-                  <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
-                    <Text
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
-                      style={{
-                        color: COLORS.black,
-                        marginLeft: 4,
-                        ...FONTS.h3,
-                        fontWeight: "600",
-                        fontSize: 19,
-                        width: SIZES.width / 2.3,
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("EventDetail", { id: item.id });
                       }}
                     >
-                      {item.name}
-                    </Text>
-                    <Text
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
-                      style={{
-                        color: COLORS.darkGray,
-                        marginLeft: 4,
-                        ...FONTS.h3,
-                        fontWeight: "500",
-                        fontSize: 16,
-                        width: SIZES.width / 2.3,
-                        marginTop: 10,
-                        marginBottom: 10,
-                      }}
-                    >
-                      {item.description}
-                    </Text>
-                    <Text
-                      style={{
-                        color: COLORS.darkGray,
-                        marginLeft: 4,
-                        ...FONTS.h4,
-                        fontWeight: "500",
-                      }}
-                    >
-                      {formatDate(item.startDate)}
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      {/* <Text
+                      <Image
+                        source={{ uri: getImageByEvent(item.id) }}
+                        style={{
+                          height: SIZES.height / 5,
+                          borderRadius: 5,
+                          width: SIZES.width / 3,
+                          resizeMode: "cover",
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
+                      <Text
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                        style={{
+                          color: COLORS.black,
+                          marginLeft: 4,
+                          ...FONTS.h3,
+                          fontWeight: "600",
+                          fontSize: 19,
+                          width: SIZES.width / 2.3,
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                      <Text
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                        style={{
+                          color: COLORS.darkGray,
+                          marginLeft: 4,
+                          ...FONTS.h3,
+                          fontWeight: "500",
+                          fontSize: 16,
+                          width: SIZES.width / 2.3,
+                          marginTop: 10,
+                          marginBottom: 10,
+                        }}
+                      >
+                        {item.description}
+                      </Text>
+                      <Text
+                        style={{
+                          color: COLORS.darkGray,
+                          marginLeft: 4,
+                          ...FONTS.h4,
+                          fontWeight: "500",
+                        }}
+                      >
+                        {formatDate(item.startDate)}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        {/* <Text
                         style={{
                           backgroundColor: "#17a2b8",
                           color: COLORS.white,
@@ -202,10 +204,12 @@ const Event: React.FC = (props) => {
                       >
                         Đặt
                       </Text> */}
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
+                );
+              }
+              return null;
             }}
           />
         </View>

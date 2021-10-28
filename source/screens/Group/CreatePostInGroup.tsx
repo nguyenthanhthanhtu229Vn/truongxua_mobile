@@ -14,14 +14,17 @@ import { TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import * as ImagePicker from "expo-image-picker";
+import moment from "moment";
 
 const CreatePostInGroup: React.FC = () => {
   //========  begin call api post =======
+  const moment = require("moment-timezone");
+  const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
   const baseUrl = "http://20.188.111.70:12348";
   const route = useRoute();
   const [content, setContent] = useState("");
   const [alumniId, setAlumniId] = useState(1);
-  const [createAt, setCreateAt] = useState(new Date());
+  const [createAt, setCreateAt] = useState(dateCreate);
   const [status, setStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -52,9 +55,6 @@ const CreatePostInGroup: React.FC = () => {
       return;
     } else {
       createPost(headers);
-      if (image != null) {
-        createImgForPost(headers);
-      }
     }
   };
 
@@ -68,11 +68,15 @@ const CreatePostInGroup: React.FC = () => {
       );
       if (response.status === 200) {
         setContent("");
-        navigation.navigate("Group");
-        alert("Tạo Bài Đăng Thành Công");
-        // setTimeout(function () {
-        //   setModalVisible(false);
-        // }, 2);
+        if (image != null) {
+          await createImgForPost(headers, response.data);
+        } else {
+          navigation.navigate("GroupDetails", {
+            id: route.params.id,
+            numberAlumni: route.params.numberAlumni,
+          });
+          alert("Tạo Bài Đăng Thành Công");
+        }
       }
     } catch (error) {
       alert("Đã Xảy Ra Lỗi !!");
@@ -116,20 +120,22 @@ const CreatePostInGroup: React.FC = () => {
   };
 
   // Call Api Post Images
-  const createImgForPost = async (headers) => {
-    console.log(image);
+  const createImgForPost = async (headers, id) => {
     try {
       const response = await axios.post(
         "https://truongxuaapp.online/api/v1/images",
         {
-          postId: route.params.id,
-          eventId: 0,
+          postId: id,
           imageUrl: await uploadImage(image),
         },
         { headers }
       );
       if (response.status === 200) {
-        console.log("ok");
+        alert("Tạo Bài Đăng Thành Công");
+        navigation.navigate("GroupDetails", {
+          id: route.params.id,
+          numberAlumni: route.params.numberAlumni,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -174,7 +180,7 @@ const CreatePostInGroup: React.FC = () => {
             }}
             scrollEnabled
             multiline
-            placeholder="Nội Dung Bài Đăng"
+            placeholder="Bạn đang nghĩ gì"
             value={content}
             editable={!isLoading}
             onChangeText={OnChangeContentHandler}

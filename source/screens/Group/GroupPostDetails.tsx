@@ -162,7 +162,6 @@ const GroupPostDetail = () => {
       const response = await axios.get(commentURL, { headers });
       if (response.status === 200) {
         setComment(response.data);
-        console.log("assaasa");
       }
     } catch (error) {
       console.log(error);
@@ -220,8 +219,10 @@ const GroupPostDetail = () => {
   };
 
   // Create Comment
+  const moment = require("moment-timezone");
+  const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
   const [content, setContent] = useState<string>("");
-  const [createAt, setCreateAt] = useState(new Date());
+  const [createAt, setCreateAt] = useState(dateCreate);
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [postId, setPostId] = useState<string>();
   const [status, setStatus] = useState<boolean>(true);
@@ -239,7 +240,6 @@ const GroupPostDetail = () => {
       );
       if (response.status === 200) {
         await featchComment(authorize);
-        // navigation.navigate("GroupPostDetail");
         setContent("");
       }
     } catch (error) {

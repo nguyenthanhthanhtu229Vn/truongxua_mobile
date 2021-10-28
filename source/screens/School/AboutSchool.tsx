@@ -61,26 +61,33 @@ const Information = ({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: 18,
           marginVertical: 6,
         }}
       >
-        <Image
-          source={icons.dot}
-          style={{ height: 8, width: 8, marginBottom: 20 }}
-        />
         <View style={{ marginLeft: 12 }}>
-          <Text
-            style={{ color: COLORS.black, fontSize: 18, fontWeight: "400" }}
-          >
-            {text}
-          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Image
+              source={icons.dot}
+              style={{ height: 8, width: 8, marginRight: 8 }}
+            />
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: 18,
+                fontWeight: "400",
+                marginTop: -7,
+              }}
+            >
+              {text}
+            </Text>
+          </View>
           <Text
             style={{
+              marginLeft: 15,
               color: "#b7b7b8",
               fontSize: 16,
               fontWeight: "400",
-              marginTop: 4,
+              marginTop: 6,
             }}
           >
             {msg}
@@ -112,6 +119,7 @@ const Touchable = ({ icon, onPress }: { icon: any; onPress?: any }) => {
 };
 const AboutSchool = () => {
   const [school, setSchool] = useState<boolean>(false);
+  const [idSchool, setIdSchool] = useState();
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -123,6 +131,7 @@ const AboutSchool = () => {
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
     await featchSchool(objUser.SchoolId, headers);
+    setIdSchool(objUser.SchoolId);
   };
   const featchSchool = async (id, headers) => {
     try {
@@ -154,43 +163,32 @@ const AboutSchool = () => {
             }}
           />
         </View>
-        {/* =======avatar=== */}
+
+        {/* =====and name and address=== */}
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
             position: "absolute",
             top: 40,
+            width: 300,
             left: "50%",
-            transform: [{ translateX: "-100%" }],
+            transform: [{ translateX: -150 }],
+            backgroundColor: "#088dcd",
+            padding: 10,
+            borderWidth: 1,
+            borderColor: "white",
+            borderRadius: 10,
           }}
         >
-          {/* =====and name and address=== */}
-          <View
+          <Text
             style={{
-              marginLeft: 10,
-              backgroundColor: "#088dcd",
-              padding: 10,
-              borderWidth: 1,
-              borderColor: "white",
-              borderRadius: 10,
+              fontWeight: "600",
+              fontSize: 17,
+              color: COLORS.white,
+              textAlign: "center",
             }}
           >
-            <Text
-              style={{
-                fontWeight: "600",
-                fontSize: 17,
-                color: COLORS.white,
-              }}
-            >
-              {school.name}
-            </Text>
-            <Text
-              style={{ fontWeight: "500", fontSize: 16, color: COLORS.white }}
-            >
-              Quận Hải Châu,Đà Nẵng
-            </Text>
-          </View>
+            {school.name}
+          </Text>
         </View>
         {/* ====Touchable====== */}
         <View
@@ -252,18 +250,53 @@ const AboutSchool = () => {
             text={"Mô tả"}
             msg={school.description}
           />
-          {/* <Information text={"Hiệu Trưởng"} msg={"Bryan Tran"} />
-          <Information
-            text={"Website"}
-            msg={"http://www.huynhtanphat.edu.vn"}
-          />
-          <Information text={"Số Điện Thoại"} msg={"0977233394"} />
-          <Information text={"Fax"} msg={"0977233391"} /> */}
+          <Information text={"Địa chỉ"} msg={school.address} />
+          <Information text={"Hiệu Trưởng"} msg={school.headmaster} />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 6,
+            }}
+          >
+            <View style={{ marginLeft: 12, marginTop: 5 }}>
+              <View style={{ flexDirection: "row" }}>
+                <Image
+                  source={icons.dot}
+                  style={{ height: 8, width: 8, marginRight: 8 }}
+                />
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    fontSize: 18,
+                    fontWeight: "400",
+                    marginTop: -7,
+                  }}
+                >
+                  Website
+                </Text>
+              </View>
+              <Text
+                style={{
+                  color: "#088dcd",
+                  fontSize: 16,
+                  fontWeight: "400",
+                  marginTop: 6,
+                  marginLeft: 15,
+                }}
+              >
+                {school.website}
+              </Text>
+            </View>
+          </View>
+          <View style={style.line} />
+          <Information text={"Số Điện Thoại"} msg={school.phone} />
+          {/* <Information text={"Fax"} msg={"0977233391"} /> */}
         </View>
         {/* =====Explor exvent==== */}
         <ExploreEvent />
         {/* =========memeber======= */}
-        <Member />
+        <Member idSchool={idSchool} />
         {/* =====Phan tich bai dang */}
         <PostAnalysis />
       </View>
@@ -276,7 +309,8 @@ const style = StyleSheet.create({
     width: 330,
     marginVertical: 2,
     backgroundColor: "#E1E8EC",
-    marginHorizontal: 16,
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
 export default AboutSchool;
