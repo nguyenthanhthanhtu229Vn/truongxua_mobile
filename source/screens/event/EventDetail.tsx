@@ -38,7 +38,10 @@ const EventDetail: React.FC = () => {
     };
     await listEventDetail(headers);
     await featchImageEvent(headers);
+    await featchActivity(headers);
   };
+
+  // Call API event detail
   const listEventDetail = async (headers) => {
     try {
       const response = await axios.get(
@@ -53,6 +56,7 @@ const EventDetail: React.FC = () => {
     }
   };
 
+  // Call API for Image
   const featchImageEvent = async (headers) => {
     try {
       const response = await axios.get(
@@ -66,6 +70,23 @@ const EventDetail: React.FC = () => {
       console.log(error);
     }
   };
+
+  // Call API Activity
+  const [listActivity, setListActivity] = useState();
+  const featchActivity = async (headers) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/activities?pageNumber=0&pageSize=0",
+        { headers }
+      );
+      if (response.status === 200) {
+        setListActivity(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //
 
   const getImageByEvent = (eventID) => {
     let imgLink = "";
@@ -250,12 +271,12 @@ const EventDetail: React.FC = () => {
           <Text
             style={{
               color: "black",
-
+              fontWeight: "500",
               fontSize: 20,
               marginTop: 10,
             }}
           >
-            {eventDetail.name}
+            Sự kiện: {eventDetail.name}
           </Text>
           <Text
             style={{
@@ -273,7 +294,6 @@ const EventDetail: React.FC = () => {
               style={{
                 borderLeftColor: "#088dcd",
                 borderLeftWidth: 3,
-                paddingLeft: 10,
                 color: "black",
 
                 fontSize: 18,
@@ -295,7 +315,7 @@ const EventDetail: React.FC = () => {
                       <Image
                         style={{
                           width: 200,
-                          height: 150,
+                          height: 200,
                           marginRight: 20,
                           resizeMode: "cover",
                         }}
@@ -308,18 +328,40 @@ const EventDetail: React.FC = () => {
             </ScrollView>
             <Text
               style={{
-                color: "#6d757a",
-
-                fontSize: 16,
+                borderLeftColor: "#088dcd",
+                borderLeftWidth: 3,
+                color: "black",
+                fontSize: 18,
                 marginTop: 20,
-                lineHeight: 25,
+                fontWeight: "bold",
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit
-              consequatur, reprehenderit omnis velit modi obcaecati ad corporis
-              sit possimus quos, praesentium sunt beatae dolorum, architecto
-              facere esse ipsa tenetur nemo.
+              Những hoạt động về sự kiện
             </Text>
+            <FlatList
+              data={listActivity}
+              keyExtractor={({ id }, index) => id}
+              renderItem={({ item, index }) => {
+                if (item.eventId == route.params.id) {
+                  return (
+                    <View>
+                      <Text
+                        style={{
+                          color: "#6d757a",
+
+                          fontSize: 16,
+                          marginTop: 10,
+                          lineHeight: 25,
+                        }}
+                      >
+                        + {item.name}
+                      </Text>
+                    </View>
+                  );
+                }
+                return null;
+              }}
+            />
             <Text
               style={{
                 color: "black",

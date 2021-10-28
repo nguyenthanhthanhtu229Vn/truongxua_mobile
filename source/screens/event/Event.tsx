@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   AsyncStorage,
+  RefreshControl,
 } from "react-native";
 import { COLORS, FONTS, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -99,13 +100,16 @@ const Event: React.FC = (props) => {
   // const { banner } = props;
   return (
     <View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl onRefresh={() => tokenForAuthor()} />}
+      >
         <MyCarousel />
         {/* Plust Btn */}
         <TouchableOpacity
           style={style.plusBtn}
           onPress={() => {
-            navigation.navigate("Tạo Sự Kiện");
+            navigation.navigate("Create Event");
           }}
         >
           <Foundation name="plus" style={style.textPlus}></Foundation>
@@ -131,7 +135,9 @@ const Event: React.FC = (props) => {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate("Chi Tiết Sự Kiện", { id: item.id });
+                        navigation.navigate("Chi Tiết Sự Kiện", {
+                          id: item.id,
+                        });
                       }}
                     >
                       <Image

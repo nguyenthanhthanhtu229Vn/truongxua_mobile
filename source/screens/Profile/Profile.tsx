@@ -161,65 +161,65 @@ const Profile: React.FC = () => {
         {/* Recent Post */}
 
         <View style={{ backgroundColor: COLORS.white2, padding: 10 }}>
-        <View style={style.title}>
-          <Text style={style.textTitle}>Mô tả</Text>
-        </View>
-        <Text style={style.bio}>{myInfo.bio}</Text>
-        <View style={style.title}>
-          <Text style={style.textTitle}>Người theo dõi bạn</Text>
-        </View>
-        <View>
-           <FlatList
-             horizontal={true}
-             contentContainerStyle={{
-               flexDirection: "row",
-             }}
-             data={MemberSchool}
-             renderItem={({ item, index }) => {
-               return (
-                 <View style={style.follow}>
-                   <Image source={item.avatar} style={style.avatarF} />
-                   <Text style={style.nameF}>{item.name}</Text>
-                   <Text style={style.addressF}>{item.addess}</Text>
-                   <TouchableOpacity style={style.btnF}>
-                     <Text style={style.textF}>Theo Dõi</Text>
-                   </TouchableOpacity>
-                 </View>
-               );
-             }}
-           />
-         </View>
-         <View style={style.title}>
-           <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
-         </View>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Mô tả</Text>
+          </View>
+          <Text style={style.bio}>{myInfo.bio}</Text>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Người theo dõi bạn</Text>
+          </View>
+          <View>
+            <FlatList
+              horizontal={true}
+              contentContainerStyle={{
+                flexDirection: "row",
+              }}
+              data={MemberSchool}
+              renderItem={({ item, index }) => {
+                return (
+                  <View style={style.follow}>
+                    <Image source={item.avatar} style={style.avatarF} />
+                    <Text style={style.nameF}>{item.name}</Text>
+                    <Text style={style.addressF}>{item.addess}</Text>
+                    <TouchableOpacity style={style.btnF}>
+                      <Text style={style.textF}>Theo Dõi</Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+          </View>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
+          </View>
 
-         {/* =====begin ==== */}
-         <View>
-           <FlatList
-             horizontal={true}
-             contentContainerStyle={{
-               flexDirection: "row",
-             }}
-             data={MemberSchool}
-             renderItem={({ item, index }) => {
-               return (
-                 <View style={style.follow}>
-                   <Image source={item.avatar} style={style.avatarF} />
-                   <Text style={style.nameF}>{item.name}</Text>
-                   <Text style={style.addressF}>{item.addess}</Text>
-                   <TouchableOpacity style={style.btnF}>
-                     <Text style={style.textF}>Theo Dõi</Text>
-                   </TouchableOpacity>
-                 </View>
-               );
-             }}
-           />
-         </View>
+          {/* =====begin ==== */}
+          <View>
+            <FlatList
+              horizontal={true}
+              contentContainerStyle={{
+                flexDirection: "row",
+              }}
+              data={MemberSchool}
+              renderItem={({ item, index }) => {
+                return (
+                  <View style={style.follow}>
+                    <Image source={item.avatar} style={style.avatarF} />
+                    <Text style={style.nameF}>{item.name}</Text>
+                    <Text style={style.addressF}>{item.addess}</Text>
+                    <TouchableOpacity style={style.btnF}>
+                      <Text style={style.textF}>Theo Dõi</Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+          </View>
           {/* Joined Group */}
 
           <View style={style.title}>
             <Text style={style.textTitle}>Nhóm đã tham gia</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Group")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Nhóm")}>
               <Text style={style.more}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
@@ -240,7 +240,7 @@ const Profile: React.FC = () => {
                     >
                       <TouchableOpacity
                         onPress={() =>
-                          navigation.navigate("GroupDetails", {
+                          navigation.navigate("Chi Tiết Nhóm", {
                             id: item.id,
                             numberAlumni: countAlumniInGroup(item.id),
                           })
@@ -286,7 +286,7 @@ const Profile: React.FC = () => {
           {/* Event */}
           <View style={style.title}>
             <Text style={style.textTitle}>Sự kiện đã tham gia</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Event")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Sự Kiện")}>
               <Text style={style.more}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
@@ -445,8 +445,8 @@ const style = StyleSheet.create({
     fontWeight: "bold",
     paddingLeft: 10,
     fontSize: 18,
-fontWeight: "500",
-paddingLeft: 10,
+    fontWeight: "500",
+    paddingLeft: 10,
   },
   group: {
     fontWeight: "bold",

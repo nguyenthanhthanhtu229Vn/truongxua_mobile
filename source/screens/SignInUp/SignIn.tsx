@@ -67,7 +67,7 @@ const SignIn: React.FC = () => {
           alumni.data.phone == "" ||
           alumni.data.bio == ""
         ) {
-          navigation.navigate("UpdateProfile");
+          navigation.navigate("Cập Nhập Hồ Sơ");
         } else {
           navigation.navigate("MyTabs");
         }
