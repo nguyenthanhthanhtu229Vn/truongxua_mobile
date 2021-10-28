@@ -57,24 +57,22 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
   );
 };
 
-const TouchSocial = ({ icon, bg }: { icon: any; bg: string }) => {
+
+const TouchSocial = ({ icon }: { icon: any;}) => {
   return (
     <TouchableOpacity
       style={{
-        height: 30,
-        width: 60,
-        borderRadius: 6,
-        backgroundColor: bg,
-        marginHorizontal: 6,
+        marginHorizontal: 8,
       }}
     >
       <Image
         source={icon}
-        style={{ width: 24, height: 24, alignSelf: "center", marginTop: 2 }}
+        style={{ width: 30, height: 30, alignSelf: "center", marginTop: 2 }}
       />
     </TouchableOpacity>
   );
 };
+
 
 const GroupDetail = () => {
   const baseUrl = "https://truongxuaapp.online";
@@ -248,7 +246,7 @@ const GroupDetail = () => {
           <TouchableOpacity
             style={style.plusBtn}
             onPress={() => {
-              navigation.navigate("CreatePostInGroup", {
+              navigation.navigate("Tạo Bài Đăng", {
                 id: route.params.id,
                 numberAlumni: route.params.numberAlumni,
               });
@@ -415,11 +413,11 @@ const GroupDetail = () => {
           </View>
           {/* ====== Button Social ==== */}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchSocial icon={icons.fb} bg={"#506EAB"} />
-            <TouchSocial icon={icons.twitter} bg={"#08A5D4"} />
-            <TouchSocial icon={icons.youtube} bg={"#E62017"} />
-            <TouchSocial icon={icons.pinterest} bg={"#CB2129"} />
-            <TouchSocial icon={icons.instagram} bg={"#444444"} />
+          <TouchSocial icon={icons.facebook} />
+            <TouchSocial icon={icons.twitter_n} />
+            <TouchSocial icon={icons.google}  />
+            <TouchSocial icon={icons.pinterest}  />
+            <TouchSocial icon={icons.instagram}  />
           </View>
         </View>
 
@@ -493,7 +491,7 @@ const GroupDetail = () => {
                                 alignItems: "center",
                               }}
                               onPress={() =>
-                                navigation.navigate("EditPost", {
+                                navigation.navigate("Sửa Bài Đăng", {
                                   id: idPost,
                                   numberAlumni: route.params.numberAlumni,
                                 })
@@ -638,7 +636,7 @@ const GroupDetail = () => {
                         <TouchableOpacity
                           style={style.btn}
                           onPress={() =>
-                            navigation.navigate("GroupPostDetail", {
+                            navigation.navigate("Chi Tiết Bài Đăng", {
                               id: item.id,
                             })
                           }

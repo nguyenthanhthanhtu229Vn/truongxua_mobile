@@ -80,11 +80,11 @@ const AddEvent = () => {
   return (
     <ScrollView>
       <View style={{ flexDirection: "column" }}>
-        <View style={{ marginHorizontal: 16, marginVertical: 18 }}>
+        {/* <View style={{ marginHorizontal: 16, marginVertical: 18 }}>
           <View style={style.line} />
           <Text style={style.header}>Tạo Sự Kiện </Text>
-        </View>
-        <View style={{ marginHorizontal: 16 }}>
+        </View> */}
+        <View style={{ marginHorizontal: 16 , marginTop: 20}}>
           <TextInput placeholder="Tên Sự Kiện" style={style.input} />
           <TextInput
             scrollEnabled={true}
@@ -210,7 +210,6 @@ const AddEvent = () => {
               }}
             />
           </View>
-
           <TextInput placeholder="Hoạt Động" style={{
               backgroundColor: "white",
               padding: 10,

@@ -23,24 +23,8 @@ const JOINED_GROUP = [
     img: require("../../assets/images/event.jpg"),
     name: "Quang huy",
   },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "Quang huy",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "Quang huy",
-  },
 ];
 const SUGGESTED = [
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "11A1",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "11A1",
-  },
   {
     img: require("../../assets/images/event.jpg"),
     name: "11A1",
@@ -169,7 +153,7 @@ const Group = () => {
                   >
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate("GroupDetails", {
+                        navigation.navigate("Chi Tiết Nhóm", {
                           id: item.id,
                           numberAlumni: countAlumniInGroup(item.id),
                         })
@@ -287,7 +271,7 @@ const Group = () => {
                   <View>
                     <TouchableOpacity
                       style={{ marginLeft: 20 }}
-                      onPress={() => navigation.navigate("GroupDetails")}
+                      onPress={() => navigation.navigate("Chi Tiết Nhóm")}
                     >
                       <Image
                         source={item.img}
@@ -313,7 +297,7 @@ const Group = () => {
                         borderRadius: 12,
                         marginTop: 4,
                       }}
-                      onPress={() => navigation.navigate("GroupDetails")}
+                      onPress={() => navigation.navigate("Chi Tiết Nhóm")}
                     >
                       <Text
                         style={{

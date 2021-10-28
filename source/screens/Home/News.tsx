@@ -92,10 +92,6 @@ const News: React.FC = () => {
 
       if (response.status === 200) {
         alert("Xoá Bài Viết Thành Công ");
-        setTimeout(function () {
-          setVisible(false);
-        }, 2);
-        // setVisible(false)
       }
     } catch (error) {
       alert("Bị Lỗi Không Xoá Được ");
@@ -113,8 +109,6 @@ const News: React.FC = () => {
           return (
             <View
               style={{
-                // height: 450,
-                // height: 200,
                 backgroundColor: COLORS.white2,
                 shadowOpacity: 0.2,
                 marginBottom: 16,
@@ -129,16 +123,6 @@ const News: React.FC = () => {
                 }}
               >
                 <View style={{ flexDirection: "row" }}>
-                  {/* <Text
-                    style={{
-                      color: COLORS.blue,
-                      marginLeft: 4,
-                      ...FONTS.h3,
-                      fontWeight: "500",
-                    }}
-                  >
-                    Quang Huy
-                  </Text> */}
                   <Image
                     source={icons.calendar}
                     style={{ height: 16, width: 16 }}
@@ -171,9 +155,7 @@ const News: React.FC = () => {
                       <TouchableOpacity
                         style={{ flexDirection: "row", alignItems: "center" }}
                         onPress={() =>
-                          navigation.navigate("EditNew", {
-                            id: item.id,
-                          })
+                          navigation.navigate("Sửa Bài Viết", { item: item })
                         }
                       >
                         <Image
@@ -205,22 +187,6 @@ const News: React.FC = () => {
                           }}
                         />
                         <Text>Xoá Bài Viết</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                      >
-                        <Image
-                          source={require("../../assets/icons/edit.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                        <Text>Chỉnh Sửa Chế Độ Xem</Text>
                       </TouchableOpacity>
                     </ModalPoup>
                     <TouchableOpacity onPress={() => setVisible(true)}>

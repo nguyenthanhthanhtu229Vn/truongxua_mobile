@@ -1,4 +1,5 @@
 import React from "react";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { icons } from "../../constant";
@@ -24,8 +25,15 @@ import EditPostModal from "../Home/EditModal";
 import EditPostGroup from "../Group/EditModal";
 import AboutSchool from "../School/AboutSchool";
 import AddEvent from "../event/AddEvent";
+import Follow from "../../Other/Follow";
+import AboutProfile from "../../Other/AboutProfile";
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const BTab = createMaterialTopTabNavigator();
+
+
+
 function MyTabs() {
   return (
     <Tab.Navigator
@@ -81,29 +89,32 @@ const RootNavigator = () => {
         options={{ headerShown: false }}
       />
       {/* ======= Group Post ========= */}
-      <Stack.Screen name="EditNew" component={EditPostModal} />
-      <Stack.Screen name="EditPost" component={EditPostGroup} />
-      <Stack.Screen name="NewGroup" component={AddGroup} />
-      <Stack.Screen name="GroupDetails" component={GroupDetail} />
-      <Stack.Screen name="GroupPostDetail" component={GroupPostDetail} />
-      <Stack.Screen name="Group" component={Group} />
-      <Stack.Screen name="CreatePostInGroup" component={CreatePostInGroup} />
+      <Stack.Screen name="Sửa Bài Viết" component={EditPostModal} />
+      <Stack.Screen name="Sửa Bài Đăng" component={EditPostGroup} />
+      <Stack.Screen name="Tạo Nhóm" component={AddGroup} />
+      <Stack.Screen name="Chi Tiết Nhóm" component={GroupDetail} />
+      <Stack.Screen name="Chi Tiết Bài Đăng" component={GroupPostDetail} />
+      <Stack.Screen name="Nhóm" component={Group} />
+      <Stack.Screen name="Tạo Bài Đăng" component={CreatePostInGroup} />
 
       {/* ======Event ======= */}
-      <Stack.Screen name="Event" component={Event} />
-      <Stack.Screen name="EventDetail" component={EventDetail} />
-      <Stack.Screen name="Create Event" component={AddEvent} />
+      <Stack.Screen name="Sự Kiện" component={Event} />
+      <Stack.Screen name="Chi Tiết Sự Kiện" component={EventDetail} />
+      <Stack.Screen name="Tạo Sự Kiện" component={AddEvent} />
       {/*=======Alumini ======  */}
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <Stack.Screen name="Hồ Sơ" component={Profile} />
+      <Stack.Screen name="Cập Nhập Hồ Sơ" component={UpdateProfile} />
+
+
 
       {/* =======Other====== */}
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
       <Stack.Screen name="BlogPost" component={BlogPost} />
-      <Stack.Screen name="Setting" component={Setting} />
+      <Stack.Screen name="Cài Đặt" component={Setting} />
 
       {/* =====School== */}
-      <Stack.Screen name="About School" component={AboutSchool} />
+      <Stack.Screen name="Thông Tin Trường" component={AboutSchool} />
+
     </Stack.Navigator>
   );
 };

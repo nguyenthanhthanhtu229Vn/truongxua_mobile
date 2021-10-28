@@ -105,7 +105,7 @@ const Event: React.FC = (props) => {
         <TouchableOpacity
           style={style.plusBtn}
           onPress={() => {
-            navigation.navigate("Create Event");
+            navigation.navigate("Tạo Sự Kiện");
           }}
         >
           <Foundation name="plus" style={style.textPlus}></Foundation>
@@ -131,7 +131,7 @@ const Event: React.FC = (props) => {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate("EventDetail", { id: item.id });
+                        navigation.navigate("Chi Tiết Sự Kiện", { id: item.id });
                       }}
                     >
                       <Image

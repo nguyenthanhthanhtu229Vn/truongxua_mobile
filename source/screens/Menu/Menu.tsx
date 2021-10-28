@@ -9,56 +9,55 @@ import { useNavigation } from "@react-navigation/core";
 const Menu: React.FC = () => {
   const navigation = useNavigation();
   return (
-    <View style={{ flex: 1, marginTop: 90, marginLeft: 44 }}>
+    <View style={{ marginTop: 40 }}>
       <View style={style.container}>
         <CategoryMenu
-          icon={icons.home_m}
+          icon={icons.home_n}
           label={constant.screens.home}
           onPress={() => navigation.navigate("Trang Chủ")}
         />
         <CategoryMenu
-          icon={icons.profile_m}
+          icon={icons.profile_n}
           label={constant.screens.profile}
           onPress={() => {
-            navigation.navigate("Profile");
+            navigation.navigate("Hồ Sơ");
           }}
         />
         <CategoryMenu
-          icon={icons.groups}
+          icon={icons.group_n}
           label={constant.screens.group}
-          onPress={() => navigation.navigate("Group")}
+          onPress={() => navigation.navigate("Nhóm")}
         />
       </View>
       <View style={style.container}>
         <CategoryMenu
-          icon={icons.event}
+          icon={icons.event_n}
           label={constant.screens.event}
           onPress={() => {
-            navigation.navigate("Event");
-          }}
-        />
-              <CategoryMenu
-          icon={icons.school}
-          label={constant.screens.school}
-          onPress={() => {
-            navigation.navigate("About School");
+            navigation.navigate("Sự Kiện");
           }}
         />
         <CategoryMenu
-          icon={icons.pages}
+          icon={icons.school_n}
+          label={constant.screens.school}
+          onPress={() => {
+            navigation.navigate("Thông Tin Trường");
+          }}
+        />
+        <CategoryMenu
+          icon={icons.news_n}
           label={constant.screens.blog}
           onPress={() => {
             navigation.navigate("BlogPost");
           }}
         />
-       
       </View>
       <View style={style.container}>
-      <CategoryMenu
-          icon={icons.setting}
+        <CategoryMenu
+          icon={icons.setting_n}
           label={constant.screens.setting}
           onPress={() => {
-            navigation.navigate("Setting");
+            navigation.navigate("Cài Đặt");
           }}
         />
       </View>
@@ -68,7 +67,7 @@ const Menu: React.FC = () => {
 const style = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     marginBottom: 30,
     alignItems: "center",
   },

@@ -325,7 +325,7 @@ const GroupPostDetail = () => {
                     >
                       <TouchableOpacity
                         onPress={() =>
-                          navigation.navigate("EditPost", {
+                          navigation.navigate("Sửa Bài Đăng", {
                             id: post.id,
                           })
                         }

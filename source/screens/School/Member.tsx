@@ -76,7 +76,7 @@ const Member = (idSchool) => {
             marginBottom: 8,
           }}
         >
-          Member
+          Thành Viên
         </Text>
       </View>
       {/* ======su kien */}
@@ -139,7 +139,7 @@ const Member = (idSchool) => {
                         marginTop: 4,
                       }}
                     >
-                      Follow
+                       Theo Dõi
                     </Text>
                   </TouchableOpacity>
                 </View>

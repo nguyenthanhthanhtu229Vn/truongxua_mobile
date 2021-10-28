@@ -21,6 +21,30 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
+
+const MemberSchool = [
+  {
+    avatar: require("../../assets/images/event.jpg"),
+    name: "Bryan Tran",
+    addess: "Quan 7,HCM",
+  },
+  {
+    avatar: require("../../assets/images/event.jpg"),
+    name: "Bryan Tran",
+    addess: "Quan 7,HCM",
+  },
+  {
+    avatar: require("../../assets/images/event.jpg"),
+    name: "Bryan Tran",
+    addess: "Quan 7,HCM",
+  },
+  {
+    avatar: require("../../assets/images/event.jpg"),
+    name: "Bryan Tran",
+    addess: "Quan 7,HCM",
+  },
+];
+
 const Profile: React.FC = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState<string>("");
@@ -137,16 +161,60 @@ const Profile: React.FC = () => {
         {/* Recent Post */}
 
         <View style={{ backgroundColor: COLORS.white2, padding: 10 }}>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Mô tả</Text>
-          </View>
-          <Text style={style.bio}>{myInfo.bio}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Người theo dõi bạn</Text>
-          </View>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
-          </View>
+        <View style={style.title}>
+          <Text style={style.textTitle}>Mô tả</Text>
+        </View>
+        <Text style={style.bio}>{myInfo.bio}</Text>
+        <View style={style.title}>
+          <Text style={style.textTitle}>Người theo dõi bạn</Text>
+        </View>
+        <View>
+           <FlatList
+             horizontal={true}
+             contentContainerStyle={{
+               flexDirection: "row",
+             }}
+             data={MemberSchool}
+             renderItem={({ item, index }) => {
+               return (
+                 <View style={style.follow}>
+                   <Image source={item.avatar} style={style.avatarF} />
+                   <Text style={style.nameF}>{item.name}</Text>
+                   <Text style={style.addressF}>{item.addess}</Text>
+                   <TouchableOpacity style={style.btnF}>
+                     <Text style={style.textF}>Theo Dõi</Text>
+                   </TouchableOpacity>
+                 </View>
+               );
+             }}
+           />
+         </View>
+         <View style={style.title}>
+           <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
+         </View>
+
+         {/* =====begin ==== */}
+         <View>
+           <FlatList
+             horizontal={true}
+             contentContainerStyle={{
+               flexDirection: "row",
+             }}
+             data={MemberSchool}
+             renderItem={({ item, index }) => {
+               return (
+                 <View style={style.follow}>
+                   <Image source={item.avatar} style={style.avatarF} />
+                   <Text style={style.nameF}>{item.name}</Text>
+                   <Text style={style.addressF}>{item.addess}</Text>
+                   <TouchableOpacity style={style.btnF}>
+                     <Text style={style.textF}>Theo Dõi</Text>
+                   </TouchableOpacity>
+                 </View>
+               );
+             }}
+           />
+         </View>
           {/* Joined Group */}
 
           <View style={style.title}>
@@ -376,6 +444,9 @@ const style = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     paddingLeft: 10,
+    fontSize: 18,
+fontWeight: "500",
+paddingLeft: 10,
   },
   group: {
     fontWeight: "bold",
@@ -443,6 +514,51 @@ const style = StyleSheet.create({
     color: "gray",
     marginLeft: 10,
     marginTop: 10,
+  },
+  follow: {
+    backgroundColor: "#f7f4f4",
+    height: 200,
+    width: 150,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 0.5,
+    borderColor: "#E1E8EC",
+    marginTop: 18,
+  },
+  avatarF: {
+    height: 100,
+    width: 100,
+    marginLeft: 24,
+    marginVertical: 8,
+    borderRadius: 8,
+  },
+  nameF: {
+    textAlign: "center",
+    color: COLORS.black,
+    fontWeight: "500",
+    fontSize: 16,
+  },
+  addressF: {
+    textAlign: "center",
+    color: COLORS.blue,
+    fontWeight: "400",
+    fontSize: 16,
+  },
+  textF: {
+    fontSize: 18,
+    color: COLORS.white,
+    fontWeight: "600",
+    textAlign: "center",
+    marginTop: 4,
+  },
+  btnF: {
+    backgroundColor: COLORS.blue,
+    height: 30,
+    width: 120,
+    marginLeft: 10,
+    marginTop: 16,
+    borderRadius: 6,
   },
 });
 export default Profile;

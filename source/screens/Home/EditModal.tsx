@@ -2,11 +2,14 @@
 import React, { useState } from "react";
 import { Text, View, Image, TextInput, Modal, Pressable } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { Constants } from "expo-constants";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
+import { StyleSheet } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { useEffect } from "react";
 
 const EditPostModal: React.FC = () => {
+  const route = useRoute();
   //======begin call api put=======
   const baseUrl = "http://20.188.111.70:12348";
   // const [id, setId] = useState(267);
@@ -17,10 +20,15 @@ const EditPostModal: React.FC = () => {
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(false);
-  const OnChangeContentHandler = (content) => {
-    setContent(content);
+  const updateValue = async () => {
+    setTitle(route.params.item.title);
+    setContent(route.params.item.content);
   };
-  const onSubmitFormHandler = async (id) => {
+  useEffect(() => {
+    updateValue();
+  }, []);
+
+  const onSubmitFormHandler = async () => {
     if (!content.trim) {
       alert("Không được để trống");
       return;
@@ -30,7 +38,7 @@ const EditPostModal: React.FC = () => {
       return;
     }
     axios({
-      url: `${baseUrl}/api/v1/news?id=59`,
+      url: `${baseUrl}/api/v1/news?id=` + route.params.item.id,
       method: "PUT",
       data: {
         title,
@@ -62,11 +70,6 @@ const EditPostModal: React.FC = () => {
           borderRadius: 10,
         }}
       >
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-            Sửa Bài Viết
-          </Text>
-        </View>
         <View>
           {/* ======Title===== */}
           <TextInput
@@ -75,16 +78,7 @@ const EditPostModal: React.FC = () => {
             editable={!isLoading}
             value={title}
             onChangeText={(title) => setTitle(title)}
-            style={{
-              borderRadius: 10,
-              borderColor: "#d0d0d0",
-              borderWidth: 1,
-              backgroundColor: "#f5f4f9",
-              padding: 10,
-              height: 50,
-              marginBottom: 10,
-              marginTop: 10,
-            }}
+            style={style.title}
           />
           {/* =====Content===== */}
           <TextInput
@@ -101,20 +95,20 @@ const EditPostModal: React.FC = () => {
             placeholder="Nội Dung Bài Viết"
             value={content}
             editable={!isLoading}
-            onChangeText={OnChangeContentHandler}
+            onChangeText={(content) => setContent(content)}
           />
         </View>
         <View style={{ flexDirection: "row", margin: 20 }}>
           <Image
-            style={{ width: 25, height: 25 }}
+            style={style.icon}
             source={require("../../assets/icons/imageGallery.png")}
           ></Image>
           <Image
-            style={{ width: 25, height: 25, marginLeft: 20 }}
+            style={[style.icon, style.mL]}
             source={require("../../assets/icons/feedback.png")}
           ></Image>
           <Image
-            style={{ width: 25, height: 25, marginLeft: 20 }}
+            style={[style.icon, style.mL]}
             source={require("../../assets/icons/menu.png")}
           ></Image>
         </View>
@@ -143,4 +137,25 @@ const EditPostModal: React.FC = () => {
     </View>
   );
 };
+
+const style = StyleSheet.create({
+  title: {
+    borderRadius: 10,
+    borderColor: "#d0d0d0",
+    borderWidth: 1,
+    backgroundColor: "#f5f4f9",
+    padding: 10,
+    height: 50,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  mL: {
+    marginLeft: 20,
+  },
+});
+
 export default EditPostModal;

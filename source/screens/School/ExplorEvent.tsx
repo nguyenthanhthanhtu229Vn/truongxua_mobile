@@ -51,7 +51,7 @@ const ExploreEvent = () => {
             marginBottom: 8,
           }}
         >
-          Explor Event
+           Sự Kiện
         </Text>
       </View>
       {/* ======su kien */}
@@ -64,8 +64,8 @@ const ExploreEvent = () => {
                 style={{
                   backgroundColor: COLORS.blue,
                   height: 100,
-                  width: 330,
-                  marginHorizontal: 20,
+                  width: 320,
+                  // marginHorizontal: 20,
                   borderRadius: 10,
                   marginBottom: 20,
                 }}

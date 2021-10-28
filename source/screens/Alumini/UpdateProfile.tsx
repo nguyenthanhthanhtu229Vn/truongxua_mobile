@@ -34,7 +34,7 @@ const UpdateProfile: React.FC = () => {
   );
   const [status, setStatus] = useState<boolean>(true);
   const [groupId, setGroupId] = useState(33);
-  const [schoolId, setSchoolId] = useState(5);
+  const [schoolId, setSchoolId] = useState();
   const [alumni, setAlumni] = useState<string>("");
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -74,24 +74,12 @@ const UpdateProfile: React.FC = () => {
   useEffect(() => {
     tokenForAuthor();
     getAlumni(id);
-    // if (alumni.name != null) {
-    //   setName(alumni.name);
-    // }
     if (alumni.password != null) {
       setPassword(alumni.password);
     }
     if (alumni.email != null) {
       setEmail(alumni.email);
     }
-    // if (alumni.address != null) {
-    //   setAddress(alumni.address);
-    // }
-    // if (alumni.phone != null) {
-    //   setPhone(alumni.phone);
-    // }
-    // if (alumni.bio != null) {
-    //   setBio(alumni.bio);
-    // }
     if (alumni.img != null) {
       setImg(alumni.img);
     }
@@ -175,6 +163,7 @@ const UpdateProfile: React.FC = () => {
         </Text>
         <View style={{ position: "relative", marginTop: 15 }}>
         <DropDownPicker
+            onChangeValue={(ids) => setSchoolId(ids)}
             stickyHeader
             style={style.input}
             open={open}

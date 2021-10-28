@@ -1,6 +1,7 @@
 import React from "react";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
-import { COLORS, FONTS, SIZES } from "../../constant";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { COLORS, SIZES } from "../../constant";
+import { StyleSheet } from "react-native";
 const CategoryMenu = ({
   label,
   icon,
@@ -11,43 +12,37 @@ const CategoryMenu = ({
   onPress?: any;
 }) => {
   return (
-    <View style={{ position: "relative", top: 40 }}>
+    <View style={{ top: 40 }}>
       <TouchableOpacity
         onPress={onPress}
         style={{
           flexDirection: "column",
-          height: 48,
-          width: 48,
           marginBottom: SIZES.base,
-          paddingLeft: SIZES.radius,
-          borderRadius: SIZES.radius,
-          backgroundColor: COLORS.white,
+          alignItems: "center",
         }}
       >
-        <Image
-          source={icon}
-          style={{
-            width: 30,
-            height: 30,
-            marginRight: 10,
-            marginTop: 8,
-          }}
-        />
+        <Image source={icon} style={style.icon} />
+        <Text style={style.label}>{label}</Text>
       </TouchableOpacity>
-      <Text
-        style={{
-          textAlign: "justify",
-          color: COLORS.black,
-          height: 20,
-          fontWeight: "400",
-          ...FONTS.h3,
-          width: 90,
-        }}
-      >
-        {label}
-      </Text>
     </View>
   );
 };
 
+const style = StyleSheet.create({
+  label: {
+    textAlign: "center",
+    color: COLORS.blue,
+    height: 20,
+    fontWeight: "600",
+    fontSize: 17,
+    width: 90,
+    marginTop: 8,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+    marginTop: 8,
+  },
+});
 export default CategoryMenu;

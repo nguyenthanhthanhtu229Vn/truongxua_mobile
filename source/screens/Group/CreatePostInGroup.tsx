@@ -71,7 +71,7 @@ const CreatePostInGroup: React.FC = () => {
         if (image != null) {
           await createImgForPost(headers, response.data);
         } else {
-          navigation.navigate("GroupDetails", {
+          navigation.navigate("Chi Tiết Nhóm", {
             id: route.params.id,
             numberAlumni: route.params.numberAlumni,
           });
@@ -132,7 +132,7 @@ const CreatePostInGroup: React.FC = () => {
       );
       if (response.status === 200) {
         alert("Tạo Bài Đăng Thành Công");
-        navigation.navigate("GroupDetails", {
+        navigation.navigate("Chi Tiết Nhóm", {
           id: route.params.id,
           numberAlumni: route.params.numberAlumni,
         });

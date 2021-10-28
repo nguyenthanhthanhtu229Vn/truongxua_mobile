@@ -33,7 +33,7 @@ const checkb = require('../assets/icons/checkb.png');
 const fb = require('../assets/icons/fb.png');
 const instagram = require('../assets/icons/instagram.png');
 const camera = require('../assets/icons/photo-camera.png');
-const pinterest = require('../assets/icons/pinterest.png');
+// const pinterest = require('../assets/icons/pinterest.png');
 const twitter = require('../assets/icons/twitter.png');
 const group2 = require('../assets/icons/group2.png');
 const youtube = require('../assets/icons/youtube.png');
@@ -51,7 +51,32 @@ const star_c = require('../assets/icons/star_c.png');
 const share_c = require('../assets/icons/share_c.png');
 const invite_c = require('../assets/icons/invitation_c.png');
 const dot = require('../assets/icons/dots.png');
+
+// icons news
+const home_n = require('../assets/icons/home_m.png');
+const profile_n = require('../assets/icons/user_m.png');
+const group_n = require('../assets/icons/group_m.png');
+const event_n = require('../assets/icons/placard_m.png');
+const school_n = require('../assets/icons/school_m.png');
+const news_n = require('../assets/icons/newspaper_m.png');
+const setting_n = require('../assets/icons/settings_m.png');
+
+// icons news
+const twitter_n = require('../assets/icons/twitter2.png');
+const google = require('../assets/icons/google.png');
+const pinterest = require('../assets/icons/pinterest2.png');
+const facebook = require('../assets/icons/facebook.png');
 export default {
+  facebook,
+ google,
+ twitter_n,
+ home_n,
+ profile_n,
+ group_n,
+ event_n,
+ school_n,
+ news_n,
+ setting_n,
   dot,
   share_c,
   star_c,

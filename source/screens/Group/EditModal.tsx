@@ -106,7 +106,7 @@ const EditPostGroup: React.FC = () => {
         );
         if (reponse.status === 200) {
           alert("Cập nhật thành công");
-          navigation.navigate("GroupDetails", {
+          navigation.navigate("Chi Tiết Nhóm", {
             id: groupId,
             numberAlumni: route.params.numberAlumni,
           });
