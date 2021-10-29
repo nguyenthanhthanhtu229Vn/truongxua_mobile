@@ -9,6 +9,8 @@ import {
   Pressable,
   Button,
   AsyncStorage,
+  FlatList,
+  ScrollView,
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
@@ -68,7 +70,7 @@ const CreatePostInGroup: React.FC = () => {
       );
       if (response.status === 200) {
         setContent("");
-        if (image != null) {
+        if (listImage != null) {
           await createImgForPost(headers, response.data);
         } else {
           navigation.navigate("Chi Tiết Nhóm", {
@@ -83,8 +85,7 @@ const CreatePostInGroup: React.FC = () => {
     }
   };
   //Pick Image
-  const [image, setImage] = useState(null);
-
+  const [listImage, setListImage] = useState(Array);
   const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -93,7 +94,7 @@ const CreatePostInGroup: React.FC = () => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setImage(result.uri);
+      listImage.push(result.uri);
     }
   };
 
@@ -122,26 +123,29 @@ const CreatePostInGroup: React.FC = () => {
   // Call Api Post Images
   const createImgForPost = async (headers, id) => {
     try {
-      const response = await axios.post(
-        "https://truongxuaapp.online/api/v1/images",
-        {
-          postId: id,
-          imageUrl: await uploadImage(image),
-        },
-        { headers }
-      );
-      if (response.status === 200) {
-        alert("Tạo Bài Đăng Thành Công");
-        navigation.navigate("Chi Tiết Nhóm", {
-          id: route.params.id,
-          numberAlumni: route.params.numberAlumni,
-        });
+      for (let i = 0; i < listImage.length; i++) {
+        const response = await axios.post(
+          "https://truongxuaapp.online/api/v1/images",
+          {
+            postId: id,
+            imageUrl: await uploadImage(listImage[i]),
+          },
+          { headers }
+        );
       }
+      alert("Tạo Bài Đăng Thành Công");
+      navigation.navigate("Chi Tiết Nhóm", {
+        id: route.params.id,
+        numberAlumni: route.params.numberAlumni,
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const removeImageInList = (index) => {
+    listImage.splice(index, 1);
+  };
   useEffect(() => {
     tokenForAuthor();
     async () => {
@@ -153,7 +157,7 @@ const CreatePostInGroup: React.FC = () => {
   });
   //=======End call api create post =========
   return (
-    <View style={{ flex: 1, position: "absolute", width: "100%" }}>
+    <ScrollView style={{ flex: 1, position: "absolute", width: "100%" }}>
       <View
         style={{
           zIndex: 10,
@@ -186,32 +190,63 @@ const CreatePostInGroup: React.FC = () => {
             onChangeText={OnChangeContentHandler}
           />
         </View>
-        <View style={{ flexDirection: "row", margin: 20 }}>
+        <View style={{ marginTop: 20 }}>
           {/* =======begin  */}
-          <View>
-            <TouchableOpacity onPress={pickImg}>
-              <Image
-                style={{ width: 25, height: 25 }}
-                source={require("../../assets/icons/imageGallery.png")}
-              />
-            </TouchableOpacity>
-            {image && (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 100, height: 100 }}
-              />
-            )}
-          </View>
+          <TouchableOpacity onPress={pickImg} style={{ flexDirection: "row" }}>
+            <Image
+              style={{ width: 25, height: 25 }}
+              source={require("../../assets/icons/imageGallery.png")}
+            />
+            <Text style={{ marginLeft: 10 }}>Chọn hình ảnh</Text>
+          </TouchableOpacity>
+          <FlatList
+            style={{ marginTop: 20, marginBottom: 40 }}
+            horizontal
+            data={listImage}
+            keyExtractor={({ id }, index) => id}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  style={{
+                    marginLeft: 10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => removeImageInList(index)}
+                    style={{
+                      position: "relative",
+                      bottom: -20,
+                      zIndex: 10,
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    <Image
+                      source={require("../../assets/icons/error.png")}
+                      style={{
+                        height: 30,
+                        width: 30,
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <Image
+                    source={{ uri: item }}
+                    style={{ width: 200, height: 200, marginRight: 10 }}
+                  />
+                </View>
+              );
+            }}
+          />
           {/* ======End ===== */}
-          <Image
+        </View>
+        {/* ======End ===== */}
+        {/* <Image
             style={{ width: 25, height: 25, marginLeft: 20 }}
             source={require("../../assets/icons/feedback.png")}
           />
           <Image
             style={{ width: 25, height: 25, marginLeft: 20 }}
             source={require("../../assets/icons/menu.png")}
-          />
-        </View>
+          /> */}
         <TouchableOpacity
           onPress={() => onSubmitFormHandler(authorize)}
           disabled={isLoading}
@@ -237,7 +272,7 @@ const CreatePostInGroup: React.FC = () => {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 export default CreatePostInGroup;

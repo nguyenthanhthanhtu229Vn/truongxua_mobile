@@ -12,6 +12,7 @@ import {
   Modal,
   AsyncStorage,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -149,6 +150,16 @@ const GroupPostDetail = () => {
   };
 
   // ======Call Api Delete Comment======
+  const confirmDeleteComment = async (id, headers) => {
+    Alert.alert("Xóa", "Bạn muốn xóa bài bình luận này", [
+      {
+        text: "Hủy",
+        style: "cancel",
+      },
+      { text: "Đồng ý", onPress: () => deleteComment(id, headers) },
+    ]);
+  };
+
   const deleteComment = async (id, headers) => {
     try {
       const response = await axios.delete(
@@ -235,6 +246,13 @@ const GroupPostDetail = () => {
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [postId, setPostId] = useState<string>();
   const [status, setStatus] = useState<boolean>(true);
+  const validateComment = () => {
+    if (content.trim() == "") {
+      alert("Không được nhập trống");
+    } else {
+      createComment();
+    }
+  };
   const createComment = async () => {
     try {
       const response = await axios.post(
@@ -592,7 +610,7 @@ const GroupPostDetail = () => {
                               <TouchableOpacity
                                 style={style.btnDeletCmt}
                                 onPress={() =>
-                                  deleteComment(item.id, authorize)
+                                  confirmDeleteComment(item.id, authorize)
                                 }
                               >
                                 <Text style={style.text3}>Xóa</Text>
@@ -608,7 +626,7 @@ const GroupPostDetail = () => {
                   </View>
                 );
               }
-              return <View></View>;
+              return null;
             }}
           />
         </View>
@@ -661,7 +679,7 @@ const GroupPostDetail = () => {
             <Image source={icons.smile_face} style={style.icon_comment} />
             <Image source={icons.fmale} style={style.icon_comment} />
           </View>
-          <TouchableOpacity onPress={() => createComment()}>
+          <TouchableOpacity onPress={() => validateComment()}>
             <Image
               source={icons.send}
               style={{ height: 20, width: 20, marginRight: 18 }}

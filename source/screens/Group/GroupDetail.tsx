@@ -11,6 +11,7 @@ import {
   FlatList,
   AsyncStorage,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -219,7 +220,13 @@ const GroupDetail = () => {
   //====== begin detele post =======
   const onSubmitFormHandler = async (id, headers) => {
     setLoading(true);
-    deleteComment(id, headers);
+    Alert.alert("Xóa", "Bạn muốn xóa bài đăng này", [
+      {
+        text: "Hủy",
+        style: "cancel",
+      },
+      { text: "Đồng ý", onPress: () => deleteComment(id, headers) },
+    ]);
   };
 
   // Delete Image
