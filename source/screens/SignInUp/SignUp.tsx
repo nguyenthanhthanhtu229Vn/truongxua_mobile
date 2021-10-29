@@ -41,16 +41,19 @@ const SignUp: React.FC = () => {
   // const history=useHistory();
   const loadAccountToData = async () => {
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/Alumni`, {
-        email,
-        name,
-        password,
-        phone,
-        address,
-        img,
-        bio,
-        status,
-      });
+      const response = await axios.post(
+        `https://truongxuaapp.online/api/v1/alumni`,
+        {
+          email,
+          name,
+          password,
+          phone,
+          address,
+          img,
+          bio,
+          status,
+        }
+      );
       if (response.status === 200) {
         alert("Đăng ký thành công");
         navigation.navigate("SignIn");

@@ -57,8 +57,7 @@ const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
   );
 };
 
-
-const TouchSocial = ({ icon }: { icon: any;}) => {
+const TouchSocial = ({ icon }: { icon: any }) => {
   return (
     <TouchableOpacity
       style={{
@@ -73,18 +72,19 @@ const TouchSocial = ({ icon }: { icon: any;}) => {
   );
 };
 
-
 const GroupDetail = () => {
   const baseUrl = "https://truongxuaapp.online";
   const navigation = useNavigation();
   const route = useRoute();
   const [groupDetail, setGroupDetail] = useState<boolean>(false);
   const [authorize, setAuthorize] = useState();
+  const [idUser, setIdUser] = useState<string>();
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
+    setIdUser(objUser.Id);
     //
     const headers = {
       Authorization: "Bearer " + token,
@@ -95,6 +95,7 @@ const GroupDetail = () => {
     await featchAlumni(headers);
     await featchPosts(headers);
     await featchImageEvent(headers);
+    await featchComment(headers);
   };
 
   //Call API Group
@@ -168,6 +169,30 @@ const GroupDetail = () => {
     tokenForAuthor();
   }, []);
 
+  //=====Call Api Comment=======
+  const [comment, setComment] = useState<string>("");
+  const commentURL =
+    "https://truongxuaapp.online/api/v1/posts/comments?sort=desc&pageNumber=0&pageSize=0";
+  const featchComment = async (headers) => {
+    try {
+      const response = await axios.get(commentURL, { headers });
+      if (response.status === 200) {
+        setComment(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCountComment = (postId) => {
+    let count = 0;
+    for (let i = 0; i < comment.length; i++) {
+      if (comment[i].postId == postId) {
+        count++;
+      }
+    }
+    return count;
+  };
   //========== Get Alumni create Post ===========
   const getAvtAlumni = (alumniId) => {
     let avt = "";
@@ -194,6 +219,52 @@ const GroupDetail = () => {
   //====== begin detele post =======
   const onSubmitFormHandler = async (id, headers) => {
     setLoading(true);
+    deleteComment(id, headers);
+  };
+
+  // Delete Image
+  const getIdForImgDelete = (id) => {
+    const idImgDelete = [];
+    for (let i = 0; i < listImg.length; i++) {
+      if (id == listImg[i].postId) {
+        idImgDelete.push(listImg[i].id);
+      }
+    }
+    return idImgDelete;
+  };
+
+  const deleteImgPost = async (id, headers) => {
+    for (let i = 0; i < getIdForImgDelete(id).length; i++) {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/images/" + getIdForImgDelete(id)[i],
+        { headers }
+      );
+    }
+    await deletePost(id, headers);
+  };
+
+  // Delete Comment
+  const getIdForCommentDelete = (id) => {
+    const idCmtDelete = [];
+    for (let i = 0; i < comment.length; i++) {
+      if (id == comment[i].postId) {
+        idCmtDelete.push(comment[i].id);
+      }
+    }
+    return idCmtDelete;
+  };
+  const deleteComment = async (id, headers) => {
+    for (let i = 0; i < getIdForCommentDelete(id).length; i++) {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/posts/comments/" +
+          getIdForCommentDelete(id)[i],
+        { headers }
+      );
+    }
+    await deleteImgPost(id, headers);
+  };
+
+  const deletePost = async (id, headers) => {
     try {
       const response = await axios.delete(
         "https://truongxuaapp.online/api/v1/posts/" + id,
@@ -201,12 +272,8 @@ const GroupDetail = () => {
       );
       if (response.status === 200) {
         alert("Xoá Bài Viết Thành Công ");
-        await setVisible(false);
+        setVisible(false);
         await tokenForAuthor();
-        setTimeout(function () {
-          setVisible(false);
-        }, 2);
-        // setVisible(false)
       }
     } catch (error) {
       console.log(error);
@@ -413,11 +480,11 @@ const GroupDetail = () => {
           </View>
           {/* ====== Button Social ==== */}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchSocial icon={icons.facebook} />
+            <TouchSocial icon={icons.facebook} />
             <TouchSocial icon={icons.twitter_n} />
-            <TouchSocial icon={icons.google}  />
-            <TouchSocial icon={icons.pinterest}  />
-            <TouchSocial icon={icons.instagram}  />
+            <TouchSocial icon={icons.google} />
+            <TouchSocial icon={icons.pinterest} />
+            <TouchSocial icon={icons.instagram} />
           </View>
         </View>
 
@@ -535,18 +602,20 @@ const GroupDetail = () => {
                           </ModalPoup>
 
                           {/*  */}
-                          <TouchableOpacity
-                            onPress={() => updateValueForModalPopup(item.id)}
-                          >
-                            <Image
-                              source={require("../../assets/icons/menu.png")}
-                              style={{
-                                height: 14,
-                                width: 14,
-                                marginBottom: 34,
-                              }}
-                            />
-                          </TouchableOpacity>
+                          {item.alumniId == idUser ? (
+                            <TouchableOpacity
+                              onPress={() => updateValueForModalPopup(item.id)}
+                            >
+                              <Image
+                                source={require("../../assets/icons/menu.png")}
+                                style={{
+                                  height: 14,
+                                  width: 14,
+                                  marginBottom: 34,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          ) : null}
                         </View>
                         {/* end modal */}
                       </View>
@@ -579,7 +648,7 @@ const GroupDetail = () => {
                       {/* =======img for post==== */}
                       <ScrollView horizontal style={{ flexDirection: "row" }}>
                         <FlatList
-                          numColumns={1000}
+                          numColumns={999}
                           data={listImg}
                           keyExtractor={({ id }, index) => id}
                           renderItem={({ item2, index }) => {
@@ -606,15 +675,26 @@ const GroupDetail = () => {
                         style={{
                           flexDirection: "row",
                           marginTop: 14,
-                          alignItems: "center",
+                          justifyContent: "space-between",
                           marginLeft: 8,
                         }}
                       >
-                        <Image source={icons.thumpUp} style={style.iconf} />
-                        <Image source={icons.heart} style={style.iconf} />
-                        <Image source={icons.angry} style={style.iconf} />
-                        <Image source={icons.sad} style={style.iconf} />
-                        <Text>10+</Text>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Image source={icons.thumpUp} style={style.iconf} />
+                          <Image source={icons.heart} style={style.iconf} />
+                          <Image source={icons.angry} style={style.iconf} />
+                          <Image source={icons.sad} style={style.iconf} />
+                          <Text>10+</Text>
+                        </View>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Text style={{ color: "#65676b" }}>
+                            {getCountComment(item.id)} bình luận
+                          </Text>
+                        </View>
                       </View>
 
                       <View

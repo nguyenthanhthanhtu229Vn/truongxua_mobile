@@ -85,6 +85,15 @@ const GroupPostDetail = () => {
     }
   }
 
+  const getCountComment = (postId) => {
+    let count = 0;
+    for (let i = 0; i < comment.length; i++) {
+      if (comment[i].postId == postId) {
+        count++;
+      }
+    }
+    return count;
+  };
   // Call Img API
   const [listImg, setListImg] = useState<string>("");
   const featchImagePost = async (headers) => {
@@ -255,7 +264,14 @@ const GroupPostDetail = () => {
     <View>
       <ScrollView
         refreshControl={
-          <RefreshControl onRefresh={() => featchComment(authorize)} />
+          <RefreshControl
+            onRefresh={() => {
+              featchComment(authorize),
+                featchPosts(authorize),
+                featchImagePost(authorize),
+                featchAlumni(authorize);
+            }}
+          />
         }
         style={{
           position: "relative",
@@ -446,19 +462,27 @@ const GroupPostDetail = () => {
                   }}
                 />
               </ScrollView>
+              {/* ======comment ==== */}
               <View
                 style={{
                   flexDirection: "row",
                   marginTop: 14,
-                  alignItems: "center",
+                  justifyContent: "space-between",
                   marginLeft: 8,
                 }}
               >
-                <Image source={icons.thumpUp} style={style.iconf} />
-                <Image source={icons.heart} style={style.iconf} />
-                <Image source={icons.angry} style={style.iconf} />
-                <Image source={icons.sad} style={style.iconf} />
-                <Text>10+</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Image source={icons.thumpUp} style={style.iconf} />
+                  <Image source={icons.heart} style={style.iconf} />
+                  <Image source={icons.angry} style={style.iconf} />
+                  <Image source={icons.sad} style={style.iconf} />
+                  <Text>10+</Text>
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{ color: "#65676b" }}>
+                    {getCountComment(postId)} bình luận
+                  </Text>
+                </View>
               </View>
 
               <View
@@ -504,7 +528,7 @@ const GroupPostDetail = () => {
             data={comment}
             keyExtractor={({ id }, index) => id}
             renderItem={({ item, index }) => {
-              if (route.params.id == item.postId) {
+              if (postId == item.postId) {
                 return (
                   <View
                     style={{
@@ -584,7 +608,7 @@ const GroupPostDetail = () => {
                   </View>
                 );
               }
-              return null;
+              return <View></View>;
             }}
           />
         </View>
