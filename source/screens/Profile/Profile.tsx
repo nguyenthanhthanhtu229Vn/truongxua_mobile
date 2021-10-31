@@ -166,6 +166,26 @@ const Profile: React.FC = () => {
           </View>
           <Text style={style.bio}>{myInfo.bio}</Text>
           <View style={style.title}>
+            <Text style={style.textTitle}>Địa chỉ</Text>
+          </View>
+          <Text style={style.bio}>{myInfo.address}</Text>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Số điện thoại</Text>
+          </View>
+          <Text style={style.bio}>{myInfo.phone}</Text>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Facebook</Text>
+          </View>
+          <Text style={style.socialText}>{myInfo.facebook}</Text>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Instargram</Text>
+          </View>
+          <Text style={style.socialText}>{myInfo.instagram}</Text>
+          <View style={style.title}>
+            <Text style={style.textTitle}>Zalo</Text>
+          </View>
+          <Text style={style.socialText}>{myInfo.zalo}</Text>
+          <View style={style.title}>
             <Text style={style.textTitle}>Người theo dõi bạn</Text>
           </View>
           <View>
@@ -223,66 +243,63 @@ const Profile: React.FC = () => {
               <Text style={style.more}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal style={{ flexDirection: "row" }}>
-            <FlatList
-              numColumns={10}
-              keyExtractor={({ id }, index) => id}
-              data={groups}
-              renderItem={({ item, index }) => {
-                if (idGroup == item.id) {
-                  return (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        marginTop: 20,
-                        marginBottom: 20,
-                      }}
+          <FlatList
+            horizontal
+            data={groups}
+            renderItem={({ item, index }) => {
+              if (idGroup == item.id) {
+                return (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 20,
+                      marginBottom: 20,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("Chi Tiết Nhóm", {
+                          id: item.id,
+                          numberAlumni: countAlumniInGroup(item.id),
+                        })
+                      }
                     >
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate("Chi Tiết Nhóm", {
-                            id: item.id,
-                            numberAlumni: countAlumniInGroup(item.id),
-                          })
-                        }
+                      <Image
+                        source={{ uri: item.backgroundImg }}
+                        style={{ width: 185, height: 200, borderRadius: 5 }}
+                      ></Image>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          marginTop: 5,
+                        }}
                       >
-                        <Image
-                          source={{ uri: item.backgroundImg }}
-                          style={{ width: 185, height: 200, borderRadius: 5 }}
-                        ></Image>
+                        <Text numberOfLines={1} style={style.group}>
+                          {item.name}
+                        </Text>
                         <View
                           style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
-                            marginTop: 5,
+                            alignItems: "center",
                           }}
                         >
-                          <Text numberOfLines={1} style={style.group}>
-                            {item.name}
+                          <MaterialIcons
+                            name="group"
+                            style={style.iconGroup}
+                          ></MaterialIcons>
+                          <Text style={style.numberParti}>
+                            {countAlumniInGroup(item.id)} người
                           </Text>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                          >
-                            <MaterialIcons
-                              name="group"
-                              style={style.iconGroup}
-                            ></MaterialIcons>
-                            <Text style={style.numberParti}>
-                              {countAlumniInGroup(item.id)} người
-                            </Text>
-                          </View>
                         </View>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                }
-                return null;
-              }}
-            />
-          </ScrollView>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }
+              return null;
+            }}
+          />
           {/* Event */}
           <View style={style.title}>
             <Text style={style.textTitle}>Sự kiện đã tham gia</Text>
@@ -512,6 +529,12 @@ const style = StyleSheet.create({
   bio: {
     fontSize: 16,
     color: "gray",
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  socialText: {
+    fontSize: 16,
+    color: "#088dcd",
     marginLeft: 10,
     marginTop: 10,
   },

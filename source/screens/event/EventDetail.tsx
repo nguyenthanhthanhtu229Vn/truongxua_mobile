@@ -38,7 +38,34 @@ const EventDetail: React.FC = () => {
     };
     await listEventDetail(headers);
     await featchImageEvent(headers);
+    await featchAlumni(headers);
     await featchActivity(headers);
+  };
+
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async (headers) => {
+    try {
+      const response = await axios.get(alumniURL, { headers });
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
   };
 
   // Call API event detail
@@ -73,10 +100,11 @@ const EventDetail: React.FC = () => {
 
   // Call API Activity
   const [listActivity, setListActivity] = useState();
-  const featchActivity = async (headers) => {
+  const featchActivity = async (headers, id) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/activities?pageNumber=0&pageSize=0",
+        "https://truongxuaapp.online/api/v1/activities/eventid?eventId=" +
+          route.params.id,
         { headers }
       );
       if (response.status === 200) {
@@ -249,6 +277,32 @@ const EventDetail: React.FC = () => {
               alignItems: "center",
             }}
           >
+            <Feather
+              name="user"
+              style={{
+                color: "#6d757a",
+
+                fontSize: 20,
+              }}
+            ></Feather>
+            <Text
+              style={{
+                color: "#6d757a",
+
+                fontSize: 18,
+                marginLeft: 10,
+              }}
+            >
+              Người tạo: {getNameAlumni(eventDetail.alumniCreatedId)}
+            </Text>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
             <EvilIcons
               name="location"
               style={{
@@ -273,7 +327,7 @@ const EventDetail: React.FC = () => {
               color: "black",
               fontWeight: "500",
               fontSize: 20,
-              marginTop: 10,
+              marginTop: 20,
             }}
           >
             Sự kiện: {eventDetail.name}
@@ -340,26 +394,22 @@ const EventDetail: React.FC = () => {
             </Text>
             <FlatList
               data={listActivity}
-              keyExtractor={({ id }, index) => id}
               renderItem={({ item, index }) => {
-                if (item.eventId == route.params.id) {
-                  return (
-                    <View>
-                      <Text
-                        style={{
-                          color: "#6d757a",
+                return (
+                  <View>
+                    <Text
+                      style={{
+                        color: "#6d757a",
 
-                          fontSize: 16,
-                          marginTop: 10,
-                          lineHeight: 25,
-                        }}
-                      >
-                        + {item.name}
-                      </Text>
-                    </View>
-                  );
-                }
-                return null;
+                        fontSize: 16,
+                        marginTop: 10,
+                        lineHeight: 25,
+                      }}
+                    >
+                      + {item.name}
+                    </Text>
+                  </View>
+                );
               }}
             />
             <Text

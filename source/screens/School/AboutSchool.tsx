@@ -296,7 +296,7 @@ const AboutSchool = () => {
         {/* =====Explor exvent==== */}
         <ExploreEvent />
         {/* =========memeber======= */}
-        <Member idSchool={idSchool} />
+        <Member />
         {/* =====Phan tich bai dang */}
         <PostAnalysis />
       </View>

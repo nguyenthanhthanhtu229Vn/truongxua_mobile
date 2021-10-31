@@ -48,20 +48,27 @@ const EditPostGroup: React.FC = () => {
     featchImageEvent(headers);
   };
 
-  const [listImg, setListImg] = useState<string>("");
+  const [listImg, setListImg] = useState(Array);
+  const [arrayImg, setArrayImg] = useState(Array);
   const featchImageEvent = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/images?pageNumber=0&pageSize=0",
+        "https://truongxuaapp.online/api/v1/images/postid?postId=" +
+          route.params.id,
         { headers }
       );
       if (response.status === 200) {
-        setListImg(response.data);
-        checkImg(response.data);
+        for (let i = 0; i < response.data.length; i++) {
+          arrayImg.push(response.data[i].imageUrl);
+        }
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const removeImageInList = (index) => {
+    arrayImg.splice(index, 1);
   };
 
   async function featchPosts(headers) {
@@ -80,13 +87,6 @@ const EditPostGroup: React.FC = () => {
     }
   }
 
-  const checkImg = (list) => {
-    for (let i = 0; i < list.length; i++) {
-      if (route.params.id === list[i].postId) {
-        setImage(list[i].imageUrl);
-      }
-    }
-  };
   const onSubmitFormHandler = async (headers) => {
     if (!content.trim) {
       alert("Không được để trống");
@@ -128,7 +128,7 @@ const EditPostGroup: React.FC = () => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setImage(result.uri);
+      arrayImg.push(result.uri);
     }
   };
 
@@ -236,19 +236,34 @@ const EditPostGroup: React.FC = () => {
           >
             <FlatList
               numColumns={50}
-              data={listImg}
+              data={arrayImg}
               keyExtractor={({ id }, index) => id}
               renderItem={({ item, index }) => {
-                if (route.params.id == item.postId) {
-                  setImage(item.imageUrl);
-                  return (
+                return (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => removeImageInList(index)}
+                      style={{
+                        position: "relative",
+                        bottom: -20,
+                        zIndex: 10,
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      <Image
+                        source={require("../../assets/icons/error.png")}
+                        style={{
+                          height: 30,
+                          width: 30,
+                        }}
+                      />
+                    </TouchableOpacity>
                     <Image
-                      source={{ uri: image }}
+                      source={{ uri: item }}
                       style={{ width: 200, height: 200, marginRight: 10 }}
                     />
-                  );
-                }
-                return null;
+                  </View>
+                );
               }}
             />
           </ScrollView>

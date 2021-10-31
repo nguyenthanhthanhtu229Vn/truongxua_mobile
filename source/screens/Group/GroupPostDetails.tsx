@@ -13,6 +13,9 @@ import {
   AsyncStorage,
   RefreshControl,
   Alert,
+  KeyboardAvoidingView,
+  PlatformColor,
+  Platform,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -176,7 +179,9 @@ const GroupPostDetail = () => {
   //=====Call Api Comment=======
   const [comment, setComment] = useState<string>("");
   const commentURL =
-    "https://truongxuaapp.online/api/v1/posts/comments?sort=desc&pageNumber=0&pageSize=0";
+    "https://truongxuaapp.online/api/v1/posts/comments/postid?postId=" +
+    route.params.id +
+    "&sort=desc";
   const featchComment = async (headers) => {
     try {
       const response = await axios.get(commentURL, { headers });
@@ -279,7 +284,15 @@ const GroupPostDetail = () => {
   }, []);
 
   return (
-    <View>
+    <KeyboardAvoidingView
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={style.container}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.select({
+        ios: () => 60,
+        android: () => 200,
+      })()}
+    >
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -546,87 +559,91 @@ const GroupPostDetail = () => {
             data={comment}
             keyExtractor={({ id }, index) => id}
             renderItem={({ item, index }) => {
-              if (postId == item.postId) {
-                return (
+              return (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 40,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Image
+                    source={{ uri: getAvtAlumni(item.alumniId) }}
+                    style={style.img}
+                  />
                   <View
                     style={{
-                      flexDirection: "row",
-                      marginBottom: 40,
-                      justifyContent: "space-between",
+                      padding: 10,
+                      backgroundColor: "#f1eeee",
+                      width: 350,
+                      borderRadius: 20,
+                      marginLeft: 10,
                     }}
                   >
-                    <Image
-                      source={{ uri: getAvtAlumni(item.alumniId) }}
-                      style={style.img}
-                    />
-                    <View
+                    <Text
                       style={{
-                        padding: 10,
-                        backgroundColor: "#f1eeee",
-                        width: 350,
-                        borderRadius: 20,
-                        marginLeft: 10,
+                        fontSize: 14,
+                        fontWeight: "500",
+                        color: COLORS.black,
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "500",
-                          color: COLORS.black,
-                        }}
-                      >
-                        {getNameAlumni(item.alumniId)}
-                      </Text>
-                      <Text
-                        style={{
-                          color: COLORS.black,
-                          fontWeight: "300",
-                          fontSize: 16,
-                          marginTop: 10,
-                        }}
-                      >
-                        {item.content}
-                      </Text>
+                      {getNameAlumni(item.alumniId)}
+                    </Text>
+                    <Text
+                      style={{
+                        color: COLORS.black,
+                        fontWeight: "300",
+                        fontSize: 16,
+                        marginTop: 10,
+                      }}
+                    >
+                      {item.content}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 12,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {/* ====== text hour and like and reply */}
                       <View
                         style={{
                           flexDirection: "row",
-                          marginTop: 12,
                           alignItems: "center",
-                          justifyContent: "space-between",
                         }}
                       >
-                        {/* ====== text hour and like and reply */}
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Text style={style.text2}>
-                            {formatDateComment(item.createAt)}
-                          </Text>
-                          {alumniId == item.alumniId ? (
-                            <View>
-                              <TouchableOpacity
-                                style={style.btnDeletCmt}
-                                onPress={() =>
-                                  confirmDeleteComment(item.id, authorize)
-                                }
-                              >
-                                <Text style={style.text3}>Xóa</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity style={style.btnEditCmt}>
-                                <Text style={style.text4}>Chỉnh sửa</Text>
-                              </TouchableOpacity>
-                            </View>
-                          ) : null}
-                        </View>
+                        <Text style={style.text2}>
+                          {formatDateComment(item.createAt)}
+                        </Text>
+                        {alumniId == item.alumniId ? (
+                          <View>
+                            <TouchableOpacity
+                              style={style.btnDeletCmt}
+                              onPress={() =>
+                                confirmDeleteComment(item.id, authorize)
+                              }
+                            >
+                              <Text style={style.text3}>Xóa</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={style.btnEditCmt}
+                              onPress={() =>
+                                navigation.navigate("Chỉnh Sửa Bình Luận", {
+                                  id: item.id,
+                                })
+                              }
+                            >
+                              <Text style={style.text4}>Chỉnh sửa</Text>
+                            </TouchableOpacity>
+                          </View>
+                        ) : null}
                       </View>
                     </View>
                   </View>
-                );
-              }
-              return null;
+                </View>
+              );
             }}
           />
         </View>
@@ -634,12 +651,9 @@ const GroupPostDetail = () => {
       </ScrollView>
       <View
         style={{
-          height: 90,
           width: width,
           backgroundColor: "white",
           shadowOpacity: 0.1,
-          position: "absolute",
-          bottom: 0,
           padding: 10,
         }}
       >
@@ -687,11 +701,14 @@ const GroupPostDetail = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const style = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   img: {
     height: 40,
     width: 40,

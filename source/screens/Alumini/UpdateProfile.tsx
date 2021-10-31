@@ -1,6 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
+import {
+  AsyncStorage,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  View,
+} from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -13,7 +21,8 @@ import { useNavigation, useRoute } from "@react-navigation/core";
 import { COLORS, icons } from "../../constant";
 import Error from "../Error/Error";
 import DropDownPicker from "react-native-dropdown-picker";
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
@@ -29,7 +38,7 @@ const UpdateProfile: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-  const [img, setImg] = useState<string>(
+  const [image, setImage] = useState<string>(
     "https://1.bp.blogspot.com/--feZt7VOE1I/WKffpcr7UHI/AAAAAAAACyY/Mro30dfNA3M4C5fAr-gP26V8avY2XVk8ACLcB/s1600/anh-dai-dien-facebook-doc-1.jpg"
   );
   const [status, setStatus] = useState<boolean>(true);
@@ -38,9 +47,59 @@ const UpdateProfile: React.FC = () => {
   const [alumni, setAlumni] = useState<string>("");
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
+  const [authorize, setAuthorize] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setId(objUser.Id);
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    setAuthorize(headers);
+    getAlumni(objUser.Id, headers);
+  };
   // getAllSchool
   const schoolURL = `${baseUrl}/api/v1/schools?sort=desc&pageNumber=0&pageSize=0`;
   const [school, setSchool] = useState([]);
+  const [statusChangeImg, setStatusChangeImg] = useState(false);
+  //Pick Image
+  const pickImg = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImage(result.uri);
+      setStatusChangeImg(true);
+    }
+  };
+  const uploadImage = async (imgPick) => {
+    let filename = imgPick.split("/").pop();
+    let body = new FormData();
+    body.append("image", {
+      uri: imgPick,
+      name: filename,
+      type: "image/jpeg",
+    });
+    try {
+      const response = await axios({
+        method: "POST",
+        url: "https://api.imgbb.com/1/upload?key=8ce611088e16144c16f12e63289df341",
+        data: body,
+      });
+      if (response.status == 200) {
+        return response.data.data.display_url;
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   useEffect(() => {
     fetch(schoolURL)
       .then((response) =>
@@ -49,21 +108,14 @@ const UpdateProfile: React.FC = () => {
         })
       )
       .catch((error) => alert(error))
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(false));
   }, []);
-// console.log(school);
-  const tokenForAuthor = async () => {
-    const token = await AsyncStorage.getItem("idToken");
-    //
-    const infoUser = await AsyncStorage.getItem("infoUser");
-    const objUser = JSON.parse(infoUser);
-    setId(objUser.Id);
-  };
 
-  async function getAlumni(idAlumni) {
+  async function getAlumni(idAlumni, headers) {
     try {
       const response = await axios.get(
-        "http://20.188.111.70:12348/api/v1/alumni/" + idAlumni
+        "https://truongxuaapp.online/api/v1/alumni/" + idAlumni,
+        { headers }
       );
       setAlumni(response.data);
     } catch (error) {
@@ -73,7 +125,6 @@ const UpdateProfile: React.FC = () => {
 
   useEffect(() => {
     tokenForAuthor();
-    getAlumni(id);
     if (alumni.password != null) {
       setPassword(alumni.password);
     }
@@ -81,7 +132,7 @@ const UpdateProfile: React.FC = () => {
       setEmail(alumni.email);
     }
     if (alumni.img != null) {
-      setImg(alumni.img);
+      setImage(alumni.img);
     }
     if (alumni.groupId != null) {
       setGroupId(alumni.groupId);
@@ -89,9 +140,15 @@ const UpdateProfile: React.FC = () => {
     if (alumni.schoolId != null) {
       setSchoolId(alumni.schoolId);
     }
-  });
+    async () => {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    };
+  }, []);
 
-  const UpdateProfile = async () => {
+  const UpdateProfile = async (headers) => {
     if (
       name.length == 0 ||
       address.length == 0 ||
@@ -103,42 +160,41 @@ const UpdateProfile: React.FC = () => {
     } else if (phone.length != 10) {
       setError("Số điện thoại 10 chữ số");
       setRegistering(false);
-    }else{
-      if (error !== ""){
-        setRegistering(true);
-        axios({
-          url: "http://20.188.111.70:12348/api/v1/alumni?id=" + id,
-          method: "PUT",
-          data: {
-            password,
+    } else {
+      setRegistering(true);
+      console.log(id);
+      try {
+        const response = await axios.put(
+          "https://truongxuaapp.online/api/v1/alumni?id=" + id,
+          {
             email,
-            phone,
             name,
+            password,
+            phone,
             address,
+            img: statusChangeImg === true ? image : await uploadImage(image),
             bio,
-            img,
             status,
             groupId,
             schoolId,
           },
-        })
-          .then((response) => {
-            if (response.status === 200) {
-              alert("Cập Nhập Thành Công");
-              navigation.navigate("MyTabs");
-            } else {
-              throw new Error("Đã Xảy Ra Lỗi ");
-            }
-          })
-          .catch((error) => {
-            alert(error);
-            setRegistering(false);
-          });
+          { headers }
+        );
+        if (response.status === 200) {
+          alert("Cập Nhập Thành Công");
+          navigation.navigate("MyTabs");
+        }
+      } catch (error) {
+        alert(error);
+        setRegistering(false);
       }
-}
-}
+    }
+  };
   return (
-    <View style={{ flex: 1, padding: 20, marginTop: 30 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, padding: 20, marginTop: 30 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView>
         <View
           style={{
@@ -162,13 +218,14 @@ const UpdateProfile: React.FC = () => {
           Cập Nhập Thông Tin
         </Text>
         <View style={{ position: "relative", marginTop: 15 }}>
-        <DropDownPicker
+          <Error error={error} />
+          <DropDownPicker
             onChangeValue={(ids) => setSchoolId(ids)}
             stickyHeader
             style={style.input}
             open={open}
             value={value}
-            items={school.map(item=> ({label:item.name,value:item.id}))}
+            items={school.map((item) => ({ label: item.name, value: item.id }))}
             setOpen={setOpen}
             setValue={setValue}
             setItems={setSchool}
@@ -268,31 +325,53 @@ const UpdateProfile: React.FC = () => {
             }}
           />
         </View>
-        <Error error={error} />
-        <TouchableOpacity onPress={UpdateProfile}>
+        <TouchableOpacity
+          onPress={pickImg}
+          style={{ flexDirection: "row", marginTop: 20 }}
+        >
+          <Image
+            style={{ width: 25, height: 25 }}
+            source={require("../../assets/icons/imageGallery.png")}
+          />
+          <Text style={{ marginLeft: 10, fontSize: 18 }}>Chọn hình ảnh</Text>
+        </TouchableOpacity>
+        {image != null ? (
           <View
             style={{
-              backgroundColor: "#088dcd",
-              width: "100%",
-              borderRadius: 25,
-              marginTop: 20,
-              padding: 17,
+              marginLeft: 10,
             }}
           >
-            <Text
-              style={{
-                color: "white",
-                textAlign: "center",
-
-                fontSize: 20,
-              }}
-            >
-              Lưu
-            </Text>
+            <Image
+              source={{ uri: image }}
+              style={{ width: 200, height: 200, marginRight: 10 }}
+            />
           </View>
-        </TouchableOpacity>
+        ) : null}
       </ScrollView>
-    </View>
+      <TouchableOpacity onPress={() => UpdateProfile(authorize)}>
+        <View
+          style={{
+            backgroundColor: "#088dcd",
+            width: "100%",
+            borderRadius: 25,
+            marginTop: 20,
+            padding: 17,
+            marginBottom: 20,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+
+              fontSize: 20,
+            }}
+          >
+            Lưu
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -304,8 +383,8 @@ const style = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderRadius: 10,
     marginBottom: 10,
-    marginTop: 140
+    marginTop: 20,
   },
-})
+});
 
 export default UpdateProfile;

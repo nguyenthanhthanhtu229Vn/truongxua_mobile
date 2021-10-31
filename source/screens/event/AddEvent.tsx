@@ -51,15 +51,14 @@ const AddEvent = () => {
     const moment = require("moment-timezone");
     const start = moment
       .tz(
-        `${dateOfStart.getFullYear()}-${String(dateOfStart.getMonth()).padStart(
+        `${dateOfStart.getFullYear()}-${String(
+          dateOfStart.getMonth() + 1
+        ).padStart(2, "0")}-${String(dateOfStart.getDate()).padStart(
           2,
           "0"
-        )}-${String(dateOfStart.getDate()).padStart(2, "0")} ${String(
-          timeOfStart.getHours()
-        ).padStart(2, "0")}:${String(timeOfStart.getMinutes()).padStart(
-          2,
-          "0"
-        )}`,
+        )} ${String(timeOfStart.getHours()).padStart(2, "0")}:${String(
+          timeOfStart.getMinutes()
+        ).padStart(2, "0")}`,
         "Asia/Ho_Chi_Minh"
       )
       .format();
@@ -69,7 +68,7 @@ const AddEvent = () => {
     const moment = require("moment-timezone");
     const end = moment
       .tz(
-        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth()).padStart(
+        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth() + 1).padStart(
           2,
           "0"
         )}-${String(dateOfEnd.getDate()).padStart(2, "0")} ${String(

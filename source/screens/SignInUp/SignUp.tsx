@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from "react";
-import { Image, ImageBackground, Text, View } from "react-native";
+import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -21,6 +21,7 @@ import Error from "../Error/Error";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 import { COLORS } from "../../constant";
+import jwtDecode from "jwt-decode";
 
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
@@ -39,19 +40,29 @@ const SignUp: React.FC = () => {
   const [img, setImg] = useState<string>("");
   const [status, setStatus] = useState<boolean>(false);
   // const history=useHistory();
+  async function getAlumni(idAlumni, token) {
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/alumni/" + idAlumni,
+        { headers }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const loadAccountToData = async () => {
     try {
       const response = await axios.post(
-        `https://truongxuaapp.online/api/v1/alumni`,
+        `https://truongxuaapp.online/api/users/sign-in`,
         {
           email,
-          name,
           password,
-          phone,
-          address,
-          img,
-          bio,
-          status,
         }
       );
       if (response.status === 200) {
@@ -98,14 +109,14 @@ const SignUp: React.FC = () => {
         await AsyncStorage.setItem("idToken", response.data);
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
-        const alumni = await getAlumni(decoded.Id);
+        const alumni = await getAlumni(decoded.Id, response.data);
         if (
           alumni.data.name == "" ||
           alumni.data.address == "" ||
           alumni.data.phone == "" ||
           alumni.data.bio == ""
         ) {
-          navigation.navigate("UpdateProfile");
+          navigation.navigate("Cập Nhập Hồ Sơ");
         } else {
           navigation.navigate("MyTabs");
         }

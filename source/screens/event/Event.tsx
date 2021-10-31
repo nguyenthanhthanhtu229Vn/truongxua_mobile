@@ -35,6 +35,7 @@ const Event: React.FC = (props) => {
 
     await featchEvent(headers);
     await featchImageEvent(headers);
+    await featchAlumni(headers);
     return schoolId;
   };
   const eventURL =
@@ -54,6 +55,33 @@ const Event: React.FC = (props) => {
     }
   }
 
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async (headers) => {
+    try {
+      const response = await axios.get(alumniURL, { headers });
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
+  };
+
+  // Call Api Image
   async function featchImageEvent(headers) {
     try {
       const response = await axios.get(imageURL, { headers });
@@ -109,7 +137,7 @@ const Event: React.FC = (props) => {
         <TouchableOpacity
           style={style.plusBtn}
           onPress={() => {
-            navigation.navigate("Create Event");
+            navigation.navigate("Tạo Sự Kiện");
           }}
         >
           <Foundation name="plus" style={style.textPlus}></Foundation>
@@ -169,7 +197,7 @@ const Event: React.FC = (props) => {
                         numberOfLines={2}
                         ellipsizeMode="tail"
                         style={{
-                          color: COLORS.darkGray,
+                          color: "black",
                           marginLeft: 4,
                           ...FONTS.h3,
                           fontWeight: "500",
@@ -179,7 +207,18 @@ const Event: React.FC = (props) => {
                           marginBottom: 10,
                         }}
                       >
-                        {item.description}
+                        Mô tả: {item.description}
+                      </Text>
+                      <Text
+                        style={{
+                          color: COLORS.darkGray,
+                          marginLeft: 4,
+                          ...FONTS.h4,
+                          fontWeight: "500",
+                          marginBottom: 10,
+                        }}
+                      >
+                        Người tạo: {getNameAlumni(item.alumniCreatedId)}
                       </Text>
                       <Text
                         style={{

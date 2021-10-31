@@ -1,5 +1,5 @@
 import React from "react";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { icons } from "../../constant";
@@ -27,12 +27,11 @@ import AboutSchool from "../School/AboutSchool";
 import AddEvent from "../event/AddEvent";
 import Follow from "../../Other/Follow";
 import AboutProfile from "../../Other/AboutProfile";
+import EditComment from "../Group/EditComment";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const BTab = createMaterialTopTabNavigator();
-
-
 
 function MyTabs() {
   return (
@@ -96,6 +95,7 @@ const RootNavigator = () => {
       <Stack.Screen name="Chi Tiết Bài Đăng" component={GroupPostDetail} />
       <Stack.Screen name="Nhóm" component={Group} />
       <Stack.Screen name="Tạo Bài Đăng" component={CreatePostInGroup} />
+      <Stack.Screen name="Chỉnh Sửa Bình Luận" component={EditComment} />
 
       {/* ======Event ======= */}
       <Stack.Screen name="Sự Kiện" component={Event} />
@@ -105,8 +105,6 @@ const RootNavigator = () => {
       <Stack.Screen name="Hồ Sơ" component={Profile} />
       <Stack.Screen name="Cập Nhập Hồ Sơ" component={UpdateProfile} />
 
-
-
       {/* =======Other====== */}
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
       <Stack.Screen name="BlogPost" component={BlogPost} />
@@ -114,7 +112,6 @@ const RootNavigator = () => {
 
       {/* =====School== */}
       <Stack.Screen name="Thông Tin Trường" component={AboutSchool} />
-
     </Stack.Navigator>
   );
 };

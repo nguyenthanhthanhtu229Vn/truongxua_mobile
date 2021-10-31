@@ -116,7 +116,6 @@ const GroupDetail = () => {
   const [visible, setVisible] = useState(false);
   const [idPost, setIdPost] = useState();
   const [isLoading, setLoading] = useState(true);
-  const postURL = `https://truongxuaapp.online/api/v1/posts?sort=desc&pageNumber=0&pageSize=0`;
   const [post, setPost] = useState();
 
   //==========Update id first open Modal Popup
@@ -125,6 +124,10 @@ const GroupDetail = () => {
     setIdPost(id);
   };
 
+  const postURL =
+    `https://truongxuaapp.online/api/v1/posts/groupid?groupId=` +
+    route.params.id +
+    "&sort=desc";
   async function featchPosts(headers) {
     try {
       const response = await axios.get(postURL, { headers });
@@ -500,253 +503,247 @@ const GroupDetail = () => {
           <FlatList
             data={post}
             renderItem={({ item, index }) => {
-              if (item.groupId == route.params.id) {
-                return (
+              return (
+                <View
+                  style={{
+                    backgroundColor: COLORS.white2,
+                    marginTop: 10,
+                  }}
+                >
                   <View
                     style={{
-                      backgroundColor: COLORS.white2,
-                      marginTop: 10,
+                      flexDirection: "column",
+                      paddingLeft: 10,
+                      paddingRight: 10,
+                      marginTop: 20,
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "column",
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        marginTop: 20,
-                      }}
-                    >
-                      <View style={{ flexDirection: "row" }}>
-                        <Image
-                          source={{ uri: getAvtAlumni(item.alumniId) }}
-                          style={{
-                            height: 60,
-                            width: 60,
-                            borderRadius: SIZES.largeTitle,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            color: COLORS.blue,
-                            marginLeft: 4,
-                            ...FONTS.h3,
-                            fontWeight: "500",
-                            width: 280,
-                          }}
-                        >
-                          {getNameAlumni(item.alumniId)}
-                        </Text>
-                        {/* ====begin modal====== */}
-                        <View
-                          style={{
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          {/*  */}
-                          <ModalPoup visible={visible}>
-                            <View style={{ alignItems: "center" }}>
-                              <View style={style.header}>
-                                <TouchableOpacity
-                                  onPress={() => setVisible(false)}
-                                >
-                                  <Image
-                                    source={require("../../assets/icons/error.png")}
-                                    style={{ height: 30, width: 30 }}
-                                  />
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                              onPress={() =>
-                                navigation.navigate("Sửa Bài Đăng", {
-                                  id: idPost,
-                                  numberAlumni: route.params.numberAlumni,
-                                })
-                              }
-                            >
-                              <Image
-                                source={require("../../assets/icons/edit.png")}
-                                style={{
-                                  height: 20,
-                                  width: 20,
-                                  marginVertical: 10,
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              />
-                              <Text>Chỉnh Sửa Bài Đăng </Text>
-                            </TouchableOpacity>
-
-                            {/* delete */}
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                              onPress={() =>
-                                onSubmitFormHandler(idPost, authorize)
-                              }
-                            >
-                              <Image
-                                source={require("../../assets/icons/delete.png")}
-                                style={{
-                                  height: 20,
-                                  width: 20,
-                                  marginVertical: 10,
-                                  marginLeft: 10,
-                                  marginRight: 10,
-                                }}
-                              />
-                              <Text>Xoá Bài Đăng</Text>
-                            </TouchableOpacity>
-                          </ModalPoup>
-
-                          {/*  */}
-                          {item.alumniId == idUser ? (
-                            <TouchableOpacity
-                              onPress={() => updateValueForModalPopup(item.id)}
-                            >
-                              <Image
-                                source={require("../../assets/icons/menu.png")}
-                                style={{
-                                  height: 14,
-                                  width: 14,
-                                  marginBottom: 34,
-                                }}
-                              />
-                            </TouchableOpacity>
-                          ) : null}
-                        </View>
-                        {/* end modal */}
-                      </View>
-
-                      <View
+                    <View style={{ flexDirection: "row" }}>
+                      <Image
+                        source={{ uri: getAvtAlumni(item.alumniId) }}
                         style={{
-                          flexDirection: "row",
-                          marginTop: -34,
-                          marginLeft: 64,
+                          height: 60,
+                          width: 60,
+                          borderRadius: SIZES.largeTitle,
                         }}
-                      >
-                        <Image
-                          source={icons.globe}
-                          style={{ height: 20, width: 20 }}
-                        />
-                        <Text style={{ marginLeft: 8 }}>
-                          {formatDate(item.createAt)}
-                        </Text>
-                      </View>
+                      />
                       <Text
                         style={{
-                          marginTop: 30,
+                          color: COLORS.blue,
+                          marginLeft: 4,
                           ...FONTS.h3,
-                          color: COLORS.black,
-                          marginBottom: 10,
+                          fontWeight: "500",
+                          width: 280,
                         }}
                       >
-                        {item.content}
+                        {getNameAlumni(item.alumniId)}
                       </Text>
-                      {/* =======img for post==== */}
-                      <ScrollView horizontal style={{ flexDirection: "row" }}>
-                        <FlatList
-                          numColumns={999}
-                          data={listImg}
-                          keyExtractor={({ id }, index) => id}
-                          renderItem={({ item2, index }) => {
-                            if (item.id == listImg[index].postId) {
-                              return (
+                      {/* ====begin modal====== */}
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {/*  */}
+                        <ModalPoup visible={visible}>
+                          <View style={{ alignItems: "center" }}>
+                            <View style={style.header}>
+                              <TouchableOpacity
+                                onPress={() => setVisible(false)}
+                              >
                                 <Image
-                                  style={{
-                                    width: 400,
-                                    height: 240,
-                                    marginRight: 20,
-                                    resizeMode: "cover",
-                                  }}
-                                  source={{ uri: listImg[index].imageUrl }}
-                                ></Image>
-                              );
+                                  source={require("../../assets/icons/error.png")}
+                                  style={{ height: 30, width: 30 }}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                            onPress={() =>
+                              navigation.navigate("Sửa Bài Đăng", {
+                                id: idPost,
+                                numberAlumni: route.params.numberAlumni,
+                              })
                             }
-                            return null;
-                          }}
-                        />
-                      </ScrollView>
+                          >
+                            <Image
+                              source={require("../../assets/icons/edit.png")}
+                              style={{
+                                height: 20,
+                                width: 20,
+                                marginVertical: 10,
+                                marginLeft: 10,
+                                marginRight: 10,
+                              }}
+                            />
+                            <Text>Chỉnh Sửa Bài Đăng </Text>
+                          </TouchableOpacity>
 
-                      {/* ======comment ==== */}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginTop: 14,
-                          justifyContent: "space-between",
-                          marginLeft: 8,
-                        }}
-                      >
-                        <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
-                        >
-                          <Image source={icons.thumpUp} style={style.iconf} />
-                          <Image source={icons.heart} style={style.iconf} />
-                          <Image source={icons.angry} style={style.iconf} />
-                          <Image source={icons.sad} style={style.iconf} />
-                          <Text>10+</Text>
-                        </View>
-                        <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
-                        >
-                          <Text style={{ color: "#65676b" }}>
-                            {getCountComment(item.id)} bình luận
-                          </Text>
-                        </View>
+                          {/* delete */}
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                            onPress={() =>
+                              onSubmitFormHandler(idPost, authorize)
+                            }
+                          >
+                            <Image
+                              source={require("../../assets/icons/delete.png")}
+                              style={{
+                                height: 20,
+                                width: 20,
+                                marginVertical: 10,
+                                marginLeft: 10,
+                                marginRight: 10,
+                              }}
+                            />
+                            <Text>Xoá Bài Đăng</Text>
+                          </TouchableOpacity>
+                        </ModalPoup>
+
+                        {/*  */}
+                        {item.alumniId == idUser ? (
+                          <TouchableOpacity
+                            onPress={() => updateValueForModalPopup(item.id)}
+                          >
+                            <Image
+                              source={require("../../assets/icons/menu.png")}
+                              style={{
+                                height: 14,
+                                width: 14,
+                                marginBottom: 34,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        ) : null}
                       </View>
+                      {/* end modal */}
+                    </View>
 
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginTop: 10,
-                          justifyContent: "space-around",
-                          marginBottom: 10,
-                          borderTopColor: "#ececec",
-                          borderTopWidth: 1,
-                          paddingTop: 10,
-                        }}
-                      >
-                        <TouchableOpacity style={style.btn}>
-                          <Image source={icons.like} style={style.icon}></Image>
-                          <Text style={style.text}>Thích </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          style={style.btn}
-                          onPress={() =>
-                            navigation.navigate("Chi Tiết Bài Đăng", {
-                              id: item.id,
-                            })
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: -34,
+                        marginLeft: 64,
+                      }}
+                    >
+                      <Image
+                        source={icons.globe}
+                        style={{ height: 20, width: 20 }}
+                      />
+                      <Text style={{ marginLeft: 8 }}>
+                        {formatDate(item.createAt)}
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        marginTop: 30,
+                        ...FONTS.h3,
+                        color: COLORS.black,
+                        marginBottom: 10,
+                      }}
+                    >
+                      {item.content}
+                    </Text>
+                    {/* =======img for post==== */}
+                    <ScrollView horizontal style={{ flexDirection: "row" }}>
+                      <FlatList
+                        numColumns={999}
+                        data={listImg}
+                        keyExtractor={({ id }, index) => id}
+                        renderItem={({ item2, index }) => {
+                          if (item.id == listImg[index].postId) {
+                            return (
+                              <Image
+                                style={{
+                                  width: 400,
+                                  height: 240,
+                                  marginRight: 20,
+                                  resizeMode: "cover",
+                                }}
+                                source={{ uri: listImg[index].imageUrl }}
+                              ></Image>
+                            );
                           }
-                        >
-                          <Image
-                            source={icons.comment}
-                            style={style.icon}
-                          ></Image>
-                          <Text style={style.text}>Bình luận</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={style.btn}>
-                          <Image
-                            source={icons.share}
-                            style={style.icon}
-                          ></Image>
-                          <Text style={style.text}>Chia sẽ</Text>
-                        </TouchableOpacity>
+                          return null;
+                        }}
+                      />
+                    </ScrollView>
+
+                    {/* ======comment ==== */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 14,
+                        justifyContent: "space-between",
+                        marginLeft: 8,
+                      }}
+                    >
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Image source={icons.thumpUp} style={style.iconf} />
+                        <Image source={icons.heart} style={style.iconf} />
+                        <Image source={icons.angry} style={style.iconf} />
+                        <Image source={icons.sad} style={style.iconf} />
+                        <Text>10+</Text>
+                      </View>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Text style={{ color: "#65676b" }}>
+                          {getCountComment(item.id)} bình luận
+                        </Text>
                       </View>
                     </View>
+
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 10,
+                        justifyContent: "space-around",
+                        marginBottom: 10,
+                        borderTopColor: "#ececec",
+                        borderTopWidth: 1,
+                        paddingTop: 10,
+                      }}
+                    >
+                      <TouchableOpacity style={style.btn}>
+                        <Image source={icons.like} style={style.icon}></Image>
+                        <Text style={style.text}>Thích </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={style.btn}
+                        onPress={() =>
+                          navigation.navigate("Chi Tiết Bài Đăng", {
+                            id: item.id,
+                          })
+                        }
+                      >
+                        <Image
+                          source={icons.comment}
+                          style={style.icon}
+                        ></Image>
+                        <Text style={style.text}>Bình luận</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={style.btn}>
+                        <Image source={icons.share} style={style.icon}></Image>
+                        <Text style={style.text}>Chia sẽ</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                );
-              }
-              return null;
+                </View>
+              );
             }}
           />
         </View>
