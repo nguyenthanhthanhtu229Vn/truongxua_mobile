@@ -1,12 +1,28 @@
 // /* eslint-disable react-native/no-inline-styles */
-import React from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { AsyncStorage, View } from "react-native";
 import { icons } from "../../constant";
 import constant from "../../constant/constant";
 import CategoryMenu from "./Category";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 const Menu: React.FC = () => {
+  const [idUser, setIdUser] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setIdUser(objUser.Id);
+    //
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+  };
+  useEffect(() => {
+    tokenForAuthor();
+  }, []);
   const navigation = useNavigation();
   return (
     <View style={{ marginTop: 40 }}>
@@ -20,7 +36,7 @@ const Menu: React.FC = () => {
           icon={icons.profile_n}
           label={constant.screens.profile}
           onPress={() => {
-            navigation.navigate("Hồ Sơ");
+            navigation.navigate("Hồ Sơ", { idProfile: idUser });
           }}
         />
         <CategoryMenu
@@ -45,22 +61,21 @@ const Menu: React.FC = () => {
           }}
         />
         <CategoryMenu
-          icon={icons.news_n}
-          label={constant.screens.blog}
-          onPress={() => {
-            navigation.navigate("BlogPost");
-          }}
-        />
-      </View>
-      <View style={style.container}>
-        <CategoryMenu
           icon={icons.setting_n}
           label={constant.screens.setting}
           onPress={() => {
             navigation.navigate("Cài Đặt");
           }}
         />
+        {/* <CategoryMenu
+          icon={icons.news_n}
+          label={constant.screens.blog}
+          onPress={() => {
+            navigation.navigate("BlogPost");
+          }}
+        /> */}
       </View>
+      <View style={style.container}></View>
     </View>
   );
 };

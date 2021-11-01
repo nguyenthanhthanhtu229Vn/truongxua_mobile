@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Image,
   AsyncStorage,
+  Alert,
+  FlatList,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -23,16 +25,17 @@ const AddEvent = () => {
   const moment = require("moment-timezone");
   const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
   // get token
-  const [contentActivity, setContentActivity] = useState();
+  const [contentActivity, setContentActivity] = useState(Array);
   const [alumniCreatedId, setAlumniCreatedId] = useState();
   const [schoolId, setSchoolId] = useState();
   const [startDate, setStartDate] = useState(dateCreate);
   const [endDate, setEndDate] = useState(dateCreate);
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
-  const [ticketPrice, setTicketPrice] = useState();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [ticketPrice, setTicketPrice] = useState(null);
   const [createAt, setCreateAt] = useState(dateCreate);
   const [authorize, setAuthorize] = useState();
+  const [visible, setVisible] = useState(false);
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -48,19 +51,30 @@ const AddEvent = () => {
     setAuthorize(headers);
   };
 
+  const validateFormAddEvent = () => {
+    if (
+      name.trim() == "" ||
+      description.trim() == "" ||
+      ticketPrice == null ||
+      contentActivity.length == 0
+    ) {
+      Alert.alert("Lỗi", "Bạn phải nhập đủ thông tin trước khi tạo sự kiện");
+    } else {
+      createEvent(authorize);
+    }
+  };
   const updateDateEventStart = () => {
     const moment = require("moment-timezone");
     const start = moment
       .tz(
-        `${dateOfStart.getFullYear()}-${String(dateOfStart.getMonth()).padStart(
+        `${dateOfStart.getFullYear()}-${String(
+          dateOfStart.getMonth() + 1
+        ).padStart(2, "0")}-${String(dateOfStart.getDate()).padStart(
           2,
           "0"
-        )}-${String(dateOfStart.getDate()).padStart(2, "0")} ${String(
-          timeOfStart.getHours()
-        ).padStart(2, "0")}:${String(timeOfStart.getMinutes()).padStart(
-          2,
-          "0"
-        )}`,
+        )} ${String(timeOfStart.getHours()).padStart(2, "0")}:${String(
+          timeOfStart.getMinutes()
+        ).padStart(2, "0")}`,
         "Asia/Ho_Chi_Minh"
       )
       .format();
@@ -70,7 +84,7 @@ const AddEvent = () => {
     const moment = require("moment-timezone");
     const end = moment
       .tz(
-        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth()).padStart(
+        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth() + 1).padStart(
           2,
           "0"
         )}-${String(dateOfEnd.getDate()).padStart(2, "0")} ${String(
@@ -109,14 +123,14 @@ const AddEvent = () => {
   //Call API create Activity
   const createActivity = async (headers, id) => {
     try {
-      const reponse = await axios.post(
-        "https://truongxuaapp.online/api/v1/activities",
-        { eventId: id, name: contentActivity },
-        { headers }
-      );
-      if (reponse.status === 200) {
-        await createImageForEvent(headers, id);
+      for (let i = 0; i < contentActivity.length; i++) {
+        const reponse = await axios.post(
+          "https://truongxuaapp.online/api/v1/activities",
+          { eventId: id, name: contentActivity[i] },
+          { headers }
+        );
       }
+      await createImageForEvent(headers, id);
     } catch (error) {
       alert("Tạo hoạt động không thành công");
     }
@@ -125,20 +139,24 @@ const AddEvent = () => {
   //Call Api upload image
   const createImageForEvent = async (headers, id) => {
     try {
-      const response = await axios.post(
-        "https://truongxuaapp.online/api/v1/images",
-        { eventId: id, imageUrl: await uploadImage(image) },
-        { headers }
-      );
-      if (response.status === 200) {
-        alert("Tạo sự kiện thành công");
-        navigation.navigate("Sự Kiện");
+      for (let i = 0; i < listImage.length; i++) {
+        const response = await axios.post(
+          "https://truongxuaapp.online/api/v1/images",
+          { eventId: id, imageUrl: await uploadImage(listImage[i]) },
+          { headers }
+        );
       }
+      alert("Tạo sự kiện thành công");
+      navigation.navigate("Sự Kiện");
     } catch (error) {
       alert("Up hình không thành công");
     }
   };
 
+  const removeImageInList = (index) => {
+    listImage.splice(index, 1);
+    setVisible(!visible);
+  };
   // Open popup date
   const [date, setDate] = useState(new Date(dateCreate));
   const [dateOfStart, setDateOfStart] = useState(new Date(dateCreate));
@@ -181,6 +199,7 @@ const AddEvent = () => {
   // End  popup date
 
   const [image, setImage] = useState(null);
+  const [listImage, setListImage] = useState(Array);
   const pickImg = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -189,7 +208,8 @@ const AddEvent = () => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setImage(result.uri);
+      listImage.push(result.uri);
+      setVisible(!visible);
     }
   };
 
@@ -346,7 +366,7 @@ const AddEvent = () => {
                     mode={mode}
                     display="default"
                     onChange={onChangeDateOfEnd}
-                    minimumDate={date}
+                    minimumDate={dateOfStart}
                   />
                 )}
               </TouchableOpacity>
@@ -371,6 +391,7 @@ const AddEvent = () => {
                     mode="time"
                     display="default"
                     onChange={onChangeTimeOfEnd}
+                    minimumDate={dateOfStart}
                   />
                 )}
               </TouchableOpacity>
@@ -395,11 +416,10 @@ const AddEvent = () => {
             /> */}
             {/* begin tag */}
             <Tags
-              initialText="monkey"
               textInputProps={{
                 placeholder: "Any type of animal",
               }}
-              onChangeTags={(tags) => console.log(tags)}
+              onChangeTags={(tags) => setContentActivity(tags)}
               onTagPress={(index, tagLabel, event, deleted) =>
                 console.log(
                   index,
@@ -408,13 +428,20 @@ const AddEvent = () => {
                   deleted ? "deleted" : "not deleted"
                 )
               }
-              containerStyle={{ justifyContent: "center" }}
+              containerStyle={{
+                justifyContent: "center",
+                backgroundColor: "#92adf7",
+              }}
               inputStyle={{
                 backgroundColor: "white",
                 borderWidth: 0.6,
                 borderColor: "#CCCCCC",
                 borderRadius: 8,
+                color: "black",
               }}
+              tagContainerStyle={{ backgroundColor: "red" }}
+              inputContainerStyle={{ color: "red" }}
+              tagTextStyle={{ color: "red" }}
               renderTag={({ tag, index, onPress }) => (
                 <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
                   <Text>{tag}</Text>
@@ -455,9 +482,48 @@ const AddEvent = () => {
                   Chọn hình ảnh
                 </Text>
               </TouchableOpacity>
-              <Image
-                source={{ uri: image }}
-                style={{ width: 200, height: 200, marginTop: 10 }}
+              <FlatList
+                style={{
+                  marginTop: 20,
+                  marginBottom: 40,
+                  backgroundColor: "white",
+                }}
+                horizontal
+                extraData={visible}
+                data={listImage}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item, index }) => {
+                  return (
+                    <View
+                      style={{
+                        marginLeft: 10,
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => removeImageInList(index)}
+                        style={{
+                          position: "relative",
+                          zIndex: 10,
+                          alignSelf: "flex-end",
+                          bottom: -5,
+                        }}
+                      >
+                        <Image
+                          source={require("../../assets/icons/error.png")}
+                          style={{
+                            height: 30,
+                            width: 30,
+                          }}
+                        />
+                      </TouchableOpacity>
+                      <Image
+                        source={{ uri: item }}
+                        style={{ width: 200, height: 200, marginRight: 10 }}
+                      />
+                    </View>
+                  );
+                }}
               />
             </View>
             {/*  */}
@@ -466,7 +532,7 @@ const AddEvent = () => {
       </ScrollView>
       {/* ======Button Create ====== */}
       <TouchableOpacity
-        onPress={() => createEvent(authorize)}
+        onPress={() => validateFormAddEvent(authorize)}
         style={{
           width: 340,
           alignSelf: "center",

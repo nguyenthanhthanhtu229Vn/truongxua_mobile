@@ -294,7 +294,7 @@ const AboutSchool = () => {
           {/* <Information text={"Fax"} msg={"0977233391"} /> */}
         </View>
         {/* =====Explor exvent==== */}
-        <ExploreEvent />
+        {/* <ExploreEvent /> */}
         {/* =========memeber======= */}
         <Member />
         {/* =====Phan tich bai dang */}

@@ -1,5 +1,5 @@
 import React from "react";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { icons } from "../../constant";
@@ -26,6 +26,7 @@ import EditPostGroup from "../Group/EditModal";
 import AboutSchool from "../School/AboutSchool";
 import AddEvent from "../event/AddEvent";
 import EditCommentEvent from "../event/EditCommentEvent";
+import EditComment from "../Group/EditComment";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -59,7 +60,11 @@ function MyTabs() {
       })}
     >
       <Tab.Screen name="Trang Chủ" component={Home} />
-      <Tab.Screen name="Danh Mục" component={Menu} options={{headerShown:false}} />
+      <Tab.Screen
+        name="Danh Mục"
+        component={Menu}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen name="Thông Báo " component={Notification} />
     </Tab.Navigator>
   );
@@ -91,12 +96,14 @@ const RootNavigator = () => {
       <Stack.Screen name="Chi Tiết Bài Đăng" component={GroupPostDetail} />
       <Stack.Screen name="Nhóm" component={Group} />
       <Stack.Screen name="Tạo Bài Đăng" component={CreatePostInGroup} />
+      <Stack.Screen name="Sửa Bình Luận Bài Viết" component={EditComment} />
 
       {/* ======Event ======= */}
       <Stack.Screen name="Sự Kiện" component={Event} />
       <Stack.Screen name="Chi Tiết Sự Kiện" component={EventDetail} />
       <Stack.Screen name="Tạo Sự Kiện" component={AddEvent} />
       <Stack.Screen name="Sửa Bình Luận" component={EditCommentEvent} />
+
       {/*=======Alumini ======  */}
       <Stack.Screen name="Hồ Sơ" component={Profile} />
       <Stack.Screen name="Cập Nhập Hồ Sơ" component={UpdateProfile} />

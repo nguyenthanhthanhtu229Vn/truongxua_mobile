@@ -630,7 +630,7 @@ const GroupPostDetail = () => {
                             <TouchableOpacity
                               style={style.btnEditCmt}
                               onPress={() =>
-                                navigation.navigate("Chỉnh Sửa Bình Luận", {
+                                navigation.navigate("Sửa Bình Luận Bài Viết", {
                                   id: item.id,
                                 })
                               }

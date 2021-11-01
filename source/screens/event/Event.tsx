@@ -19,6 +19,7 @@ import axios from "axios";
 const Event: React.FC = (props) => {
   const [authorize, setAuthorize] = useState();
   const [schoolId, setSchoolId] = useState();
+  const [visible, setVisible] = useState(false);
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     const infoUser = await AsyncStorage.getItem("infoUser");
@@ -32,6 +33,7 @@ const Event: React.FC = (props) => {
 
     await featchEvent(headers);
     await featchImageEvent(headers);
+    await featchAlumni(headers);
     return schoolId;
   };
   const eventURL =
@@ -50,6 +52,32 @@ const Event: React.FC = (props) => {
       console.log(error);
     }
   }
+
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const featchAlumni = async (headers) => {
+    try {
+      const response = await axios.get(alumniURL, { headers });
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
+  };
 
   async function featchImageEvent(headers) {
     try {
@@ -116,6 +144,7 @@ const Event: React.FC = (props) => {
             contentContainerStyle={{
               flexDirection: "column",
             }}
+            extraData={visible}
             data={event}
             renderItem={({ item, index }) => {
               if (schoolId == item.schoolId) {
@@ -165,7 +194,7 @@ const Event: React.FC = (props) => {
                         numberOfLines={2}
                         ellipsizeMode="tail"
                         style={{
-                          color: COLORS.darkGray,
+                          color: "black",
                           marginLeft: 4,
                           ...FONTS.h3,
                           fontWeight: "500",
@@ -176,6 +205,17 @@ const Event: React.FC = (props) => {
                         }}
                       >
                         {item.description}
+                      </Text>
+                      <Text
+                        style={{
+                          color: COLORS.darkGray,
+                          marginLeft: 4,
+                          ...FONTS.h4,
+                          fontWeight: "500",
+                          marginBottom: 10,
+                        }}
+                      >
+                        Người tạo: {getNameAlumni(item.alumniCreatedId)}
                       </Text>
                       <Text
                         style={{

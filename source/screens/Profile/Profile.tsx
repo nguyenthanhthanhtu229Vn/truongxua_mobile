@@ -7,6 +7,8 @@ import {
   Image,
   AsyncStorage,
   FlatList,
+  Alert,
+  RefreshControl,
 } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Dimensions, StyleSheet } from "react-native";
@@ -18,34 +20,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 
-const MemberSchool = [
-  {
-    avatar: require("../../assets/images/event.jpg"),
-    name: "Bryan Tran",
-    addess: "Quan 7,HCM",
-  },
-  {
-    avatar: require("../../assets/images/event.jpg"),
-    name: "Bryan Tran",
-    addess: "Quan 7,HCM",
-  },
-  {
-    avatar: require("../../assets/images/event.jpg"),
-    name: "Bryan Tran",
-    addess: "Quan 7,HCM",
-  },
-  {
-    avatar: require("../../assets/images/event.jpg"),
-    name: "Bryan Tran",
-    addess: "Quan 7,HCM",
-  },
-];
-
 const Profile: React.FC = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const [user, setUser] = useState<string>("");
   const [groups, setGroup] = useState<boolean>(false);
@@ -53,6 +33,8 @@ const Profile: React.FC = () => {
   const [idUser, setIdUser] = useState<string>();
   const [idGroup, setIdGroup] = useState<string>();
   const [myInfo, setMyInfo] = useState<boolean>(false);
+  const [authorize, setAuthorize] = useState();
+  const [idSchool, setIdSchool] = useState();
   const eventURL =
     "https://truongxuaapp.online/api/v1/events?pageNumber=0&pageSize=0";
   const groupURL =
@@ -66,29 +48,53 @@ const Profile: React.FC = () => {
     const objUser = JSON.parse(infoUser);
     setIdUser(objUser.Id);
     setIdGroup(objUser.GroupId);
+    setIdSchool(objUser.SchoolId);
     //
     const headers = {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
-    await featchMyInfo(objUser.Id, headers);
+    setAuthorize(headers);
+    await featchMyInfo(route.params.idProfile, headers, objUser.Id);
     await featchGroups(headers);
-    await featchAlumni(headers);
+    await featchAlumni(headers, objUser.SchoolId, objUser.Id);
   };
 
-  const featchMyInfo = async (id, headers) => {
+  const featchMyInfo = async (id, headers, myId) => {
     try {
       const reponse = await axios.get(
-        "https://truongxuaapp.online/api/v1/alumni/" + id,
+        "https://truongxuaapp.online/api/v1/alumni/" + route.params.idProfile,
         { headers }
       );
       if (reponse.status === 200) {
+        let statusFollow = await checkFollowed(headers, reponse.data.id, myId);
+        reponse.data.follow = stateFollow[statusFollow].content;
         setMyInfo(reponse.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // Call API checkFollowed
+  const [stateFollow, setStateFollow] = useState([
+    {
+      content: "Kết nối",
+      status: true,
+    },
+    {
+      content: "Đã gửi lời mời",
+      status: false,
+    },
+    {
+      content: "Đã kết nối",
+      status: true,
+    },
+    {
+      content: "Chờ xác nhận",
+      status: false,
+    },
+  ]);
 
   async function featchEvents(headers) {
     try {
@@ -111,16 +117,296 @@ const Profile: React.FC = () => {
     }
   }
 
-  async function featchAlumni(headers) {
+  async function featchAlumni(headers, schoolId, myId) {
     try {
-      const response = await axios.get(alumniURL, { headers });
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/alumni/schoolid?schoolId=" +
+          schoolId,
+        { headers }
+      );
       if (response.status == 200) {
-        setUser(response.data);
+        if (response.status === 200) {
+          for (let i = 0; i < response.data.length; i++) {
+            let statusFollow = await checkFollowed(
+              headers,
+              response.data[i].id,
+              myId
+            );
+            response.data[i].follow = stateFollow[statusFollow].content;
+          }
+          setUser(response.data);
+        }
       }
     } catch (error) {
       console.log(error);
     }
   }
+
+  const checkFollowed = async (headers, id, myId) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/checkfollowed?alumniId=" +
+          myId +
+          "&followerId=" +
+          id,
+        { headers }
+      );
+      if (response.status === 200) {
+        let check = await getFollowWaiting(headers, id, myId);
+        if (check == 0) {
+          return response.data;
+        } else {
+          return 3;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFollowWaiting = async (headers, id, myId) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/Followed/" + myId,
+        { headers }
+      );
+      if (response.status === 200) {
+        if (response.data.length == 0) {
+          return 0;
+        } else {
+          return await getFollowWaitingSwap(headers, id, response.data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFollowWaitingSwap = async (headers, id, followed) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/Follower/" + id,
+        { headers }
+      );
+      if (response.status === 200) {
+        if (response.data.length == 0) {
+          return 0;
+        } else {
+          for (let i = 0; i < response.data.length; i++) {
+            for (let j = 0; j < followed.length; j++) {
+              console.log(followed);
+              if (
+                followed[j].id == response.data[i].id &&
+                followed[j].status == false
+              ) {
+                return 1;
+                break;
+              }
+              return 0;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const changeButtonFollow = (numFollow, idFollow, headers, myId) => {
+    if (numFollow == "Kết nối") {
+      createConnect(headers, idFollow);
+    } else if (numFollow == "Đã gửi lời mời") {
+      Alert.alert("Hủy", "Bạn muốn bỏ lời mời theo dõi này", [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(myId, idFollow, headers, 1),
+        },
+      ]);
+    } else if (numFollow == "Đã kết nối") {
+      Alert.alert("Hủy", "Bạn muốn bỏ kết nối người này", [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(myId, idFollow, headers, 2),
+        },
+      ]);
+    } else if (numFollow == "Chờ xác nhận") {
+      Alert.alert("Đồng ý", "Bạn đồng ý kết nối người này", [
+        {
+          text: "Từ chối",
+          onPress: () => getFollow(idFollow, myId, headers, 1),
+        },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(idFollow, myId, headers, 3),
+        },
+      ]);
+    }
+  };
+
+  const getFollow = async (myId, idFollow, headers, status) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/Follower/" + myId,
+        { headers }
+      );
+      if (response.status === 200) {
+        getFollowed(myId, idFollow, headers, response.data, status);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getFollowed = async (myId, idFollow, headers, follow, status) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/Followed/" + idFollow,
+        { headers }
+      );
+      if (response.status === 200) {
+        if (status == 1) {
+          deleteFollow(headers, follow, response.data);
+        } else if (status == 2) {
+          deleteFollow2Site(myId, idFollow, headers, follow, response.data);
+        } else {
+          confirmConnect(headers, follow, response.data, idFollow, myId);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With reponse 0
+  const createConnect = async (headers, idFollow) => {
+    try {
+      const response = await axios.post(
+        "https://truongxuaapp.online/api/v1/followers",
+        {
+          alumniId: idUser,
+          followerAlumni: idFollow,
+          status: false,
+        },
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With response 1
+  const deleteFollow = async (headers, follow, followed) => {
+    let idDeleteFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idDeleteFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/followers/" + idDeleteFollow,
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With response 2
+  const deleteFollow2Site = async (
+    myId,
+    idFollow,
+    headers,
+    follow,
+    followed
+  ) => {
+    let idDeleteFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idDeleteFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/followers/" + idDeleteFollow,
+        { headers }
+      );
+      if (response.status === 200) {
+        getFollow(idFollow, myId, headers, 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With response 3
+  const confirmConnect = async (headers, follow, followed, idFollow, myId) => {
+    let idConfirmFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idConfirmFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.put(
+        "https://truongxuaapp.online/api/v1/followers?id=" + idConfirmFollow,
+        {
+          alumniId: myId,
+          followerAlumni: idFollow,
+          status: true,
+        },
+        { headers }
+      );
+      console.log(response.status);
+      if (response.status === 200) {
+        await createConnectSwap(headers, myId);
+        // featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createConnectSwap = async (headers, idFollow) => {
+    try {
+      const response = await axios.post(
+        "https://truongxuaapp.online/api/v1/followers",
+        {
+          alumniId: idUser,
+          followerAlumni: idFollow,
+          status: true,
+        },
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     tokenForAuthor();
@@ -136,8 +422,10 @@ const Profile: React.FC = () => {
     return count;
   };
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      <ScrollView
+        refreshControl={<RefreshControl onRefresh={() => tokenForAuthor()} />}
+      >
         <ImageBackground
           source={require("../../assets/images/imgSignIn/bgSignIn.jpg")}
           style={{
@@ -148,160 +436,235 @@ const Profile: React.FC = () => {
         >
           <Image source={{ uri: myInfo.img }} style={style.mainAvt}></Image>
           <Text style={style.nameProfile}>{myInfo.name}</Text>
-          <View style={{ flexDirection: "row", marginTop: 10 }}>
-            <TouchableOpacity>
-              <AntDesign name="user" style={style.optionTop}></AntDesign>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Feather name="edit-2" style={style.optionTop2}></Feather>
-            </TouchableOpacity>
-          </View>
+          {route.params.idProfile == idUser ? (
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity>
+                <AntDesign name="user" style={style.optionTop}></AntDesign>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Feather name="edit-2" style={style.optionTop2}></Feather>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: COLORS.blue,
+                  padding: 10,
+                  marginTop: 16,
+                  borderRadius: 6,
+                }}
+                onPress={() =>
+                  changeButtonFollow(
+                    myInfo.follow,
+                    myInfo.id,
+                    authorize,
+                    idUser
+                  )
+                }
+              >
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: COLORS.white,
+                    fontWeight: "600",
+                    textAlign: "center",
+                    marginTop: 4,
+                  }}
+                >
+                  {myInfo.follow}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ImageBackground>
 
         {/* Recent Post */}
 
         <View style={{ backgroundColor: COLORS.white2, padding: 10 }}>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Mô tả</Text>
-          </View>
-          <Text style={style.bio}>{myInfo.bio}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Địa chỉ</Text>
-          </View>
-          <Text style={style.bio}>{myInfo.address}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Số điện thoại</Text>
-          </View>
-          <Text style={style.bio}>{myInfo.phone}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Facebook</Text>
-          </View>
-          <Text style={style.socialText}>{myInfo.facebook}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Instargram</Text>
-          </View>
-          <Text style={style.socialText}>{myInfo.instagram}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Zalo</Text>
-          </View>
-          <Text style={style.socialText}>{myInfo.zalo}</Text>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Người theo dõi bạn</Text>
-          </View>
-          <View>
-            <FlatList
-              horizontal={true}
-              contentContainerStyle={{
-                flexDirection: "row",
-              }}
-              data={MemberSchool}
-              renderItem={({ item, index }) => {
-                return (
-                  <View style={style.follow}>
-                    <Image source={item.avatar} style={style.avatarF} />
-                    <Text style={style.nameF}>{item.name}</Text>
-                    <Text style={style.addressF}>{item.addess}</Text>
-                    <TouchableOpacity style={style.btnF}>
-                      <Text style={style.textF}>Theo Dõi</Text>
-                    </TouchableOpacity>
+          {myInfo.follow == "Đã kết nối" || myInfo.id == idUser ? (
+            <View>
+              <View style={style.title}>
+                <Text style={style.textTitle}>Mô tả</Text>
+              </View>
+              <Text style={style.bio}>{myInfo.bio}</Text>
+              <View style={style.title}>
+                <Text style={style.textTitle}>Địa chỉ</Text>
+              </View>
+              <Text style={style.bio}>{myInfo.address}</Text>
+              <View style={style.title}>
+                <Text style={style.textTitle}>Số điện thoại</Text>
+              </View>
+              <Text style={style.bio}>{myInfo.phone}</Text>
+              {myInfo.facebook != null ? (
+                <View>
+                  <View style={style.title}>
+                    <Text style={style.textTitle}>Facebook</Text>
                   </View>
-                );
-              }}
-            />
-          </View>
-          <View style={style.title}>
-            <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
-          </View>
+                  <Text style={style.socialText}>{myInfo.facebook}</Text>
+                </View>
+              ) : null}
+              {myInfo.instargram != null ? (
+                <View>
+                  <View style={style.title}>
+                    <Text style={style.textTitle}>Instargram</Text>
+                  </View>
+                  <Text style={style.socialText}>{myInfo.instagram}</Text>
+                </View>
+              ) : null}
+              {myInfo.zalo != null ? (
+                <View>
+                  <View style={style.title}>
+                    <Text style={style.textTitle}>Zalo</Text>
+                  </View>
+                  <Text style={style.socialText}>{myInfo.zalo}</Text>
+                </View>
+              ) : null}
+            </View>
+          ) : (
+            <View>
+              <Text
+                style={{ textAlign: "center", fontSize: 18, marginTop: 120 }}
+              >
+                Hãy kết nối với nhau để gần nhau hơn
+              </Text>
+              <AntDesign
+                name="heart"
+                style={{
+                  color: "red",
+                  top: 120,
+                  fontSize: 18,
+                  position: "absolute",
+                  right: 20,
+                }}
+              ></AntDesign>
+            </View>
+          )}
 
-          {/* =====begin ==== */}
-          <View>
-            <FlatList
-              horizontal={true}
-              contentContainerStyle={{
-                flexDirection: "row",
-              }}
-              data={MemberSchool}
-              renderItem={({ item, index }) => {
-                return (
-                  <View style={style.follow}>
-                    <Image source={item.avatar} style={style.avatarF} />
-                    <Text style={style.nameF}>{item.name}</Text>
-                    <Text style={style.addressF}>{item.addess}</Text>
-                    <TouchableOpacity style={style.btnF}>
-                      <Text style={style.textF}>Theo Dõi</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-            />
-          </View>
+          {route.params.idProfile == idUser ? (
+            <View>
+              <View style={style.title}>
+                <Text style={style.textTitle}>Người bạn đang theo dõi</Text>
+              </View>
+
+              {/* =====begin ==== */}
+              <View>
+                <FlatList
+                  horizontal={true}
+                  contentContainerStyle={{
+                    flexDirection: "row",
+                  }}
+                  data={user}
+                  renderItem={({ item, index }) => {
+                    if (item.id != idUser && item.follow == "Đã kết nối") {
+                      return (
+                        <View style={style.follow}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.navigate("Hồ Sơ", {
+                                idProfile: item.id,
+                              });
+                            }}
+                          >
+                            <Image
+                              source={{ uri: item.img }}
+                              style={style.avatarF}
+                            />
+                          </TouchableOpacity>
+                          <Text style={style.nameF}>{item.name}</Text>
+                          <TouchableOpacity
+                            style={style.btnF}
+                            onPress={() => {
+                              changeButtonFollow(
+                                item.follow,
+                                item.id,
+                                authorize,
+                                idUser
+                              );
+                            }}
+                          >
+                            <Text style={style.textF}>{item.follow}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+              </View>
+            </View>
+          ) : null}
           {/* Joined Group */}
-
-          <View style={style.title}>
-            <Text style={style.textTitle}>Nhóm đã tham gia</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Nhóm")}>
-              <Text style={style.more}>Xem tất cả</Text>
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            horizontal
-            data={groups}
-            renderItem={({ item, index }) => {
-              if (idGroup == item.id) {
-                return (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginTop: 20,
-                      marginBottom: 20,
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate("Chi Tiết Nhóm", {
-                          id: item.id,
-                          numberAlumni: countAlumniInGroup(item.id),
-                        })
-                      }
-                    >
-                      <Image
-                        source={{ uri: item.backgroundImg }}
-                        style={{ width: 185, height: 200, borderRadius: 5 }}
-                      ></Image>
+          {route.params.idProfile == idUser ? (
+            <View>
+              <View style={style.title}>
+                <Text style={style.textTitle}>Nhóm đã tham gia</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Nhóm")}>
+                  <Text style={style.more}>Xem tất cả</Text>
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                horizontal
+                data={groups}
+                renderItem={({ item, index }) => {
+                  if (idGroup == item.id) {
+                    return (
                       <View
                         style={{
                           flexDirection: "row",
-                          justifyContent: "space-between",
-                          marginTop: 5,
+                          marginTop: 20,
+                          marginBottom: 20,
                         }}
                       >
-                        <Text numberOfLines={1} style={style.group}>
-                          {item.name}
-                        </Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate("Chi Tiết Nhóm", {
+                              id: item.id,
+                              numberAlumni: countAlumniInGroup(item.id),
+                            })
+                          }
                         >
-                          <MaterialIcons
-                            name="group"
-                            style={style.iconGroup}
-                          ></MaterialIcons>
-                          <Text style={style.numberParti}>
-                            {countAlumniInGroup(item.id)} người
-                          </Text>
-                        </View>
+                          <Image
+                            source={{ uri: item.backgroundImg }}
+                            style={{ width: 185, height: 200, borderRadius: 5 }}
+                          ></Image>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              marginTop: 5,
+                            }}
+                          >
+                            <Text numberOfLines={1} style={style.group}>
+                              {item.name}
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
+                              <MaterialIcons
+                                name="group"
+                                style={style.iconGroup}
+                              ></MaterialIcons>
+                              <Text style={style.numberParti}>
+                                {countAlumniInGroup(item.id)} người
+                              </Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
                       </View>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }
-              return null;
-            }}
-          />
+                    );
+                  }
+                  return null;
+                }}
+              />
+            </View>
+          ) : null}
+
           {/* Event */}
-          <View style={style.title}>
+          {/* <View style={style.title}>
             <Text style={style.textTitle}>Sự kiện đã tham gia</Text>
             <TouchableOpacity onPress={() => navigation.navigate("Sự Kiện")}>
               <Text style={style.more}>Xem tất cả</Text>
@@ -354,7 +717,7 @@ const Profile: React.FC = () => {
                 </View>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
           {/* Blog News */}
 
           {/* <View style={style.title}>
@@ -540,7 +903,7 @@ const style = StyleSheet.create({
   },
   follow: {
     backgroundColor: "#f7f4f4",
-    height: 200,
+    padding: 20,
     width: 150,
     marginHorizontal: 10,
     borderRadius: 10,
@@ -552,15 +915,15 @@ const style = StyleSheet.create({
   avatarF: {
     height: 100,
     width: 100,
-    marginLeft: 24,
-    marginVertical: 8,
+    marginLeft: 4,
     borderRadius: 8,
   },
   nameF: {
     textAlign: "center",
     color: COLORS.black,
     fontWeight: "500",
-    fontSize: 16,
+    fontSize: 18,
+    marginTop: 8,
   },
   addressF: {
     textAlign: "center",
@@ -578,8 +941,6 @@ const style = StyleSheet.create({
   btnF: {
     backgroundColor: COLORS.blue,
     height: 30,
-    width: 120,
-    marginLeft: 10,
     marginTop: 16,
     borderRadius: 6,
   },

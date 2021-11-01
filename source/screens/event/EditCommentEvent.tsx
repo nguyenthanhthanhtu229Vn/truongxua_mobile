@@ -34,8 +34,22 @@ const EditCommentEvent: React.FC = () => {
     };
     setAuthorize(headers);
     await fetchAlumni(headers);
+    await featchFeedback(headers);
   };
 
+  const featchFeedback = async (headers) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/feedbacks/" + route.params.id,
+        { headers }
+      );
+      if (response.status === 200) {
+        setContent(response.data.content);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // Call Api Alumni
   const [alumni, setAlumni] = useState<string>("");
   const alumniURL =
@@ -74,7 +88,7 @@ const EditCommentEvent: React.FC = () => {
   };
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState<string>("");
-  const [rateStart, setRateStart] = useState("");
+  const [rateStart, setRateStart] = useState(1);
   const [eventId, setEventId] = useState();
   const EditComment = async (headers) => {
     try {
@@ -91,7 +105,6 @@ const EditCommentEvent: React.FC = () => {
       if (response.status === 200) {
         setContent(response.data.content);
         setRateStart(response.data.rateStart);
-        // await fetchCommentEvent(authorize);
         navigation.navigate("Chi Tiết Sự Kiện", {
           id: eventId,
         });
@@ -116,9 +129,10 @@ const EditCommentEvent: React.FC = () => {
       <View
         style={{
           flexDirection: "row",
-          marginBottom: 40,
+          marginBottom: 10,
           justifyContent: "space-between",
           marginTop: 10,
+          padding: 10,
         }}
       >
         <Image source={{ uri: getAvtAlumni(alumniId) }} style={style.img} />
@@ -147,30 +161,15 @@ const EditCommentEvent: React.FC = () => {
             value={content}
             editable={!isLoading}
             style={{
+              marginTop: 10,
               borderWidth: 0.1,
               backgroundColor: "#e7e6e6",
-              height: 40,
+              height: 60,
               borderRadius: 10,
               marginHorizontal: 8,
               padding: 10,
             }}
             onChangeText={(content) => setContent(content)}
-          />
-          <TextInput
-            placeholder={"Xếp Loại"}
-            onChangeText={(rating) => setRateStart(rating)}
-            value={rateStart}
-            editable={!isLoading}
-            keyboardType="numeric"
-            style={{
-              borderWidth: 0.1,
-              backgroundColor: "#e7e6e6",
-              height: 40,
-              borderRadius: 10,
-              marginHorizontal: 8,
-              padding: 10,
-              marginTop: 10,
-            }}
           />
         </View>
       </View>
@@ -188,7 +187,10 @@ const EditCommentEvent: React.FC = () => {
         >
           <Text style={style.text3}>Huỷ</Text>
         </TouchableOpacity>
-        <TouchableOpacity disabled={isLoading} onPress={() => EditComment(authorize)}>
+        <TouchableOpacity
+          disabled={isLoading}
+          onPress={() => EditComment(authorize)}
+        >
           <Text style={style.text3}>Chỉnh Sửa</Text>
         </TouchableOpacity>
       </View>

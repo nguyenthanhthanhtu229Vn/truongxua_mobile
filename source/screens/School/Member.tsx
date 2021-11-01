@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,6 +13,7 @@ import {
 import { COLORS } from "../../constant";
 
 const Member = () => {
+  const navigation = useNavigation();
   const [authorize, setAuthorize] = useState();
   const [idUser, setIdUser] = useState();
   const [idSchool, setIdSchool] = useState();
@@ -128,6 +130,7 @@ const Member = () => {
         } else {
           for (let i = 0; i < response.data.length; i++) {
             for (let j = 0; j < followed.length; j++) {
+              console.log(followed);
               if (
                 followed[j].id == response.data[i].id &&
                 followed[j].status == false
@@ -144,63 +147,71 @@ const Member = () => {
       console.log(error);
     }
   };
-  const changeButtonFollow = (numFollow, idFollow, headers) => {
+  const changeButtonFollow = (numFollow, idFollow, headers, myId) => {
     if (numFollow == "Kết nối") {
       createConnect(headers, idFollow);
-    }
-    if (numFollow == "Đã gửi lời mời") {
+    } else if (numFollow == "Đã gửi lời mời") {
       Alert.alert("Hủy", "Bạn muốn bỏ lời mời theo dõi này", [
         {
           text: "Hủy",
           style: "cancel",
         },
-        { text: "Đồng ý", onPress: () => getFollow(idFollow, headers, false) },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(myId, idFollow, headers, 1),
+        },
       ]);
-    }
-    if (numFollow == "Đã kết nối") {
+    } else if (numFollow == "Đã kết nối") {
       Alert.alert("Hủy", "Bạn muốn bỏ kết nối người này", [
         {
           text: "Hủy",
           style: "cancel",
         },
-        { text: "Đồng ý", onPress: () => getFollow(idFollow, headers, false) },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(myId, idFollow, headers, 2),
+        },
       ]);
-    }
-    if (numFollow == "Chờ xác nhận") {
+    } else if (numFollow == "Chờ xác nhận") {
       Alert.alert("Đồng ý", "Bạn đồng ý kết nối người này", [
         {
-          text: "Hủy",
-          style: "cancel",
+          text: "Từ chối",
+          onPress: () => getFollow(idFollow, myId, headers, 1),
         },
-        { text: "Đồng ý", onPress: () => getFollow(idFollow, headers, true) },
+        {
+          text: "Đồng ý",
+          onPress: () => getFollow(idFollow, myId, headers, 3),
+        },
       ]);
     }
   };
 
-  const getFollow = async (idFollow, headers, status) => {
+  const getFollow = async (myId, idFollow, headers, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Follower/" + idUser,
+        "https://truongxuaapp.online/api/v1/followers/Follower/" + myId,
         { headers }
       );
       if (response.status === 200) {
-        getFollowed(idFollow, headers, response.data, status);
+        getFollowed(myId, idFollow, headers, response.data, status);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  const getFollowed = async (idFollow, headers, follow, status) => {
+  const getFollowed = async (myId, idFollow, headers, follow, status) => {
     try {
       const response = await axios.get(
         "https://truongxuaapp.online/api/v1/followers/Followed/" + idFollow,
         { headers }
       );
       if (response.status === 200) {
-        if (status == false) {
+        if (status == 1) {
           deleteFollow(headers, follow, response.data);
+        } else if (status == 2) {
+          deleteFollow2Site(myId, idFollow, headers, follow, response.data);
         } else {
-          confirmConnect(headers, follow, response.data, idFollow);
+          confirmConnect(headers, follow, response.data, idFollow, myId);
         }
       }
     } catch (error) {
@@ -208,55 +219,7 @@ const Member = () => {
     }
   };
 
-  const confirmConnect = async (headers, follow, followed, idFollow) => {
-    let idConfirmFollow = 0;
-    for (let i = 0; i < follow.length; i++) {
-      for (let j = 0; j < followed.length; i++) {
-        if (followed[j].id == follow[i].id) {
-          idConfirmFollow = followed[j].id;
-          break;
-        }
-      }
-    }
-    try {
-      const response = await axios.put(
-        "https://truongxuaapp.online/api/v1/followers?id=" + idConfirmFollow,
-        {
-          alumniId: idFollow,
-          followerAlumni: idUser,
-          status: true,
-        },
-        { headers }
-      );
-      if (response.status === 200) {
-        featchAlumni(headers, idSchool, idUser);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const deleteFollow = async (headers, follow, followed) => {
-    let idDeleteFollow = 0;
-    for (let i = 0; i < follow.length; i++) {
-      for (let j = 0; j < followed.length; i++) {
-        if (followed[j].id == follow[i].id) {
-          idDeleteFollow = followed[j].id;
-          break;
-        }
-      }
-    }
-    try {
-      const response = await axios.delete(
-        "https://truongxuaapp.online/api/v1/followers/" + idDeleteFollow,
-        { headers }
-      );
-      if (response.status === 200) {
-        await featchAlumni(headers, idSchool, idUser);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // With reponse 0
   const createConnect = async (headers, idFollow) => {
     try {
       const response = await axios.post(
@@ -275,9 +238,115 @@ const Member = () => {
       console.log(error);
     }
   };
+
+  // With response 1
+  const deleteFollow = async (headers, follow, followed) => {
+    let idDeleteFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idDeleteFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/followers/" + idDeleteFollow,
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With response 2
+  const deleteFollow2Site = async (
+    myId,
+    idFollow,
+    headers,
+    follow,
+    followed
+  ) => {
+    let idDeleteFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idDeleteFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/followers/" + idDeleteFollow,
+        { headers }
+      );
+      if (response.status === 200) {
+        getFollow(idFollow, myId, headers, 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // With response 3
+  const confirmConnect = async (headers, follow, followed, idFollow, myId) => {
+    let idConfirmFollow = 0;
+    for (let i = 0; i < follow.length; i++) {
+      for (let j = 0; j < followed.length; j++) {
+        if (followed[j].id == follow[i].id) {
+          idConfirmFollow = followed[j].id;
+          break;
+        }
+      }
+    }
+    try {
+      const response = await axios.put(
+        "https://truongxuaapp.online/api/v1/followers?id=" + idConfirmFollow,
+        {
+          alumniId: myId,
+          followerAlumni: idFollow,
+          status: true,
+        },
+        { headers }
+      );
+      console.log(response.status);
+      if (response.status === 200) {
+        await createConnectSwap(headers, myId);
+        // featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createConnectSwap = async (headers, idFollow) => {
+    try {
+      const response = await axios.post(
+        "https://truongxuaapp.online/api/v1/followers",
+        {
+          alumniId: idUser,
+          followerAlumni: idFollow,
+          status: true,
+        },
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchAlumni(headers, idSchool, idUser);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     tokenForAuthor();
   }, []);
+
   return (
     <View
       style={{
@@ -339,27 +408,33 @@ const Member = () => {
                     borderColor: "#E1E8EC",
                   }}
                 >
-                  <Image
-                    source={{ uri: item.img }}
-                    style={{
-                      height: 100,
-                      width: 100,
-                      borderRadius: 8,
-                      marginLeft: 24,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      color: COLORS.black,
-                      fontWeight: "400",
-                      fontSize: 16,
-                      height: 40,
-                      marginTop: 5,
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Hồ Sơ", { idProfile: item.id });
                     }}
                   >
-                    {item.name}
-                  </Text>
+                    <Image
+                      source={{ uri: item.img }}
+                      style={{
+                        height: 100,
+                        width: 100,
+                        borderRadius: 8,
+                        marginLeft: 24,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        color: COLORS.black,
+                        fontWeight: "400",
+                        fontSize: 16,
+                        height: 40,
+                        marginTop: 5,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     style={{
                       backgroundColor: COLORS.blue,
@@ -368,7 +443,12 @@ const Member = () => {
                       borderRadius: 6,
                     }}
                     onPress={() =>
-                      changeButtonFollow(item.follow, item.id, authorize)
+                      changeButtonFollow(
+                        item.follow,
+                        item.id,
+                        authorize,
+                        idUser
+                      )
                     }
                   >
                     <Text

@@ -33,6 +33,7 @@ const EditPostGroup: React.FC = () => {
   const [groupId, setGroupId] = useState(33);
   const [isLoading, setIsLoading] = useState(false);
   const [authorize, setAuthorize] = useState();
+  const [check, setCheck] = useState(false);
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -61,6 +62,8 @@ const EditPostGroup: React.FC = () => {
         for (let i = 0; i < response.data.length; i++) {
           arrayImg.push(response.data[i].imageUrl);
         }
+        setListImg(response.data);
+        setCheck(!check);
       }
     } catch (error) {
       console.log(error);
@@ -69,6 +72,7 @@ const EditPostGroup: React.FC = () => {
 
   const removeImageInList = (index) => {
     arrayImg.splice(index, 1);
+    setCheck(!check);
   };
 
   async function featchPosts(headers) {
@@ -105,11 +109,7 @@ const EditPostGroup: React.FC = () => {
           { headers }
         );
         if (reponse.status === 200) {
-          alert("Cập nhật thành công");
-          navigation.navigate("Chi Tiết Nhóm", {
-            id: groupId,
-            numberAlumni: route.params.numberAlumni,
-          });
+          deleteImage(headers);
         }
       } catch (error) {
         alert("Cập nhật không thành công");
@@ -129,6 +129,7 @@ const EditPostGroup: React.FC = () => {
     });
     if (!result.cancelled) {
       arrayImg.push(result.uri);
+      setCheck(!check);
     }
   };
 
@@ -155,23 +156,36 @@ const EditPostGroup: React.FC = () => {
   };
 
   // Call Api Post Images
+  const deleteImage = async (headers) => {
+    try {
+      for (let i = 0; i < listImg.length; i++) {
+        const response = await axios.delete(
+          "https://truongxuaapp.online/api/v1/images/" + listImg[i].id,
+          { headers }
+        );
+      }
+      await updateImages(headers, route.params.id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const updateImages = async (headers, id) => {
     try {
-      const response = await axios.put(
-        "https://truongxuaapp.online/api/v1/images?",
-        {
-          postId: id,
-          imageUrl: await uploadImage(image),
-        },
-        { headers }
-      );
-      if (response.status === 200) {
-        alert("Tạo Bài Đăng Thành Công");
-        navigation.navigate("GroupDetails", {
-          id: route.params.id,
-          numberAlumni: route.params.numberAlumni,
-        });
+      for (let i = 0; i < arrayImg.length; i++) {
+        const response = await axios.put(
+          "https://truongxuaapp.online/api/v1/images?",
+          {
+            postId: id,
+            imageUrl: await uploadImage(arrayImg[i]),
+          },
+          { headers }
+        );
       }
+      alert("Cập nhật thành công");
+      navigation.navigate("Chi Tiết Nhóm", {
+        id: groupId,
+        numberAlumni: route.params.numberAlumni,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -236,6 +250,7 @@ const EditPostGroup: React.FC = () => {
           >
             <FlatList
               numColumns={50}
+              extraData={check}
               data={arrayImg}
               keyExtractor={({ id }, index) => id}
               renderItem={({ item, index }) => {
