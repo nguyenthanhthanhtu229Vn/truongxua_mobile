@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   AsyncStorage,
   Image,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -17,17 +16,15 @@ import {
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 import axios from "axios";
-import { useNavigation, useRoute } from "@react-navigation/core";
-import { COLORS, icons } from "../../constant";
+import { useNavigation } from "@react-navigation/core";
+import { COLORS } from "../../constant";
 import Error from "../Error/Error";
-import DropDownPicker from "react-native-dropdown-picker";
+import RNPickerSelect from "react-native-picker-select";
 import { StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
   const baseUrl = "http://20.188.111.70:12348";
   const navigation = useNavigation();
   const [id, setId] = useState<string>("");
@@ -117,29 +114,30 @@ const UpdateProfile: React.FC = () => {
         "https://truongxuaapp.online/api/v1/alumni/" + idAlumni,
         { headers }
       );
-      setAlumni(response.data);
+      if (response.status === 200) {
+        // setAlumni(response.data);
+        if (response.data.password != null) {
+          setPassword(response.data.password);
+        }
+        if (response.data.email != null) {
+          setEmail(response.data.email);
+        }
+        if (response.data.img != null) {
+          setImage(response.data.img);
+        }
+        if (response.data.groupId != null) {
+          setGroupId(response.data.groupId);
+        }
+        if (response.data.schoolId != null) {
+          setSchoolId(response.data.schoolId);
+        }
+      }
     } catch (error) {
       console.log(error);
     }
   }
-
   useEffect(() => {
     tokenForAuthor();
-    if (alumni.password != null) {
-      setPassword(alumni.password);
-    }
-    if (alumni.email != null) {
-      setEmail(alumni.email);
-    }
-    if (alumni.img != null) {
-      setImage(alumni.img);
-    }
-    if (alumni.groupId != null) {
-      setGroupId(alumni.groupId);
-    }
-    if (alumni.schoolId != null) {
-      setSchoolId(alumni.schoolId);
-    }
     async () => {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
@@ -172,7 +170,7 @@ const UpdateProfile: React.FC = () => {
             password,
             phone,
             address,
-            img: statusChangeImg === true ? image : await uploadImage(image),
+            img: statusChangeImg === false ? image : await uploadImage(image),
             bio,
             status,
             groupId,
@@ -217,18 +215,22 @@ const UpdateProfile: React.FC = () => {
         >
           Cập Nhập Thông Tin
         </Text>
-        <View style={{ position: "relative", marginTop: 15 }}>
-          <Error error={error} />
-          <DropDownPicker
-            onChangeValue={(ids) => setSchoolId(ids)}
-            stickyHeader
-            style={style.input}
-            open={open}
-            value={value}
+        <Error error={error} />
+        <View
+          style={{
+            position: "relative",
+            marginTop: 15,
+            borderWidth: 0.4,
+            height: 40,
+            bottom: 10,
+            padding: 10,
+            borderRadius: 6,
+          }}
+        >
+          <RNPickerSelect
+            value={schoolId}
+            onValueChange={(ids) => setSchoolId(ids)}
             items={school.map((item) => ({ label: item.name, value: item.id }))}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setSchool}
           />
         </View>
         {/* =====End School Name ===== */}

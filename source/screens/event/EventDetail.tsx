@@ -1,71 +1,52 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Image, ImageBackground, Text, View } from "react-native";
+import {
+  AsyncStorage,
+  Image,
+  Text,
+  View,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import {
   FlatList,
   ScrollView,
   TextInput,
   TouchableOpacity,
 } from "react-native-gesture-handler";
-import {
-  AntDesign,
-  Feather,
-  SimpleLineIcons,
-  EvilIcons,
-} from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
-import { Dimensions } from "react-native";
-import { useRoute } from "@react-navigation/core";
+import { AntDesign, EvilIcons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
+import { COLORS, icons } from "../../constant";
+import { Alert } from "react-native";
 
 var width = Dimensions.get("window").width; //full width
-var height = Dimensions.get("window").height; //full height
 const EventDetail: React.FC = () => {
-  const [idUser, setIdUser] = useState<string>();
+  const navigation = useNavigation();
+  const [alumniId, setAlumniId] = useState<string>("");
+
   const route = useRoute();
   const [eventDetail, setEventDetail] = useState<string>("");
   const [listImg, setListImg] = useState<string>();
+  const [authorize, setAuthorize] = useState();
+ 
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
-    setIdUser(objUser.Id);
+    setAlumniId(objUser.Id);
     //
     const headers = {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
+    setAuthorize(headers);
     await listEventDetail(headers);
     await featchImageEvent(headers);
-    await featchAlumni(headers);
     await featchActivity(headers);
-  };
-
-  // Call Api Alumni
-  const [alumni, setAlumni] = useState<string>("");
-  const alumniURL =
-    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
-  const featchAlumni = async (headers) => {
-    try {
-      const response = await axios.get(alumniURL, { headers });
-      if (response.status === 200) {
-        setAlumni(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getNameAlumni = (alumniId) => {
-    let name = "";
-    for (let i = 0; i < alumni.length; i++) {
-      if (alumni[i].id == alumniId) {
-        name = alumni[i].name;
-        break;
-      }
-    }
-    return name;
+    await fetchCommentEvent(headers);
+    await fetchAlumni(headers);
   };
 
   // Call API event detail
@@ -100,11 +81,10 @@ const EventDetail: React.FC = () => {
 
   // Call API Activity
   const [listActivity, setListActivity] = useState();
-  const featchActivity = async (headers, id) => {
+  const featchActivity = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/activities/eventid?eventId=" +
-          route.params.id,
+        "https://truongxuaapp.online/api/v1/activities?pageNumber=0&pageSize=0",
         { headers }
       );
       if (response.status === 200) {
@@ -126,6 +106,123 @@ const EventDetail: React.FC = () => {
     }
     return imgLink;
   };
+
+  //comment
+  const validateComment = (headers) => {
+    if (content.trim() == "") {
+      alert("Không được nhập trống");
+    } else {
+      createComment(headers);
+    }
+  };
+
+  // Call Api Alumni
+  const [alumni, setAlumni] = useState<string>("");
+  const alumniURL =
+    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
+  const fetchAlumni = async (headers) => {
+    try {
+      const response = await axios.get(alumniURL, { headers });
+      if (response.status === 200) {
+        setAlumni(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  //Get Avatar and name
+  const getAvtAlumni = (alumniId) => {
+    let avt = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        avt = alumni[i].img;
+        break;
+      }
+    }
+    return avt;
+  };
+  const getNameAlumni = (alumniId) => {
+    let name = "";
+    for (let i = 0; i < alumni.length; i++) {
+      if (alumni[i].id == alumniId) {
+        name = alumni[i].name;
+        break;
+      }
+    }
+    return name;
+  };
+  // ======call api delete comment
+  const confirmDeleteComment = async (id, headers) => {
+    Alert.alert("Xoá", "Bạn muốn xoá bình luận này không?", [
+      {
+        text: "Huỷ",
+        style: "cancel",
+      },
+      {
+        text: "Đồng Ý",
+        onPress: () => deleteCommentEvent(id, headers),
+      },
+    ]);
+  };
+
+  const deleteCommentEvent = async (id, headers) => {
+    try {
+      const response = await axios.delete(
+        "https://truongxuaapp.online/api/v1/feedbacks/" + id,
+        { headers }
+      );
+      if (response.status === 200) {
+        await fetchCommentEvent(authorize);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  // fetch comment
+  const [commentEvent, setCommentEvent] = useState<string>("");
+  const commentEventURL =
+    "https://truongxuaapp.online/api/v1/feedbacks?sort=desc&pageNumber=0&pageSize=5";
+  const fetchCommentEvent = async (headers) => {
+    try {
+      const response = await axios.get(commentEventURL, { headers });
+      if (response.status === 200) {
+        setCommentEvent(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+   // comment
+   const [content, setContent] = useState<string>("");
+   const [rateStart,setRateStart] = useState("");
+   const [eventId, setEventId] = useState();
+
+    // console.log(rateStart);
+  const createComment = async (headers) => {
+    try {
+      const response = await axios.post("https://truongxuaapp.online/api/v1/feedbacks",{
+        eventId,
+        rateStart,
+        content,
+        alumniId,   
+      },{headers});
+      if (response.status === 200) {
+        await fetchCommentEvent(authorize);
+        setContent("");
+        // setRating("");
+        setRateStart("0");
+      }
+    } catch (error) {
+      // alert("Ghi bình luận không thành công");
+      // console.log(error)
+      alert(error);
+    }
+  }
 
   // ======Format Date====
   const formatDay = (date) => {
@@ -155,6 +252,7 @@ const EventDetail: React.FC = () => {
     );
   };
   useEffect(() => {
+    setEventId(route.params.id)
     tokenForAuthor();
   }, []);
   return (
@@ -277,32 +375,6 @@ const EventDetail: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Feather
-              name="user"
-              style={{
-                color: "#6d757a",
-
-                fontSize: 20,
-              }}
-            ></Feather>
-            <Text
-              style={{
-                color: "#6d757a",
-
-                fontSize: 18,
-                marginLeft: 10,
-              }}
-            >
-              Người tạo: {getNameAlumni(eventDetail.alumniCreatedId)}
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
             <EvilIcons
               name="location"
               style={{
@@ -327,7 +399,7 @@ const EventDetail: React.FC = () => {
               color: "black",
               fontWeight: "500",
               fontSize: 20,
-              marginTop: 20,
+              marginTop: 10,
             }}
           >
             Sự kiện: {eventDetail.name}
@@ -394,22 +466,26 @@ const EventDetail: React.FC = () => {
             </Text>
             <FlatList
               data={listActivity}
+              keyExtractor={({ id }, index) => id}
               renderItem={({ item, index }) => {
-                return (
-                  <View>
-                    <Text
-                      style={{
-                        color: "#6d757a",
+                if (item.eventId == route.params.id) {
+                  return (
+                    <View>
+                      <Text
+                        style={{
+                          color: "#6d757a",
 
-                        fontSize: 16,
-                        marginTop: 10,
-                        lineHeight: 25,
-                      }}
-                    >
-                      + {item.name}
-                    </Text>
-                  </View>
-                );
+                          fontSize: 16,
+                          marginTop: 10,
+                          lineHeight: 25,
+                        }}
+                      >
+                        + {item.name}
+                      </Text>
+                    </View>
+                  );
+                }
+                return null;
               }}
             />
             <Text
@@ -422,7 +498,8 @@ const EventDetail: React.FC = () => {
             >
               Đã có 50 người đăng ký để tham gia sự kiện này
             </Text>
-            <TouchableOpacity>
+            {/* =====end feedback event */}
+            <TouchableOpacity onPress={() => navigation.navigate("Thanh Toán")}>
               <View
                 style={{
                   flexDirection: "row",
@@ -453,6 +530,193 @@ const EventDetail: React.FC = () => {
                 ></AntDesign>
               </View>
             </TouchableOpacity>
+            {/* =====feedback event======= */}
+            <ScrollView>
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderTopColor: "#ececec",
+                paddingTop: 20,
+                paddingLeft: 10,
+                paddingRight: 10,
+                marginBottom: 80,
+              }}
+            >
+              <FlatList
+                data={commentEvent}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item, index }) => {
+                  if (item.eventId == route.params.id) {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginBottom: 40,
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Image
+                        source={{ uri: getAvtAlumni(item.alumniId) }}
+                        style={style.img}
+                      />
+                      <View
+                        style={{
+                          padding: 10,
+                          backgroundColor: "#f1eeee",
+                          width: 350,
+                          borderRadius: 20,
+                          marginLeft: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: "500",
+                            color: COLORS.black,
+                          }}
+                        >
+                          {getNameAlumni(item.alumniId)}
+                        </Text>
+                        <Text
+                          style={{
+                            color: COLORS.black,
+                            fontWeight: "300",
+                            fontSize: 16,
+                            marginTop: 10,
+                          }}
+                        >
+                          {item.content}
+                        </Text>
+                        <Text
+                          style={{
+                            color: COLORS.black,
+                            fontWeight: "300",
+                            fontSize: 16,
+                            marginTop: 8,
+                          }}
+                        >
+                          Rating Start: {item.rateStart}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            marginTop: 12,
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {/* ====== text hour and like and reply */}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            {alumniId == item.alumniId ? (
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  position: "relative",
+                                  top: 40,
+                                  left: 170,
+                                }}
+                              >
+                                <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate("Sửa Bình Luận",{
+                                  id:item.id,
+                                  eventId: item.eventId
+                                })}>
+                                  <Text style={style.text4}>Chỉnh sửa</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    confirmDeleteComment(item.id, authorize)
+                                  }
+                                >
+                                  <Text style={style.text3}>Xóa</Text>
+                                </TouchableOpacity>
+                              </View>
+                            ) : null}
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                  }
+                  return null;
+                }}
+              />
+            </View>
+            </ScrollView>
+            <View
+              style={{
+                height: 160,
+                width: width,
+                backgroundColor: "white",
+                shadowOpacity: 0.1,
+                position: "absolute",
+                bottom: 0,
+                padding: 10,
+              }}
+            >
+              <TextInput
+                placeholder={" Viết Bình Luận ..."}
+                multiline
+                value={content}
+                style={{
+                  borderWidth: 0.1,
+                  backgroundColor: "#e7e6e6",
+                  height: 40,
+                  borderRadius: 10,
+                  marginHorizontal: 8,
+                  padding: 10,
+                }}
+                onChangeText={(content) => setContent(content)}
+              />
+              <TextInput placeholder={'Danh Gia'}
+               onChangeText ={(rating) => setRateStart(rating)}
+              value={rateStart}
+              // keyboardType="numeric" 
+              style={{
+                borderWidth: 0.1,
+                backgroundColor: "#e7e6e6",
+                height: 40,
+                borderRadius: 10,
+                marginHorizontal: 8,
+                padding: 10,
+                marginTop: 10
+              }}
+               />
+              {/* =====icons image and button comment ====== */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: 120,
+                    justifyContent: "space-around",
+                    marginLeft: 10,
+                    marginTop: 30
+                  }}
+                >
+                  <Image source={icons.camera} style={style.icon_comment} />
+                  <Image source={icons.gif} style={style.icon_comment} />
+                  <Image source={icons.smile_face} style={style.icon_comment} />
+                  <Image source={icons.fmale} style={style.icon_comment} />
+                </View>
+                <TouchableOpacity onPress={() => validateComment(authorize)}>
+                  <Image
+                    source={icons.send}
+                    style={{ height: 20, width: 20, marginRight: 18 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -460,4 +724,43 @@ const EventDetail: React.FC = () => {
   );
 };
 
+const style = StyleSheet.create({
+  img: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+  },
+  iconf: {
+    height: 20,
+    width: 20,
+  },
+  icon_comment: {
+    height: 20,
+    width: 20,
+  },
+  btnDeletCmt: {
+    position: "absolute",
+    bottom: -40,
+    right: 60,
+  },
+  text4: {
+    fontSize: 14,
+    color: "gray",
+  },
+  btnEditCmt: {
+    position: "absolute",
+    bottom: -40,
+    right: 100,
+  },
+  text2: {
+    fontSize: 12,
+    position: "absolute",
+    bottom: -30,
+    color: "gray",
+  },
+  text3: {
+    fontSize: 14,
+    color: "gray",
+  },
+});
 export default EventDetail;

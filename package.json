@@ -48,14 +48,20 @@
     "react-native-select-dropdown": "^1.1.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-tab-view": "^3.1.1",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "react-native-picker-select": "^8.0.4",
+    "react-native-tags": "^2.2.1",
+    "react-native-vector-icons": "^9.0.0",
+    "react-native-webview": "^11.14.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
     "jest-expo": "~41.0.0-beta.0",
-    "typescript": "~4.0.0"
+    "typescript": "~4.0.0",
+    "@types/react-native-tags": "^2.2.1",
+    "@types/react-native-vector-icons": "^6.4.9"
   },
   "private": true
 }

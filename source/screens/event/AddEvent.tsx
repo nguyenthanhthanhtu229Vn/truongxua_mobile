@@ -17,6 +17,7 @@ import Colors from "../../../constants/Colors";
 import moment from "moment";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
+import Tags from "react-native-tags";
 const AddEvent = () => {
   const navigation = useNavigation();
   const moment = require("moment-timezone");
@@ -51,14 +52,15 @@ const AddEvent = () => {
     const moment = require("moment-timezone");
     const start = moment
       .tz(
-        `${dateOfStart.getFullYear()}-${String(
-          dateOfStart.getMonth() + 1
-        ).padStart(2, "0")}-${String(dateOfStart.getDate()).padStart(
+        `${dateOfStart.getFullYear()}-${String(dateOfStart.getMonth()).padStart(
           2,
           "0"
-        )} ${String(timeOfStart.getHours()).padStart(2, "0")}:${String(
-          timeOfStart.getMinutes()
-        ).padStart(2, "0")}`,
+        )}-${String(dateOfStart.getDate()).padStart(2, "0")} ${String(
+          timeOfStart.getHours()
+        ).padStart(2, "0")}:${String(timeOfStart.getMinutes()).padStart(
+          2,
+          "0"
+        )}`,
         "Asia/Ho_Chi_Minh"
       )
       .format();
@@ -68,7 +70,7 @@ const AddEvent = () => {
     const moment = require("moment-timezone");
     const end = moment
       .tz(
-        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth() + 1).padStart(
+        `${dateOfEnd.getFullYear()}-${String(dateOfEnd.getMonth()).padStart(
           2,
           "0"
         )}-${String(dateOfEnd.getDate()).padStart(2, "0")} ${String(
@@ -176,9 +178,6 @@ const AddEvent = () => {
     showMode("date");
   };
 
-  const showTimepicker = () => {
-    showMode("time");
-  };
   // End  popup date
 
   const [image, setImage] = useState(null);
@@ -377,7 +376,7 @@ const AddEvent = () => {
               </TouchableOpacity>
             </View>
 
-            <TextInput
+            {/* <TextInput
               placeholder="Hoạt Động"
               placeholderTextColor={COLORS.gray}
               onChangeText={(contentActivity) =>
@@ -393,17 +392,46 @@ const AddEvent = () => {
                 marginBottom: 20,
                 width: 300,
               }}
+            /> */}
+            {/* begin tag */}
+            <Tags
+              initialText="monkey"
+              textInputProps={{
+                placeholder: "Any type of animal",
+              }}
+              onChangeTags={(tags) => console.log(tags)}
+              onTagPress={(index, tagLabel, event, deleted) =>
+                console.log(
+                  index,
+                  tagLabel,
+                  event,
+                  deleted ? "deleted" : "not deleted"
+                )
+              }
+              containerStyle={{ justifyContent: "center" }}
+              inputStyle={{
+                backgroundColor: "white",
+                borderWidth: 0.6,
+                borderColor: "#CCCCCC",
+                borderRadius: 8,
+              }}
+              renderTag={({ tag, index, onPress }) => (
+                <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
+                  <Text>{tag}</Text>
+                </TouchableOpacity>
+              )}
             />
+            {/* ==end tags== */}
 
-            <TouchableOpacity style={style.plusBtn}>
+            {/* <TouchableOpacity style={style.plusBtn}>
               <Foundation name="plus" style={style.textPlus}></Foundation>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TextInput
               keyboardType="number-pad"
               placeholder="Giá Vé"
               placeholderTextColor={COLORS.gray}
-              style={style.input}
+              style={[style.input, style.top]}
               onChangeText={(ticketPrice) => setTicketPrice(ticketPrice)}
             />
             {/* ======Image Post===== */}
@@ -466,6 +494,9 @@ const AddEvent = () => {
 };
 
 const style = StyleSheet.create({
+  top: {
+    marginTop: 20,
+  },
   container: {
     backgroundColor: "white",
     flex: 1,

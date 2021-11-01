@@ -12,32 +12,7 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
-import { set } from "react-native-reanimated";
 
-const JOINED_GROUP = [
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "Quang huy",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "Quang huy",
-  },
-];
-const SUGGESTED = [
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "11A1",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "11A1",
-  },
-  {
-    img: require("../../assets/images/event.jpg"),
-    name: "11A1",
-  },
-];
 const Group = () => {
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
@@ -215,44 +190,75 @@ const Group = () => {
             <Text style={style.header}>Đã Tham Gia Nhóm</Text>
             <FlatList
               keyExtractor={({ id }, index) => id}
-              data={JOINED_GROUP}
+              data={groups}
               renderItem={({ item, index }) => {
-                return (
-                  <View>
+                if (groupUser == item.id) {
+                  return (
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
+                        padding: 10,
+                        marginBottom: 20,
+                        display: "flex",
+                        flex: 1,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Image
-                        source={item.img}
-                        style={{ width: 60, height: 60, borderRadius: 30 }}
-                      />
-                      <View style={{ marginLeft: 10 }}>
-                        <Text style={{ ...FONTS.h4, fontSize: 18 }}>
-                          {item.name}
-                        </Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("Chi Tiết Nhóm", {
+                            id: item.id,
+                            numberAlumni: countAlumniInGroup(item.id),
+                          })
+                        }
+                      >
                         <Image
-                          source={require("../../assets/icons/check.png")}
-                          style={{ width: 14, height: 14, marginTop: 6 }}
+                          source={{ uri: item.backgroundImg }}
+                          style={{
+                            height: 120,
+                            width: 190,
+                            borderRadius: SIZES.radius,
+                          }}
                         />
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginTop: 8,
+                          alignItems: "center",
+                        }}
+                      >
                         <Text
                           style={{
                             ...FONTS.h3,
-                            color: "#F62B53",
-                            position: "relative",
-                            left: 14,
-                            bottom: 18,
+                            fontSize: 14,
+                            color: COLORS.black,
+                            fontWeight: "500",
+                            marginLeft: 8,
+                            width: 145,
+                            overflow: "hidden",
                           }}
+                          numberOfLines={1}
                         >
-                          Tham Gia
+                          {item.name}
+                        </Text>
+                        <Image
+                          source={icons.user2}
+                          style={{
+                            height: 14,
+                            width: 14,
+                            marginLeft: 5,
+                          }}
+                        />
+                        <Text
+                          style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}
+                        >
+                          {countAlumniInGroup(item.id)}
                         </Text>
                       </View>
                     </View>
-                    <View style={style.linegroup} />
-                  </View>
-                );
+                  );
+                }
+                return null;
               }}
             />
           </View>
@@ -265,52 +271,70 @@ const Group = () => {
               showsHorizontalScrollIndicator={false}
               pagingEnabled
               horizontal
-              data={SUGGESTED}
+              data={groups}
               renderItem={({ item, index }) => {
                 return (
-                  <View>
+                  <View
+                    style={{
+                      padding: 10,
+                      marginBottom: 20,
+                      display: "flex",
+                      flex: 1,
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <TouchableOpacity
-                      style={{ marginLeft: 20 }}
-                      onPress={() => navigation.navigate("Chi Tiết Nhóm")}
+                      onPress={() =>
+                        navigation.navigate("Chi Tiết Nhóm", {
+                          id: item.id,
+                          numberAlumni: countAlumniInGroup(item.id),
+                        })
+                      }
                     >
                       <Image
-                        source={item.img}
-                        style={{ height: 60, width: 60, borderRadius: 30 }}
+                        source={{ uri: item.backgroundImg }}
+                        style={{
+                          height: 120,
+                          width: 190,
+                          borderRadius: SIZES.radius,
+                        }}
                       />
                     </TouchableOpacity>
-                    <Text
+                    <View
                       style={{
-                        textAlign: "center",
-                        marginLeft: 4,
-                        marginTop: 6,
-                        fontSize: 18,
+                        flexDirection: "row",
+                        marginTop: 8,
+                        alignItems: "center",
                       }}
-                    >
-                      {item.name}
-                    </Text>
-                    <TouchableOpacity
-                      style={{
-                        marginLeft: 20,
-                        height: 30,
-                        width: 90,
-                        backgroundColor: "#088dcd",
-                        borderRadius: 12,
-                        marginTop: 4,
-                      }}
-                      onPress={() => navigation.navigate("Chi Tiết Nhóm")}
                     >
                       <Text
                         style={{
-                          color: COLORS.white,
+                          ...FONTS.h3,
+                          fontSize: 14,
+                          color: COLORS.black,
                           fontWeight: "500",
-                          fontSize: 18,
-                          textAlign: "center",
-                          paddingTop: 3,
+                          marginLeft: 8,
+                          width: 145,
+                          overflow: "hidden",
                         }}
+                        numberOfLines={1}
                       >
-                        Tham gia
+                        {item.name}
                       </Text>
-                    </TouchableOpacity>
+                      <Image
+                        source={icons.user2}
+                        style={{
+                          height: 14,
+                          width: 14,
+                          marginLeft: 5,
+                        }}
+                      />
+                      <Text
+                        style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}
+                      >
+                        {countAlumniInGroup(item.id)}
+                      </Text>
+                    </View>
                   </View>
                 );
               }}

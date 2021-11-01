@@ -17,16 +17,13 @@ import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
 
 const Event: React.FC = (props) => {
-  const [isLoading, setLoading] = useState(true);
   const [authorize, setAuthorize] = useState();
   const [schoolId, setSchoolId] = useState();
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
-    //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
     setSchoolId(objUser.SchoolId);
-    //
     const headers = {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
@@ -35,7 +32,6 @@ const Event: React.FC = (props) => {
 
     await featchEvent(headers);
     await featchImageEvent(headers);
-    await featchAlumni(headers);
     return schoolId;
   };
   const eventURL =
@@ -55,33 +51,6 @@ const Event: React.FC = (props) => {
     }
   }
 
-  // Call Api Alumni
-  const [alumni, setAlumni] = useState<string>("");
-  const alumniURL =
-    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
-  const featchAlumni = async (headers) => {
-    try {
-      const response = await axios.get(alumniURL, { headers });
-      if (response.status === 200) {
-        setAlumni(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getNameAlumni = (alumniId) => {
-    let name = "";
-    for (let i = 0; i < alumni.length; i++) {
-      if (alumni[i].id == alumniId) {
-        name = alumni[i].name;
-        break;
-      }
-    }
-    return name;
-  };
-
-  // Call Api Image
   async function featchImageEvent(headers) {
     try {
       const response = await axios.get(imageURL, { headers });
@@ -125,7 +94,6 @@ const Event: React.FC = (props) => {
   };
 
   const navigation = useNavigation();
-  // const { banner } = props;
   return (
     <View>
       <ScrollView
@@ -197,7 +165,7 @@ const Event: React.FC = (props) => {
                         numberOfLines={2}
                         ellipsizeMode="tail"
                         style={{
-                          color: "black",
+                          color: COLORS.darkGray,
                           marginLeft: 4,
                           ...FONTS.h3,
                           fontWeight: "500",
@@ -207,18 +175,7 @@ const Event: React.FC = (props) => {
                           marginBottom: 10,
                         }}
                       >
-                        Mô tả: {item.description}
-                      </Text>
-                      <Text
-                        style={{
-                          color: COLORS.darkGray,
-                          marginLeft: 4,
-                          ...FONTS.h4,
-                          fontWeight: "500",
-                          marginBottom: 10,
-                        }}
-                      >
-                        Người tạo: {getNameAlumni(item.alumniCreatedId)}
+                        {item.description}
                       </Text>
                       <Text
                         style={{
@@ -230,26 +187,6 @@ const Event: React.FC = (props) => {
                       >
                         {formatDate(item.startDate)}
                       </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        {/* <Text
-                        style={{
-                          backgroundColor: "#17a2b8",
-                          color: COLORS.white,
-                          ...FONTS.h3,
-                          fontWeight: "700",
-                          width: 80,
-                          textAlign: "center",
-                          borderRadius: 7,
-                        }}
-                      >
-                        Đặt
-                      </Text> */}
-                      </View>
                     </View>
                   </View>
                 );
