@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/core";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,6 +13,8 @@ import {
 import { COLORS } from "../../constant";
 
 const Member = () => {
+  const isFocused = useIsFocused();
+  const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
   const [authorize, setAuthorize] = useState();
   const [idUser, setIdUser] = useState();
@@ -345,7 +347,7 @@ const Member = () => {
 
   useEffect(() => {
     tokenForAuthor();
-  }, []);
+  }, [isFocused]);
 
   return (
     <View
@@ -390,6 +392,7 @@ const Member = () => {
       {/* ======su kien */}
       <View>
         <FlatList
+          extraData={visible}
           horizontal
           data={alumni}
           keyExtractor={({ id }, index) => id}

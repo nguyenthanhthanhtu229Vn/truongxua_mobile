@@ -20,21 +20,24 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import axios from "axios";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 
 const Profile: React.FC = () => {
+  const isFocuse = useIsFocused();
   const route = useRoute();
   const navigation = useNavigation();
-  const [user, setUser] = useState<string>("");
-  const [groups, setGroup] = useState<boolean>(false);
+  const [user, setUser] = useState(Array);
+  const [groups, setGroup] = useState(Array);
   const [events, setEvent] = useState<boolean>(false);
   const [idUser, setIdUser] = useState<string>();
   const [idGroup, setIdGroup] = useState<string>();
   const [myInfo, setMyInfo] = useState<boolean>(false);
   const [authorize, setAuthorize] = useState();
   const [idSchool, setIdSchool] = useState();
+  const [visible, setVisible] = useState(false);
+  const [evil, setEvil] = useState(false);
   const eventURL =
     "https://truongxuaapp.online/api/v1/events?pageNumber=0&pageSize=0";
   const groupURL =
@@ -56,8 +59,8 @@ const Profile: React.FC = () => {
     };
     setAuthorize(headers);
     await featchMyInfo(route.params.idProfile, headers, objUser.Id);
-    await featchGroups(headers);
     await featchAlumni(headers, objUser.SchoolId, objUser.Id);
+    await featchAlumniInGroup(headers, objUser.Id);
   };
 
   const featchMyInfo = async (id, headers, myId) => {
@@ -96,21 +99,39 @@ const Profile: React.FC = () => {
     },
   ]);
 
-  async function featchEvents(headers) {
+  const [numUser, setNumUser] = useState(Array);
+  const featchAlumniInGroup = async (headers, id) => {
     try {
-      const response = await axios.get(eventURL, { headers });
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/alumniingroup?sort=desc&pageNumber=0&pageSize=0",
+        { headers }
+      );
       if (response.status === 200) {
-        setEvent(response.data);
+        await featchGroups(headers, id, response.data);
+        setNumUser(response.data);
       }
     } catch (error) {
       console.log(error);
     }
-  }
-  async function featchGroups(headers) {
+  };
+  async function featchGroups(headers, id, listAlumniInGroup) {
     try {
       const response = await axios.get(groupURL, { headers });
       if (response.status === 200) {
-        setGroup(response.data);
+        for (let i = 0; i < groups.length; i++) {
+          groups.splice(i, 1);
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          for (let j = 0; j < listAlumniInGroup.length; j++) {
+            if (
+              listAlumniInGroup[j].alumniId == id &&
+              listAlumniInGroup[j].classId == response.data[i].id
+            ) {
+              groups.push(response.data[i]);
+            }
+          }
+        }
+        setVisible(!visible);
       }
     } catch (error) {
       console.log(error);
@@ -194,7 +215,6 @@ const Profile: React.FC = () => {
         } else {
           for (let i = 0; i < response.data.length; i++) {
             for (let j = 0; j < followed.length; j++) {
-              console.log(followed);
               if (
                 followed[j].id == response.data[i].id &&
                 followed[j].status == false
@@ -297,7 +317,8 @@ const Profile: React.FC = () => {
         { headers }
       );
       if (response.status === 200) {
-        await featchAlumni(headers, idSchool, idUser);
+        // await featchAlumni(headers, idSchool, idUser);
+        setAngel(!angel);
       }
     } catch (error) {
       console.log(error);
@@ -321,7 +342,8 @@ const Profile: React.FC = () => {
         { headers }
       );
       if (response.status === 200) {
-        await featchAlumni(headers, idSchool, idUser);
+        // await featchAlumni(headers, idSchool, idUser);
+        setAngel(!angel);
       }
     } catch (error) {
       console.log(error);
@@ -401,21 +423,22 @@ const Profile: React.FC = () => {
         { headers }
       );
       if (response.status === 200) {
-        await featchAlumni(headers, idSchool, idUser);
+        // await featchAlumni(headers, idSchool, idUser);
+        setAngel(!angel);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
+  const [angel, setAngel] = useState(false);
   useEffect(() => {
     tokenForAuthor();
-  }, []);
+  }, [isFocuse, angel]);
 
   const countAlumniInGroup = (idGroup) => {
     let count = 0;
-    for (let i = 0; i < user.length; i++) {
-      if (user[i].groupId == idGroup) {
+    for (let i = 0; i < numUser.length; i++) {
+      if (numUser[i].classId == idGroup) {
         count++;
       }
     }
@@ -554,6 +577,8 @@ const Profile: React.FC = () => {
                   contentContainerStyle={{
                     flexDirection: "row",
                   }}
+                  keyExtractor={(item) => item._id}
+                  extraData={visible}
                   data={user}
                   renderItem={({ item, index }) => {
                     if (item.id != idUser && item.follow == "Đã kết nối") {
@@ -604,60 +629,59 @@ const Profile: React.FC = () => {
                 </TouchableOpacity>
               </View>
               <FlatList
+                extraData={visible}
+                keyExtractor={(item) => item._id}
                 horizontal
                 data={groups}
                 renderItem={({ item, index }) => {
-                  if (idGroup == item.id) {
-                    return (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginTop: 20,
-                          marginBottom: 20,
-                        }}
+                  return (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 20,
+                        marginBottom: 20,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("Chi Tiết Nhóm", {
+                            id: item.id,
+                            numberAlumni: countAlumniInGroup(item.id),
+                          })
+                        }
                       >
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate("Chi Tiết Nhóm", {
-                              id: item.id,
-                              numberAlumni: countAlumniInGroup(item.id),
-                            })
-                          }
+                        <Image
+                          source={{ uri: item.backgroundImg }}
+                          style={{ width: 185, height: 200, borderRadius: 5 }}
+                        ></Image>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            marginTop: 5,
+                          }}
                         >
-                          <Image
-                            source={{ uri: item.backgroundImg }}
-                            style={{ width: 185, height: 200, borderRadius: 5 }}
-                          ></Image>
+                          <Text numberOfLines={1} style={style.group}>
+                            {item.name}
+                          </Text>
                           <View
                             style={{
                               flexDirection: "row",
-                              justifyContent: "space-between",
-                              marginTop: 5,
+                              alignItems: "center",
                             }}
                           >
-                            <Text numberOfLines={1} style={style.group}>
-                              {item.name}
+                            <MaterialIcons
+                              name="group"
+                              style={style.iconGroup}
+                            ></MaterialIcons>
+                            <Text style={style.numberParti}>
+                              {countAlumniInGroup(item.id)} người
                             </Text>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <MaterialIcons
-                                name="group"
-                                style={style.iconGroup}
-                              ></MaterialIcons>
-                              <Text style={style.numberParti}>
-                                {countAlumniInGroup(item.id)} người
-                              </Text>
-                            </View>
                           </View>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  }
-                  return null;
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  );
                 }}
               />
             </View>

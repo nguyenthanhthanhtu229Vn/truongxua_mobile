@@ -177,21 +177,25 @@ const EditCommentEvent: React.FC = () => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-end",
-          marginRight: 30,
+          justifyContent: "center",
+          marginLeft: 10,
         }}
       >
         <TouchableOpacity
           style={{ marginRight: 10 }}
           onPress={() => CancelComment(authorize)}
         >
-          <Text style={style.text3}>Huỷ</Text>
+          <View style={style.put}>
+            <Text style={style.text3}>Huỷ</Text>
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           disabled={isLoading}
           onPress={() => EditComment(authorize)}
         >
-          <Text style={style.text3}>Chỉnh Sửa</Text>
+          <View style={style.put}>
+            <Text style={style.text3}>Chỉnh Sửa</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -199,6 +203,12 @@ const EditCommentEvent: React.FC = () => {
 };
 
 const style = StyleSheet.create({
+  put: {
+    padding: 20,
+    backgroundColor: "#088dcd",
+    borderRadius: 50,
+    width: 150,
+  },
   img: {
     height: 40,
     width: 40,
@@ -212,7 +222,6 @@ const style = StyleSheet.create({
   btnEditCmt: {
     position: "absolute",
     bottom: -40,
-    right: 100,
   },
   text2: {
     fontSize: 12,
@@ -221,8 +230,9 @@ const style = StyleSheet.create({
     color: "gray",
   },
   text3: {
-    fontSize: 14,
-    color: "gray",
+    fontSize: 16,
+    color: "white",
+    textAlign: "center",
   },
 });
 export default EditCommentEvent;

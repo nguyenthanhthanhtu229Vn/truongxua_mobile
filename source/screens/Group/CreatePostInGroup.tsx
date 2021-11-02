@@ -31,7 +31,7 @@ const CreatePostInGroup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-
+  const [visible, setVisible] = useState(false);
   const [idUser, setIdUser] = useState();
   const [authorize, setAuthorize] = useState();
   const tokenForAuthor = async () => {
@@ -95,6 +95,7 @@ const CreatePostInGroup: React.FC = () => {
     });
     if (!result.cancelled) {
       listImage.push(result.uri);
+      setVisible(!visible);
     }
   };
 
@@ -145,6 +146,7 @@ const CreatePostInGroup: React.FC = () => {
 
   const removeImageInList = (index) => {
     listImage.splice(index, 1);
+    setVisible(!visible);
   };
   useEffect(() => {
     tokenForAuthor();
@@ -154,7 +156,7 @@ const CreatePostInGroup: React.FC = () => {
         alert("Sorry, we need camera roll permissions to make this work!");
       }
     };
-  });
+  }, []);
   //=======End call api create post =========
   return (
     <ScrollView style={{ flex: 1, position: "absolute", width: "100%" }}>
@@ -202,6 +204,7 @@ const CreatePostInGroup: React.FC = () => {
           <FlatList
             style={{ marginTop: 20, marginBottom: 40 }}
             horizontal
+            extraData={visible}
             data={listImage}
             keyExtractor={({ id }, index) => id}
             renderItem={({ item, index }) => {

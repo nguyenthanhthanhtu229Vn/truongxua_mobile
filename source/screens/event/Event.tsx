@@ -13,10 +13,11 @@ import { COLORS, FONTS, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import MyCarousel from "../carousel/MyCarousel";
 import { Foundation } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/core";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
 import axios from "axios";
 
 const Event: React.FC = (props) => {
+  const isFocused = useIsFocused();
   const [authorize, setAuthorize] = useState();
   const [schoolId, setSchoolId] = useState();
   const [visible, setVisible] = useState(false);
@@ -102,7 +103,7 @@ const Event: React.FC = (props) => {
   };
   useEffect(() => {
     tokenForAuthor();
-  }, []);
+  }, [isFocused]);
 
   // ======Format Date====
   const formatDate = (date) => {

@@ -39,12 +39,15 @@ const UpdateProfile: React.FC = () => {
     "https://1.bp.blogspot.com/--feZt7VOE1I/WKffpcr7UHI/AAAAAAAACyY/Mro30dfNA3M4C5fAr-gP26V8avY2XVk8ACLcB/s1600/anh-dai-dien-facebook-doc-1.jpg"
   );
   const [status, setStatus] = useState<boolean>(true);
-  const [groupId, setGroupId] = useState(33);
+  const [groupId, setGroupId] = useState();
   const [schoolId, setSchoolId] = useState();
   const [alumni, setAlumni] = useState<string>("");
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(true);
   const [authorize, setAuthorize] = useState();
+  const [schoolYearId, setSchoolYearId] = useState();
+  const [schoolYear, setSchoolYear] = useState(Array);
+  const [visible, setVisible] = useState(false);
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -57,6 +60,29 @@ const UpdateProfile: React.FC = () => {
     };
     setAuthorize(headers);
     getAlumni(objUser.Id, headers);
+    loadSchoolYear(headers);
+  };
+
+  const loadSchoolYear = async (headers) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/schools/schoolyears?pageNumber=0&pageSize=0",
+        { headers }
+      );
+      if (response.status === 200) {
+        for (let i = 0; i < schoolYear.length; i++) {
+          schoolYear.splice(i, 1);
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          if (schoolId == response.data[i].schoolId) {
+            schoolYear.push(response.data[i]);
+          }
+        }
+        console.log(schoolYear);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   // getAllSchool
   const schoolURL = `${baseUrl}/api/v1/schools?sort=desc&pageNumber=0&pageSize=0`;
@@ -106,7 +132,7 @@ const UpdateProfile: React.FC = () => {
       )
       .catch((error) => alert(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [visible]);
 
   async function getAlumni(idAlumni, headers) {
     try {
@@ -125,9 +151,6 @@ const UpdateProfile: React.FC = () => {
         if (response.data.img != null) {
           setImage(response.data.img);
         }
-        if (response.data.groupId != null) {
-          setGroupId(response.data.groupId);
-        }
         if (response.data.schoolId != null) {
           setSchoolId(response.data.schoolId);
         }
@@ -144,7 +167,7 @@ const UpdateProfile: React.FC = () => {
         alert("Sorry, we need camera roll permissions to make this work!");
       }
     };
-  }, []);
+  }, [visible]);
 
   const UpdateProfile = async (headers) => {
     if (
@@ -160,7 +183,7 @@ const UpdateProfile: React.FC = () => {
       setRegistering(false);
     } else {
       setRegistering(true);
-      console.log(id);
+      console.log(schoolYearId);
       try {
         const response = await axios.put(
           "https://truongxuaapp.online/api/v1/alumni?id=" + id,
@@ -173,20 +196,56 @@ const UpdateProfile: React.FC = () => {
             img: statusChangeImg === false ? image : await uploadImage(image),
             bio,
             status,
-            groupId,
             schoolId,
           },
           { headers }
         );
         if (response.status === 200) {
-          alert("Cập Nhập Thành Công");
-          navigation.navigate("MyTabs");
+          await featchGroup(headers, id, schoolYearId);
         }
       } catch (error) {
         alert(error);
         setRegistering(false);
       }
     }
+  };
+
+  const featchGroup = async (headers, id, schoolYearId) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/groups/schoolyearid?schoolyearid=" +
+          schoolYearId,
+        { headers }
+      );
+      if (response.status === 200) {
+        await addGroupForAlumni(headers, id, response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addGroupForAlumni = async (headers, id, listGroup) => {
+    try {
+      for (let i = 0; i < listGroup.length; i++) {
+        const response = await axios.post(
+          "https://truongxuaapp.online/api/v1/alumniingroup",
+          {
+            classId: listGroup[i].id,
+            alumniId: id,
+          },
+          { headers }
+        );
+      }
+      alert("Cập Nhập Thành Công");
+      navigation.navigate("MyTabs");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const formateDate = (date) => {
+    const day = new Date(date);
+    return day.getDate() + "/" + day.getMonth() + "/" + day.getFullYear();
   };
   return (
     <KeyboardAvoidingView
@@ -228,12 +287,53 @@ const UpdateProfile: React.FC = () => {
           }}
         >
           <RNPickerSelect
+            placeholder={{
+              label: "Chọn trường",
+            }}
             value={schoolId}
-            onValueChange={(ids) => setSchoolId(ids)}
+            onOpen={() => setVisible(!visible)}
+            onClose={() => setVisible(!visible)}
+            onValueChange={(ids) => {
+              setSchoolId(ids), setVisible(!visible);
+            }}
             items={school.map((item) => ({ label: item.name, value: item.id }))}
           />
         </View>
         {/* =====End School Name ===== */}
+
+        {/*SchoolYearId  */}
+        {schoolYear.length != 0 ? (
+          <View
+            style={{
+              position: "relative",
+              marginTop: 15,
+              borderWidth: 0.4,
+              height: 40,
+              bottom: 10,
+              padding: 10,
+              borderRadius: 6,
+            }}
+          >
+            <RNPickerSelect
+              onOpen={() => setVisible(!visible)}
+              onClose={() => setVisible(!visible)}
+              disabled={schoolYear.length != 0 ? false : true}
+              placeholder={{
+                label: "Chọn niên khóa",
+              }}
+              value={schoolYearId}
+              onValueChange={(id) => setSchoolYearId(id)}
+              items={schoolYear.map((item) => ({
+                label:
+                  formateDate(item.startDate) +
+                  " - " +
+                  formateDate(item.endDate),
+                value: item.id,
+              }))}
+            />
+          </View>
+        ) : null}
+        {/* =====End School Year ===== */}
 
         {/* =======Fullname======== */}
         <View style={{ position: "relative", marginTop: 15 }}>

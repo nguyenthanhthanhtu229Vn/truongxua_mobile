@@ -15,9 +15,9 @@ import {
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
-import { Foundation } from "@expo/vector-icons";
+import { Entypo, Foundation } from "@expo/vector-icons";
 
 const width = Dimensions.get("window").width;
 
@@ -74,6 +74,7 @@ const TouchSocial = ({ icon }: { icon: any }) => {
 };
 
 const GroupDetail = () => {
+  const isFocused = useIsFocused();
   const baseUrl = "https://truongxuaapp.online";
   const navigation = useNavigation();
   const route = useRoute();
@@ -119,9 +120,11 @@ const GroupDetail = () => {
   const [post, setPost] = useState();
 
   //==========Update id first open Modal Popup
-  const updateValueForModalPopup = (id) => {
+  const [alumniOfPost, setAlumniOfPost] = useState();
+  const updateValueForModalPopup = (id, alumni) => {
     setVisible(true);
     setIdPost(id);
+    setAlumniOfPost(alumni);
   };
 
   const postURL =
@@ -171,7 +174,7 @@ const GroupDetail = () => {
   };
   useEffect(() => {
     tokenForAuthor();
-  }, []);
+  }, [isFocused]);
 
   //=====Call Api Comment=======
   const [comment, setComment] = useState<string>("");
@@ -331,6 +334,20 @@ const GroupDetail = () => {
           >
             <Foundation name="plus" style={style.textPlus}></Foundation>
           </TouchableOpacity>
+          {idUser == groupDetail.groupAdminId ? (
+            <View style={style.updateBTn}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Sửa Hình Nền Nhóm", {
+                    id: route.params.id,
+                    numberAlumni: route.params.numberAlumni,
+                  });
+                }}
+              >
+                <Entypo name="camera" style={style.textUpdate}></Entypo>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
           <View
             style={{
@@ -560,31 +577,35 @@ const GroupDetail = () => {
                               </TouchableOpacity>
                             </View>
                           </View>
-
-                          <TouchableOpacity
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                            onPress={() =>
-                              navigation.navigate("Sửa Bài Đăng", {
-                                id: idPost,
-                                numberAlumni: route.params.numberAlumni,
-                              })
-                            }
-                          >
-                            <Image
-                              source={require("../../assets/icons/edit.png")}
-                              style={{
-                                height: 20,
-                                width: 20,
-                                marginVertical: 10,
-                                marginLeft: 10,
-                                marginRight: 10,
-                              }}
-                            />
-                            <Text>Chỉnh Sửa Bài Đăng </Text>
-                          </TouchableOpacity>
+                          {groupDetail.groupAdminId != idUser ||
+                          idUser == alumniOfPost ? (
+                            <View>
+                              <TouchableOpacity
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                }}
+                                onPress={() =>
+                                  navigation.navigate("Sửa Bài Đăng", {
+                                    id: idPost,
+                                    numberAlumni: route.params.numberAlumni,
+                                  })
+                                }
+                              >
+                                <Image
+                                  source={require("../../assets/icons/edit.png")}
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    marginVertical: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                  }}
+                                />
+                                <Text>Chỉnh Sửa Bài Đăng </Text>
+                              </TouchableOpacity>
+                            </View>
+                          ) : null}
 
                           {/* delete */}
                           <TouchableOpacity
@@ -611,9 +632,12 @@ const GroupDetail = () => {
                         </ModalPoup>
 
                         {/*  */}
-                        {item.alumniId == idUser ? (
+                        {item.alumniId == idUser ||
+                        groupDetail.groupAdminId == idUser ? (
                           <TouchableOpacity
-                            onPress={() => updateValueForModalPopup(item.id)}
+                            onPress={() =>
+                              updateValueForModalPopup(item.id, item.alumniId)
+                            }
                           >
                             <Image
                               source={require("../../assets/icons/menu.png")}
@@ -821,6 +845,23 @@ const style = StyleSheet.create({
     left: 16,
     zIndex: 2,
     color: "white",
+  },
+  textUpdate: {
+    position: "absolute",
+    fontSize: 18,
+    top: 14,
+    left: 13,
+    zIndex: 2,
+    color: "white",
+  },
+  updateBTn: {
+    backgroundColor: "#088dcd",
+    height: 45,
+    width: 45,
+    borderRadius: SIZES.largeTitle,
+    position: "absolute",
+    right: 80,
+    top: 170,
   },
 });
 export default GroupDetail;

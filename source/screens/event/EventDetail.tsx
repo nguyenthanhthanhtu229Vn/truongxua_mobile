@@ -18,13 +18,14 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { AntDesign, EvilIcons, Feather } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import { COLORS, icons } from "../../constant";
 import { Alert } from "react-native";
 
 var width = Dimensions.get("window").width; //full width
 const EventDetail: React.FC = () => {
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [alumniId, setAlumniId] = useState<string>("");
   const width = Dimensions.get("window").width;
@@ -260,10 +261,11 @@ const EventDetail: React.FC = () => {
       day.getFullYear()
     );
   };
+
   useEffect(() => {
     setEventId(route.params.id);
     tokenForAuthor();
-  }, []);
+  }, [isFocused]);
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -410,32 +412,6 @@ const EventDetail: React.FC = () => {
               }}
             >
               Người tạo: {getNameAlumni(eventDetail.alumniCreatedId)}
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <EvilIcons
-              name="location"
-              style={{
-                color: "#6d757a",
-
-                fontSize: 20,
-              }}
-            ></EvilIcons>
-            <Text
-              style={{
-                color: "#6d757a",
-
-                fontSize: 18,
-                marginLeft: 10,
-              }}
-            >
-              Trường THPT Gia Định
             </Text>
           </View>
           <Text

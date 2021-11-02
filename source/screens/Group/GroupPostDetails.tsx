@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -23,6 +23,7 @@ import Animated from "react-native-reanimated";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 
 const GroupPostDetail = () => {
+  const isFocused = useIsFocused();
   const route = useRoute();
   const [post, setPost] = useState<string>("");
   const navigation = useNavigation();
@@ -281,7 +282,7 @@ const GroupPostDetail = () => {
   useEffect(() => {
     setPostId(route.params.id);
     tokenForAuthor();
-  }, []);
+  }, [isFocused]);
 
   return (
     <KeyboardAvoidingView

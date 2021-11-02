@@ -27,6 +27,7 @@ import AboutSchool from "../School/AboutSchool";
 import AddEvent from "../event/AddEvent";
 import EditCommentEvent from "../event/EditCommentEvent";
 import EditComment from "../Group/EditComment";
+import EditBackgroundGroup from "../Group/EditBackgroundGroup";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -97,6 +98,7 @@ const RootNavigator = () => {
       <Stack.Screen name="Nhóm" component={Group} />
       <Stack.Screen name="Tạo Bài Đăng" component={CreatePostInGroup} />
       <Stack.Screen name="Sửa Bình Luận Bài Viết" component={EditComment} />
+      <Stack.Screen name="Sửa Hình Nền Nhóm" component={EditBackgroundGroup} />
 
       {/* ======Event ======= */}
       <Stack.Screen name="Sự Kiện" component={Event} />

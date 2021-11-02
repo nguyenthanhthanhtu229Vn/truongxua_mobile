@@ -63,7 +63,7 @@ const EditComment: React.FC = () => {
             alumniId,
             postId,
             content,
-            modifiedAt,
+            createAt,
             status,
           },
           { headers }

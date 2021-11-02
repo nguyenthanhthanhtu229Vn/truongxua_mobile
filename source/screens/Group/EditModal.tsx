@@ -30,7 +30,7 @@ const EditPostGroup: React.FC = () => {
   const [modifiedAt, setModifiedAt] = useState(new Date());
   const [status, setStatus] = useState(true);
   const navigation = useNavigation();
-  const [groupId, setGroupId] = useState(33);
+  const [groupId, setGroupId] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [authorize, setAuthorize] = useState();
   const [check, setCheck] = useState(false);

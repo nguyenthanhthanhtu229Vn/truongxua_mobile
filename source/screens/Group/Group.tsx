@@ -25,10 +25,10 @@ const Group = () => {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
-    await featchGroups(headers);
-    await featchAlumni(headers);
+    await featchAlumniInGroup(headers, objUser.Id);
   };
-  const [groups, setGroup] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
+  const [groups, setGroup] = useState(Array);
   const navigation = useNavigation();
   const [groupUser, setGroupUser] = useState<string>();
   const [user, setUser] = useState<string>("");
@@ -36,35 +36,53 @@ const Group = () => {
     "https://truongxuaapp.online/api/v1/groups?pageNumber=0&pageSize=0";
   const alumniURL =
     "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
-  async function featchGroups(headers) {
-    try {
-      const response = await axios.get(groupURL, { headers });
-      if (response.status === 200) {
-        setGroup(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
-  async function featchAlumni(headers) {
+  const featchAlumniInGroup = async (headers, id) => {
     try {
-      const response = await axios.get(alumniURL, { headers });
-      if (response.status == 200) {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/alumniingroup?sort=desc&pageNumber=0&pageSize=0",
+        { headers }
+      );
+      if (response.status === 200) {
+        await featchGroups(headers, id, response.data);
         setUser(response.data);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+  async function featchGroups(headers, id, listAlumniInGroup) {
+    try {
+      const response = await axios.get(groupURL, { headers });
+      if (response.status === 200) {
+        for (let i = 0; i < groups.length; i++) {
+          groups.splice(i, 1);
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          for (let j = 0; j < listAlumniInGroup.length; j++) {
+            if (
+              listAlumniInGroup[j].alumniId == id &&
+              listAlumniInGroup[j].classId == response.data[i].id
+            ) {
+              groups.push(response.data[i]);
+            }
+          }
+        }
+        setVisible(!visible);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   useEffect(() => {
     tokenForAuthor();
-  }, []);
+  }, [visible]);
 
   const countAlumniInGroup = (idGroup) => {
     let count = 0;
     for (let i = 0; i < user.length; i++) {
-      if (user[i].groupId == idGroup) {
+      if (user[i].classId == idGroup) {
         count++;
       }
     }
@@ -111,81 +129,77 @@ const Group = () => {
         {/*=====FlatList Group=========  */}
         <View>
           <FlatList
+            extraData={visible}
             keyExtractor={({ id }, index) => id}
             data={groups}
             numColumns={2}
             renderItem={({ item, index }) => {
-              if (groupUser == item.id) {
-                return (
+              return (
+                <View
+                  style={{
+                    padding: 10,
+                    marginBottom: 20,
+                    display: "flex",
+                    flex: 1,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("Chi Tiết Nhóm", {
+                        id: item.id,
+                        numberAlumni: countAlumniInGroup(item.id),
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: item.backgroundImg }}
+                      style={{
+                        height: 120,
+                        width: 190,
+                        borderRadius: SIZES.radius,
+                      }}
+                    />
+                  </TouchableOpacity>
                   <View
                     style={{
-                      padding: 10,
-                      marginBottom: 20,
-                      display: "flex",
-                      flex: 1,
-                      justifyContent: "space-between",
+                      flexDirection: "row",
+                      marginTop: 8,
+                      alignItems: "center",
                     }}
                   >
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate("Chi Tiết Nhóm", {
-                          id: item.id,
-                          numberAlumni: countAlumniInGroup(item.id),
-                        })
-                      }
-                    >
-                      <Image
-                        source={{ uri: item.backgroundImg }}
-                        style={{
-                          height: 120,
-                          width: 190,
-                          borderRadius: SIZES.radius,
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <View
+                    <Text
                       style={{
-                        flexDirection: "row",
-                        marginTop: 8,
-                        alignItems: "center",
+                        ...FONTS.h3,
+                        fontSize: 14,
+                        color: COLORS.black,
+                        fontWeight: "500",
+                        marginLeft: 8,
+                        width: 145,
+                        overflow: "hidden",
                       }}
+                      numberOfLines={1}
                     >
-                      <Text
-                        style={{
-                          ...FONTS.h3,
-                          fontSize: 14,
-                          color: COLORS.black,
-                          fontWeight: "500",
-                          marginLeft: 8,
-                          width: 145,
-                          overflow: "hidden",
-                        }}
-                        numberOfLines={1}
-                      >
-                        {item.name}
-                      </Text>
-                      <Image
-                        source={icons.user2}
-                        style={{
-                          height: 14,
-                          width: 14,
-                          marginLeft: 5,
-                        }}
-                      />
-                      <Text
-                        style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}
-                      >
-                        {countAlumniInGroup(item.id)}
-                      </Text>
-                    </View>
+                      {item.name}
+                    </Text>
+                    <Image
+                      source={icons.user2}
+                      style={{
+                        height: 14,
+                        width: 14,
+                        marginLeft: 5,
+                      }}
+                    />
+                    <Text style={{ ...FONTS.h4, fontSize: 16, marginLeft: 2 }}>
+                      {countAlumniInGroup(item.id)}
+                    </Text>
                   </View>
-                );
-              }
-              return null;
+                </View>
+              );
             }}
           />
           {/* ========HEADER========= */}
-          <View style={{ marginHorizontal: 16, marginVertical: 20 }}>
+          {/* <View style={{ marginHorizontal: 16, marginVertical: 20 }}>
             <View style={style.line} />
             <Text style={style.header}>Đã Tham Gia Nhóm</Text>
             <FlatList
@@ -261,9 +275,9 @@ const Group = () => {
                 return null;
               }}
             />
-          </View>
+          </View> */}
           {/* =========SUggested Group======== */}
-          <View style={{ marginHorizontal: 16 }}>
+          {/* <View style={{ marginHorizontal: 16 }}>
             <View style={style.line} />
             <Text style={style.header}>Suggested Groups </Text>
             <FlatList
@@ -339,7 +353,7 @@ const Group = () => {
                 );
               }}
             />
-          </View>
+          </View> */}
         </View>
       </View>
     </ScrollView>
