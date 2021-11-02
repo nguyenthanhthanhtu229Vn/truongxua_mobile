@@ -19,8 +19,6 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 const EditPostGroup: React.FC = () => {
   //======begin call api put=======
-  const baseUrl = "http://20.188.111.70:12348";
-  // const [id, setId] = useState()
   const route = useRoute();
   const moment = require("moment-timezone");
   const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();

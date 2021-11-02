@@ -256,20 +256,21 @@ const GroupPostDetail = () => {
     if (content.trim() == "") {
       alert("Không được nhập trống");
     } else {
-      createComment();
+      createComment(authorize);
     }
   };
-  const createComment = async () => {
+  const createComment = async (headers) => {
     try {
       const response = await axios.post(
-        `http://20.188.111.70:12348/api/v1/posts/comments`,
+        `https://truongxuaapp.online/api/v1/posts/comments`,
         {
           alumniId,
           postId,
           content,
           createAt,
           status,
-        }
+        },
+        { headers }
       );
       if (response.status === 200) {
         await featchComment(authorize);

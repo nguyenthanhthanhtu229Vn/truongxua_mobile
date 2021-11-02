@@ -71,7 +71,16 @@ const Profile: React.FC = () => {
       );
       if (reponse.status === 200) {
         let statusFollow = await checkFollowed(headers, reponse.data.id, myId);
-        reponse.data.follow = stateFollow[statusFollow].content;
+        let statusFollowSwap = await checkFollowedSwap(
+          headers,
+          reponse.data.id,
+          myId
+        );
+        if (statusFollow == 0 && statusFollowSwap == 0) {
+          reponse.data.follow = stateFollow[3].content;
+        } else {
+          reponse.data.follow = stateFollow[statusFollow].content;
+        }
         setMyInfo(reponse.data);
       }
     } catch (error) {
@@ -82,8 +91,8 @@ const Profile: React.FC = () => {
   // Call API checkFollowed
   const [stateFollow, setStateFollow] = useState([
     {
-      content: "Kết nối",
-      status: true,
+      content: "Chờ xác nhận",
+      status: false,
     },
     {
       content: "Đã gửi lời mời",
@@ -94,8 +103,8 @@ const Profile: React.FC = () => {
       status: true,
     },
     {
-      content: "Chờ xác nhận",
-      status: false,
+      content: "Kết nối",
+      status: true,
     },
   ]);
 
@@ -153,7 +162,16 @@ const Profile: React.FC = () => {
               response.data[i].id,
               myId
             );
-            response.data[i].follow = stateFollow[statusFollow].content;
+            let statusFollowSwap = await checkFollowedSwap(
+              headers,
+              response.data[i].id,
+              myId
+            );
+            if (statusFollow == 0 && statusFollowSwap == 0) {
+              response.data[i].follow = stateFollow[3].content;
+            } else {
+              response.data[i].follow = stateFollow[statusFollow].content;
+            }
           }
           setUser(response.data);
         }
@@ -167,65 +185,30 @@ const Profile: React.FC = () => {
     try {
       const response = await axios.get(
         "https://truongxuaapp.online/api/v1/followers/checkfollowed?alumniId=" +
+          id +
+          "&followerId=" +
+          myId,
+        { headers }
+      );
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkFollowedSwap = async (headers, id, myId) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/followers/checkfollowed?alumniId=" +
           myId +
           "&followerId=" +
           id,
         { headers }
       );
       if (response.status === 200) {
-        let check = await getFollowWaiting(headers, id, myId);
-        if (check == 0) {
-          return response.data;
-        } else {
-          return 3;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getFollowWaiting = async (headers, id, myId) => {
-    try {
-      const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Followed/" + myId,
-        { headers }
-      );
-      if (response.status === 200) {
-        if (response.data.length == 0) {
-          return 0;
-        } else {
-          return await getFollowWaitingSwap(headers, id, response.data);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getFollowWaitingSwap = async (headers, id, followed) => {
-    try {
-      const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Follower/" + id,
-        { headers }
-      );
-      if (response.status === 200) {
-        if (response.data.length == 0) {
-          return 0;
-        } else {
-          for (let i = 0; i < response.data.length; i++) {
-            for (let j = 0; j < followed.length; j++) {
-              if (
-                followed[j].id == response.data[i].id &&
-                followed[j].status == false
-              ) {
-                return 1;
-                break;
-              }
-              return 0;
-            }
-          }
-        }
+        return response.data;
       }
     } catch (error) {
       console.log(error);
@@ -243,7 +226,7 @@ const Profile: React.FC = () => {
         },
         {
           text: "Đồng ý",
-          onPress: () => getFollow(myId, idFollow, headers, 1),
+          onPress: () => getFollow(idFollow, myId, headers, 1),
         },
       ]);
     } else if (numFollow == "Đã kết nối") {
@@ -261,11 +244,11 @@ const Profile: React.FC = () => {
       Alert.alert("Đồng ý", "Bạn đồng ý kết nối người này", [
         {
           text: "Từ chối",
-          onPress: () => getFollow(idFollow, myId, headers, 1),
+          onPress: () => getFollow(myId, idFollow, headers, 1),
         },
         {
           text: "Đồng ý",
-          onPress: () => getFollow(idFollow, myId, headers, 3),
+          onPress: () => getFollow(myId, idFollow, headers, 3),
         },
       ]);
     }
@@ -310,8 +293,8 @@ const Profile: React.FC = () => {
       const response = await axios.post(
         "https://truongxuaapp.online/api/v1/followers",
         {
-          alumniId: idUser,
-          followerAlumni: idFollow,
+          alumniId: idFollow,
+          followerAlumni: idUser,
           status: false,
         },
         { headers }
@@ -403,7 +386,7 @@ const Profile: React.FC = () => {
       );
       console.log(response.status);
       if (response.status === 200) {
-        await createConnectSwap(headers, myId);
+        await createConnectSwap(headers, idFollow);
         // featchAlumni(headers, idSchool, idUser);
       }
     } catch (error) {
@@ -416,8 +399,8 @@ const Profile: React.FC = () => {
       const response = await axios.post(
         "https://truongxuaapp.online/api/v1/followers",
         {
-          alumniId: idUser,
-          followerAlumni: idFollow,
+          alumniId: idFollow,
+          followerAlumni: idUser,
           status: true,
         },
         { headers }
@@ -948,6 +931,7 @@ const style = StyleSheet.create({
     fontWeight: "500",
     fontSize: 18,
     marginTop: 8,
+    height: 30,
   },
   addressF: {
     textAlign: "center",

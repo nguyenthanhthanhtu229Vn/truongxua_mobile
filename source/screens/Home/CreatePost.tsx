@@ -8,6 +8,7 @@ import {
   Modal,
   Pressable,
   Button,
+  AsyncStorage,
 } from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
@@ -52,24 +53,41 @@ const ImagePost = () => {
 
 const CreatePost: React.FC = () => {
   //========  begin call api post =======
-  const baseUrl = "http://20.188.111.70:12348";
+  const moment = require("moment-timezone");
+  const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [adminId, setAdminId] = useState(1);
   const [schoolId, setSchoolId] = useState(5);
-  const [createAt, setCreateAt] = useState(new Date());
+  const [createAt, setCreateAt] = useState(dateCreate);
   const [status, setStatus] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const [authorize, setAuthorize] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    //
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    setAuthorize(headers);
+  };
 
+  useEffect(() => {
+    tokenForAuthor();
+  }, []);
   const OnChangeContentHandler = (content) => {
     setContent(content);
   };
   const OnChangeTitleHandler = (title) => {
     setContent(content);
   };
-  const onSubmitFormHandler = async (event) => {
+  const onSubmitFormHandler = async (headers) => {
     if (!content.trim()) {
       alert("Không được bỏ trống");
       return;
@@ -79,19 +97,23 @@ const CreatePost: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post(`${baseUrl}/api/v1/news`, {
-        schoolId,
-        adminId,
-        title,
-        content,
-        createAt,
-        status,
-      });
+      const response = await axios.post(
+        `https://truongxuaapp.online/api/v1/news`,
+        {
+          schoolId,
+          adminId,
+          title,
+          content,
+          createAt,
+          status,
+        },
+        { headers }
+      );
       if (response.status === 200) {
         setContent("");
-        setTitle("")
+        setTitle("");
         alert("Tạo Bài Viết Thành Công");
-        navigation.navigate('Trang Chủ')
+        navigation.navigate("Trang Chủ");
         setTimeout(function () {
           setModalVisible(false);
         }, 2);
@@ -147,16 +169,17 @@ const CreatePost: React.FC = () => {
               editable={!isLoading}
               value={title}
               onChangeText={(title) => setTitle(title)}
-             style={{
-               borderRadius: 10,
-               borderColor: "#d0d0d0",
-               borderWidth: 1,
-               backgroundColor: "#f5f4f9",
-               padding: 10,
-               height: 50,
-               marginBottom: 10,
-               marginTop: 10
-            }}  />
+              style={{
+                borderRadius: 10,
+                borderColor: "#d0d0d0",
+                borderWidth: 1,
+                backgroundColor: "#f5f4f9",
+                padding: 10,
+                height: 50,
+                marginBottom: 10,
+                marginTop: 10,
+              }}
+            />
             <TextInput
               style={{
                 borderRadius: 10,
@@ -187,7 +210,10 @@ const CreatePost: React.FC = () => {
               source={require("../../assets/icons/menu.png")}
             />
           </View>
-          <TouchableOpacity onPress={onSubmitFormHandler} disabled={isLoading}>
+          <TouchableOpacity
+            onPress={() => onSubmitFormHandler(authorize)}
+            disabled={isLoading}
+          >
             <View
               style={{
                 backgroundColor: "#088dcd",

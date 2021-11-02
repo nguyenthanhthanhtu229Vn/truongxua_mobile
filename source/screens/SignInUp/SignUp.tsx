@@ -27,7 +27,6 @@ var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
-  const baseUrl = "http://20.188.111.70:12348";
   const [registering, setRegistering] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");

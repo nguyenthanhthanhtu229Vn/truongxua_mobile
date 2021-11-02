@@ -1,6 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from "react";
-import { Text, View, Image, TextInput, Modal, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  TextInput,
+  Modal,
+  Pressable,
+  AsyncStorage,
+} from "react-native";
 import { TouchableOpacity } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
@@ -11,13 +19,25 @@ import { useEffect } from "react";
 const EditPostModal: React.FC = () => {
   const route = useRoute();
   //======begin call api put=======
-  const baseUrl = "http://20.188.111.70:12348";
-  // const [id, setId] = useState(267);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [modifiedAt, setModifiedAt] = useState(new Date());
 
   const navigation = useNavigation();
+
+  const [authorize, setAuthorize] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    //
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    //
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    setAuthorize(headers);
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const updateValue = async () => {
@@ -26,9 +46,10 @@ const EditPostModal: React.FC = () => {
   };
   useEffect(() => {
     updateValue();
+    tokenForAuthor();
   }, []);
 
-  const onSubmitFormHandler = async () => {
+  const onSubmitFormHandler = async (headers) => {
     if (!content.trim) {
       alert("Không được để trống");
       return;
@@ -37,26 +58,25 @@ const EditPostModal: React.FC = () => {
       alert("Không được để trống");
       return;
     }
-    axios({
-      url: `${baseUrl}/api/v1/news?id=` + route.params.item.id,
-      method: "PUT",
-      data: {
-        title,
-        content,
-        modifiedAt,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          alert("Sửa Bài Viết Thành Công");
-          setContent("");
-          setTitle("");
-          navigation.navigate("Trang Chủ");
-        }
-      })
-      .catch((error) => {
-        alert("Đã Có Lỗi Xảy Ra !! Vui Lòng Kiểm Tra Lại !!");
-      });
+    try {
+      const response = await axios.put(
+        "https://truongxuaapp.online/api/v1/news?id=" + route.params.item.id,
+        {
+          title,
+          content,
+          modifiedAt,
+        },
+        { headers }
+      );
+      if (response.status === 200) {
+        alert("Sửa Bài Viết Thành Công");
+        setContent("");
+        setTitle("");
+        navigation.navigate("Trang Chủ");
+      }
+    } catch (error) {
+      alert("Đã Có Lỗi Xảy Ra !! Vui Lòng Kiểm Tra Lại !!");
+    }
   };
   //======end call api put=======
   return (
@@ -112,7 +132,7 @@ const EditPostModal: React.FC = () => {
             source={require("../../assets/icons/menu.png")}
           ></Image>
         </View>
-        <TouchableOpacity onPress={onSubmitFormHandler} disabled={isLoading}>
+        <TouchableOpacity onPress={() => onSubmitFormHandler(authorize)}>
           <View
             style={{
               backgroundColor: "#088dcd",
