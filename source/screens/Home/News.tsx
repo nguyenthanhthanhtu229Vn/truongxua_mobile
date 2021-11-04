@@ -9,6 +9,7 @@ import {
   Modal,
   Animated,
   AsyncStorage,
+  Pressable,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
@@ -76,13 +77,15 @@ const News: React.FC = () => {
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
     setAuthorize(headers);
-    await featchNews(headers);
+    await featchNews(headers, objUser.SchoolId);
   };
 
-  const featchNews = async (headers) => {
+  const featchNews = async (headers, schoolId) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/news?sort=desc&pageNumber=0&pageSize=0",
+        "https://truongxuaapp.online/api/v1/news/schoolid?schoolId=" +
+          schoolId +
+          "&sort=desc",
         { headers }
       );
       if (response.status === 200) {
@@ -136,7 +139,50 @@ const News: React.FC = () => {
   //====== End detele post =======
   const navigation = useNavigation();
   return (
-    <View style={{ marginTop: 150 }}>
+    <View style={{ padding: 10 }}>
+      <View
+        style={{
+          zIndex: 1,
+          borderRadius: 10,
+          borderColor: "#d0d0d0",
+          borderWidth: 1,
+          backgroundColor: "#fafafa",
+          padding: 10,
+          margin: 5,
+        }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
+          Tạo Bài Viết
+        </Text>
+        <TouchableOpacity>
+          <Pressable onPress={() => navigation.navigate("Tạo Tin Tức")}>
+            <View
+              style={{
+                borderRadius: 250,
+                borderColor: "#d0d0d0",
+                borderWidth: 1,
+                backgroundColor: "#fff",
+                padding: 10,
+                flexDirection: "row",
+              }}
+            >
+              <Image
+                style={{
+                  width: 15,
+                  height: 15,
+                  alignItems: "center",
+                  marginTop: 3,
+                  marginLeft: 5,
+                }}
+                source={require("../../assets/icons/pencil.png")}
+              />
+              <Text style={{ fontSize: 15, color: "#808080", marginLeft: 10 }}>
+                Tạo Bài Viết
+              </Text>
+            </View>
+          </Pressable>
+        </TouchableOpacity>
+      </View>
       <FlatList
         extraData={visible}
         data={data}
@@ -146,7 +192,6 @@ const News: React.FC = () => {
             <View
               style={{
                 backgroundColor: COLORS.white2,
-                shadowOpacity: 0.2,
                 marginBottom: 16,
               }}
             >
@@ -231,9 +276,9 @@ const News: React.FC = () => {
                       <Image
                         source={require("../../assets/icons/menu.png")}
                         style={{
-                          height: 14,
-                          width: 14,
-                          marginLeft: 170,
+                          height: 20,
+                          width: 20,
+                          marginLeft: 130,
                           marginBottom: 34,
                         }}
                       />
@@ -258,6 +303,8 @@ const News: React.FC = () => {
                       ...FONTS.h3,
                       color: COLORS.black,
                       fontWeight: "500",
+                      marginLeft: 8,
+                      marginBottom: 10,
                     }}
                   >
                     {item.title}

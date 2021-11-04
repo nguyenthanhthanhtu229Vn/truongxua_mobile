@@ -17,7 +17,8 @@ import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
-import { Entypo, Foundation } from "@expo/vector-icons";
+import { Entypo, Foundation, MaterialIcons } from "@expo/vector-icons";
+import Member from "../School/Member";
 
 const width = Dimensions.get("window").width;
 
@@ -399,52 +400,21 @@ const GroupDetail = () => {
             {/* Nhóm 12A1 */}
             {groupDetail.name}
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              position: "absolute",
-              bottom: 6,
-              left: 130,
-            }}
-          >
-            <Image
-              source={require("../../assets/icons/star_y.png")}
-              style={style.img}
-            />
-            <Image
-              source={require("../../assets/icons/star_y.png")}
-              style={style.img}
-            />
-            <Image
-              source={require("../../assets/icons/star_y.png")}
-              style={style.img}
-            />
-            <Image
-              source={require("../../assets/icons/star_y.png")}
-              style={style.img}
-            />
-            <Image
-              source={require("../../assets/icons/star_y.png")}
-              style={style.img}
-            />
-          </View>
         </View>
 
         {/* =======Member ========= */}
         <View
           style={{
-            flexDirection: "column",
-            marginVertical: 30,
-            marginHorizontal: 16,
+            padding: 20,
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
             <Image source={icons.group2} style={style.icon} />
             <Text style={style.msg}>Thành Viên</Text>
             <Text
               style={{
                 color: COLORS.gray,
-                ...FONTS.h4,
+                fontSize: 16,
                 fontWeight: "300",
               }}
             >
@@ -454,68 +424,41 @@ const GroupDetail = () => {
           <View
             style={{
               flexDirection: "row",
-              alignItems: "center",
-              marginVertical: 10,
+              marginTop: 20,
+              width: 240,
             }}
           >
-            <Image source={icons.camera} style={style.icon} />
-            <Text style={style.msg}>Danh Mục</Text>
+            <MaterialIcons name="policy" style={{ fontSize: 18 }} />
+            <Text style={style.msg}>Điều lệ</Text>
             <Text
               style={{
                 color: COLORS.gray,
-                ...FONTS.h4,
+                fontSize: 16,
                 fontWeight: "300",
-                marginRight: 20,
               }}
             >
-              Giải Trí
+              {groupDetail.policy}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection: "row", marginTop: 25 }}>
             <Image source={icons.globe} style={style.icon} />
-            <Text style={style.msg}>Nhóm</Text>
+            <Text style={style.msg}>Mô tả</Text>
             <Text
               style={{
                 color: COLORS.gray,
-                ...FONTS.h4,
+                fontSize: 16,
                 fontWeight: "300",
-                marginLeft: 32,
+                marginRight: 100,
+                width: 240,
               }}
             >
-              Công Khai
+              {groupDetail.description}
             </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginVertical: 10,
-            }}
-          >
-            <Image source={icons.group2} style={style.icon} />
-            <Text style={style.msg}>Mời</Text>
-            <Text
-              style={{
-                color: "#F62B53",
-                ...FONTS.h4,
-                fontWeight: "400",
-                marginLeft: 52,
-              }}
-            >
-              Gửi Lời Mời
-            </Text>
-          </View>
-          {/* ====== Button Social ==== */}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchSocial icon={icons.facebook} />
-            <TouchSocial icon={icons.twitter_n} />
-            <TouchSocial icon={icons.google} />
-            <TouchSocial icon={icons.pinterest} />
-            <TouchSocial icon={icons.instagram} />
           </View>
         </View>
 
         {/* ======Begin Post ==== */}
+        <Member />
         <View>
           <FlatList
             data={post}
@@ -788,10 +731,11 @@ const style = StyleSheet.create({
   },
   msg: {
     ...FONTS.h3,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     marginLeft: 10,
-    marginRight: 65,
+    marginRight: 10,
+    width: 100,
     color: COLORS.black,
   },
   btn: {

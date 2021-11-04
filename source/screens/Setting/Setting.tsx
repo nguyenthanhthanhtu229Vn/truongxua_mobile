@@ -2,16 +2,13 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Alert, AsyncStorage } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../../config/firebase";
-import SignIn from "../SignInUp/SignIn";
 import SettingGeneral from "./SettingGeneral";
 import SettingProfile from "./SettingProfile";
 const listTab = [
-  { status: "Chung" },
   { status: "Hồ sơ" },
-  { status: "Riêng tư" },
-  { status: "Thông báo" },
+  // { status: "Chung" },
+  // { status: "Thông báo" },
 ];
 const Setting = () => {
   const navigation = useNavigation();
@@ -61,7 +58,7 @@ const Setting = () => {
           style={{
             flexDirection: "row",
             marginTop: 20,
-            justifyContent: "space-between",
+            // justifyContent: "space-around",
           }}
         >
           {listTab.map((e) => (
@@ -82,7 +79,8 @@ const Setting = () => {
           ))}
         </View>
         <View style={style.containerFluid}>
-          {status == "Chung" ? <SettingGeneral /> : <SettingProfile />}
+          <SettingProfile />
+          {/* {status == "Chung" ? <SettingGeneral /> : <SettingProfile />} */}
           <TouchableOpacity
             style={style.logOutBtn}
             onPress={() => {

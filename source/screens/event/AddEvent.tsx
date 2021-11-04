@@ -14,9 +14,6 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import { Foundation } from "@expo/vector-icons";
-import Colors from "../../../constants/Colors";
-import moment from "moment";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 import Tags from "react-native-tags";
@@ -396,63 +393,37 @@ const AddEvent = () => {
                 )}
               </TouchableOpacity>
             </View>
-
-            {/* <TextInput
-              placeholder="Hoạt Động"
-              placeholderTextColor={COLORS.gray}
-              onChangeText={(contentActivity) =>
-                setContentActivity(contentActivity)
-              }
-              style={{
-                backgroundColor: "white",
-                padding: 10,
-                borderWidth: 1,
-                fontSize: 18,
-                borderColor: "#CCCCCC",
-                borderRadius: 10,
-                marginBottom: 20,
-                width: 300,
-              }}
-            /> */}
             {/* begin tag */}
             <Tags
-              textInputProps={{
-                placeholder: "Any type of animal",
-              }}
-              onChangeTags={(tags) => setContentActivity(tags)}
-              onTagPress={(index, tagLabel, event, deleted) =>
-                console.log(
-                  index,
-                  tagLabel,
-                  event,
-                  deleted ? "deleted" : "not deleted"
-                )
-              }
-              containerStyle={{
-                justifyContent: "center",
-                backgroundColor: "#92adf7",
-              }}
-              inputStyle={{
-                backgroundColor: "white",
-                borderWidth: 0.6,
-                borderColor: "#CCCCCC",
-                borderRadius: 8,
-                color: "black",
-              }}
-              tagContainerStyle={{ backgroundColor: "red" }}
-              inputContainerStyle={{ color: "red" }}
-              tagTextStyle={{ color: "red" }}
-              renderTag={({ tag, index, onPress }) => (
-                <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
-                  <Text>{tag}</Text>
-                </TouchableOpacity>
-              )}
-            />
+               initialText="Hoạt Động"
+               textInputProps={{
+                 placeholder: "Các loại hoạt động của sự kiện",
+               }}
+             onChangeTags={(tags) => setContentActivity(tags)}
+               onTagPress={(index, tagLabel, event, deleted) =>
+                 console.log(
+                   index,
+                   tagLabel,
+                   event,
+                   deleted ? "deleted" : "not deleted"
+                 )
+               }
+               containerStyle={{ justifyContent: "center", backgroundColor:'#d4d3d3', borderRadius: 8 }}
+               inputStyle={{
+                 backgroundColor: "white",
+                 borderRadius: 8,
+                 color: COLORS.black,
+               }}
+               tagContainerStyle={{backgroundColor:'red'}}
+               inputContainerStyle={{color:COLORS.black}}
+               tagTextStyle={{color:'red'}}
+               renderTag={({ tag, index, onPress }) => (
+                 <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
+                   <Text>{tag}</Text>
+                 </TouchableOpacity>
+               )}
+             />
             {/* ==end tags== */}
-
-            {/* <TouchableOpacity style={style.plusBtn}>
-              <Foundation name="plus" style={style.textPlus}></Foundation>
-            </TouchableOpacity> */}
 
             <TextInput
               keyboardType="number-pad"

@@ -1,6 +1,6 @@
 // /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, View } from "react-native";
+import { AsyncStorage, View, ImageBackground,Dimensions } from "react-native";
 import { icons } from "../../constant";
 import constant from "../../constant/constant";
 import CategoryMenu from "./Category";
@@ -25,7 +25,14 @@ const Menu: React.FC = () => {
   }, []);
   const navigation = useNavigation();
   return (
-    <View style={{ marginTop: 40 }}>
+        <ImageBackground
+      source={require("../../assets/images/blue_background.jpeg")}
+      style={{
+        height: Dimensions.get("window").height,
+        width: Dimensions.get("window").width,
+      }}
+    >
+    <View style={{ marginTop: 190 }}>
       <View style={style.container}>
         <CategoryMenu
           icon={icons.home_n}
@@ -77,6 +84,7 @@ const Menu: React.FC = () => {
       </View>
       <View style={style.container}></View>
     </View>
+    </ImageBackground>
   );
 };
 const style = StyleSheet.create({

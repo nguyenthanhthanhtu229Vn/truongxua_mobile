@@ -22,7 +22,9 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/core";
 import { COLORS } from "../../constant";
 import jwtDecode from "jwt-decode";
-
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const SignUp: React.FC = () => {
@@ -55,10 +57,10 @@ const SignUp: React.FC = () => {
     }
   }
 
-  const loadAccountToData = async () => {
+  const loadAccountToData = async (id) => {
     try {
       const response = await axios.post(
-        `https://truongxuaapp.online/api/users/sign-in`,
+        `https://truongxuaapp.online/api/users/sign-up?userId=` + id,
         {
           email,
           password,
@@ -84,7 +86,7 @@ const SignUp: React.FC = () => {
       auth
         .createUserWithEmailAndPassword(email, password)
         .then((result) => {
-          loadAccountToData();
+          loadAccountToData(result.user?.uid);
         })
         .catch((error) => {
           if (error.code.includes("auth/weak-password")) {

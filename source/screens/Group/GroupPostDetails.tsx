@@ -30,51 +30,6 @@ const GroupPostDetail = () => {
   const width = Dimensions.get("window").width;
   const [visible, setVisible] = useState(false);
   // ========= Start Modal=========
-  const ModalPoup = ({
-    visible,
-    children,
-  }: {
-    visible: any;
-    children: any;
-  }) => {
-    const [showModal, setShowModal] = React.useState(visible);
-    const scaleValue = React.useRef(new Animated.Value(0)).current;
-    React.useEffect(() => {
-      toggleModal();
-    }, [visible]);
-    const toggleModal = () => {
-      if (visible) {
-        setShowModal(true);
-        Animated.spring(scaleValue, {
-          toValue: 1,
-          delay: 300,
-          useNativeDriver: true,
-        }).start();
-      } else {
-        setTimeout(() => setShowModal(false), 200);
-        Animated.timing(scaleValue, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
-    return (
-      <Modal transparent visible={showModal}>
-        <View style={style.modalBackGround}>
-          <Animated.View
-            style={[
-              style.modalContainer,
-              { transform: [{ scale: scaleValue }] },
-            ]}
-          >
-            {children}
-          </Animated.View>
-        </View>
-      </Modal>
-    );
-  };
-
   // Call Post API
   async function featchPosts(headers) {
     try {
@@ -286,15 +241,16 @@ const GroupPostDetail = () => {
   }, [isFocused]);
 
   return (
-    <KeyboardAvoidingView
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={style.container}
-      behavior="padding"
-      keyboardVerticalOffset={Platform.select({
-        ios: () => 60,
-        android: () => 200,
-      })()}
-    >
+    // <KeyboardAvoidingView
+    //   // behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={style.container}
+    //   behavior="padding"
+    //   keyboardVerticalOffset={Platform.select({
+    //     ios: () => 60,
+    //     android: () => 200,
+    //   })()}
+    // >
+    <View style={style.container}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -346,108 +302,6 @@ const GroupPostDetail = () => {
                 >
                   {getNameAlumni(post.alumniId)}
                 </Text>
-                {/* ====begin modal====== */}
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ModalPoup visible={visible}>
-                    <View style={{ alignItems: "center" }}>
-                      <View style={style.header}>
-                        <TouchableOpacity onPress={() => setVisible(false)}>
-                          <Image
-                            source={require("../../assets/icons/error.png")}
-                            style={{ height: 30, width: 30 }}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate("Sửa Bài Đăng", {
-                            id: post.id,
-                          })
-                        }
-                      >
-                        <Image
-                          source={require("../../assets/icons/edit.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <Text>Edit Post</Text>
-                    </View>
-                    {/* delete */}
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => onSubmitFormHandler(post.id)}
-                      >
-                        <Image
-                          source={require("../../assets/icons/delete.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <Text>Delete Post</Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity>
-                        <Image
-                          source={require("../../assets/icons/edit.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <Text>Edit Privacy</Text>
-                    </View>
-                  </ModalPoup>
-                  <TouchableOpacity onPress={() => setVisible(true)}>
-                    <Image
-                      source={require("../../assets/icons/menu.png")}
-                      style={{
-                        height: 14,
-                        width: 14,
-                        marginBottom: 34,
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-                {/* end modal */}
               </View>
 
               <View
@@ -620,7 +474,7 @@ const GroupPostDetail = () => {
                           {formatDateComment(item.createAt)}
                         </Text>
                         {alumniId == item.alumniId ? (
-                          <View>
+                          <View style={{ flexDirection: "row" }}>
                             <TouchableOpacity
                               style={style.btnDeletCmt}
                               onPress={() =>
@@ -703,7 +557,8 @@ const GroupPostDetail = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -791,18 +646,21 @@ const style = StyleSheet.create({
     color: "gray",
   },
   btnDeletCmt: {
-    position: "absolute",
-    bottom: -30,
-    right: 30,
+    // position: "absolute",
+    // bottom: -40,
+    // right: 30,
+    marginLeft: 140,
   },
   text4: {
     fontSize: 14,
     color: "gray",
   },
   btnEditCmt: {
-    position: "absolute",
-    bottom: -30,
-    right: 80,
+    // position: "absolute",
+    // bottom: -40,
+    // right: 80,
+    marginLeft: 30,
+    zIndex: 10,
   },
   text: {
     fontSize: 16,

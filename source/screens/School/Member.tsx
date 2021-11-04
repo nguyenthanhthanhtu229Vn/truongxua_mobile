@@ -369,7 +369,6 @@ const Member = () => {
           extraData={visible}
           horizontal
           data={alumni}
-          keyExtractor={({ id }, index) => id}
           renderItem={({ item, index }) => {
             if (item.id != idUser) {
               return (

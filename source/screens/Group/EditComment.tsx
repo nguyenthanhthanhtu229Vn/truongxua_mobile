@@ -139,7 +139,7 @@ const EditComment: React.FC = () => {
                 textAlign: "center",
               }}
             >
-              Sửa Bài Đăng
+              Sửa Bình Luận 
             </Text>
           </View>
         </TouchableOpacity>

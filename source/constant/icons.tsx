@@ -66,7 +66,20 @@ const twitter_n = require('../assets/icons/twitter2.png');
 const google = require('../assets/icons/google.png');
 const pinterest = require('../assets/icons/pinterest2.png');
 const facebook = require('../assets/icons/facebook.png');
+
+const upload = require('../assets/icons/upload.png');
+
+const bank = require('../assets/icons/bank.png');
+const card = require('../assets/icons/debit-cards.png');
+const paypal_icons = require('../assets/icons/paypal_icon.png');
+const visa = require('../assets/icons/visa.png');
+ const paypal_credit = require('../assets/icons/paypal_credit.png');
 export default {
+  paypal_credit,
+visa,
+paypal_icons,
+bank,card,
+upload,
   facebook,
  google,
  twitter_n,

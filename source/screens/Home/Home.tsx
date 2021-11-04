@@ -8,7 +8,6 @@ import News from "./News";
 const Home: React.FC = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <CreatePost />
       <News />
     </View>
   );

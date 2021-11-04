@@ -19,10 +19,13 @@ import { useEffect } from "react";
 const EditPostModal: React.FC = () => {
   const route = useRoute();
   //======begin call api put=======
+  const moment = require("moment-timezone");
+  const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
-  const [modifiedAt, setModifiedAt] = useState(new Date());
-
+  const [modifiedAt, setModifiedAt] = useState(dateCreate);
+  const [createAt, setCreateAt] = useState(dateCreate);
+  const [schoolId, setSchoolId] = useState();
   const navigation = useNavigation();
 
   const [authorize, setAuthorize] = useState();
@@ -31,6 +34,7 @@ const EditPostModal: React.FC = () => {
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
+    setSchoolId(objUser.SchoolId);
     //
     const headers = {
       Authorization: "Bearer " + token,
@@ -64,7 +68,8 @@ const EditPostModal: React.FC = () => {
         {
           title,
           content,
-          modifiedAt,
+          createAt,
+          schoolId,
         },
         { headers }
       );
@@ -118,20 +123,6 @@ const EditPostModal: React.FC = () => {
             onChangeText={(content) => setContent(content)}
           />
         </View>
-        <View style={{ flexDirection: "row", margin: 20 }}>
-          <Image
-            style={style.icon}
-            source={require("../../assets/icons/imageGallery.png")}
-          ></Image>
-          <Image
-            style={[style.icon, style.mL]}
-            source={require("../../assets/icons/feedback.png")}
-          ></Image>
-          <Image
-            style={[style.icon, style.mL]}
-            source={require("../../assets/icons/menu.png")}
-          ></Image>
-        </View>
         <TouchableOpacity onPress={() => onSubmitFormHandler(authorize)}>
           <View
             style={{
@@ -139,6 +130,8 @@ const EditPostModal: React.FC = () => {
               width: "100%",
               padding: 10,
               borderRadius: 20,
+              marginTop: 30,
+              marginBottom: 30,
             }}
           >
             <Text

@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
@@ -14,34 +13,33 @@ import { StyleSheet } from "react-native";
 const NOTIFI = [
   {
     id: 1,
-    avatar: require("../../assets/images/avatar.jpeg"),
-    name: "Sara Honey Podcast",
-    date: "5 mins ago",
-    content: "Some notification",
+    avatar: 'https://i.ibb.co/0fNSVCN/7-F3-D26-AD-C424-4-B9-E-A805-A1-CA7475-EABD.jpg',
+    name: "Nguyễn Vui",
+    date: "Cách đây 5 phút",
+    content: "Nguyễn Vui đã đã tại bài viết",
   },
   {
     id: 2,
-    avatar: require("../../assets/images/avatar1.jpeg"),
+    avatar: 'https://i.ibb.co/LtcNYGT/img1.jpg',
     name: "Sara Honey Podcast",
-    date: "5 mins ago",
-    content: "Some notification",
+    date: "3 phút",
+    content: " Khoa Thanh đã bình luận ",
   },
   {
     id: 3,
-    avatar: require("../../assets/images/avatar.jpeg"),
+    avatar: 'https://i.ibb.co/mbZ6PDH/IMG-5440.jpg',
     name: "Sara Honey Podcast",
-    date: "5 mins ago",
-    content: "Some notification",
+    date: "10 phút ",
+    content: "Kiều linh đã trả lời  bình luận",
   },
   {
     id: 4,
-    avatar: require("../../assets/images/avatar.jpeg"),
+    avatar: 'https://i.ibb.co/Kmt2Gd2/0-C23-A4-C7-8931-445-F-B915-DD78788-E1-A48.jpg',
     name: "Sara Honey Podcast",
-    date: "5 mins ago",
-    content: "Some notification",
+    date: "Cách đây 10 phút",
+    content: "Quang Huy đang theo dõi Khoa ",
   },
 ];
-
 const Notification: React.FC = () => {
   return (
     <ScrollView >
@@ -90,7 +88,7 @@ const Notification: React.FC = () => {
                 }}
               >
                 <Image
-                  source={item.avatar}
+                  source={{uri: item.avatar}}
                   style={{
                     height: 60,
                     width: 60,

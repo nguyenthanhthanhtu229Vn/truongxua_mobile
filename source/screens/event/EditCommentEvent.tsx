@@ -5,9 +5,7 @@ import {
   Image,
   Text,
   View,
-  Dimensions,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation, useRoute } from "@react-navigation/core";
@@ -204,7 +202,7 @@ const EditCommentEvent: React.FC = () => {
 
 const style = StyleSheet.create({
   put: {
-    padding: 20,
+    padding: 10,
     backgroundColor: "#088dcd",
     borderRadius: 50,
     width: 150,

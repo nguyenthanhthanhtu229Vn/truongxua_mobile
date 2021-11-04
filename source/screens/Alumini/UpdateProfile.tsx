@@ -25,7 +25,6 @@ import * as ImagePicker from "expo-image-picker";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 const UpdateProfile: React.FC = () => {
-  const baseUrl = "http://20.188.111.70:12348";
   const navigation = useNavigation();
   const [id, setId] = useState<string>("");
   const [registering, setRegistering] = useState<boolean>(false);
@@ -60,9 +59,24 @@ const UpdateProfile: React.FC = () => {
     };
     setAuthorize(headers);
     getAlumni(objUser.Id, headers);
+    loadSchool(headers);
     loadSchoolYear(headers);
   };
 
+  const loadSchool = async (headers) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/schools?pageNumber=0&pageSize=0",
+        { headers }
+      );
+      if (response.status === 200) {
+        setSchool(response.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const loadSchoolYear = async (headers) => {
     try {
       const response = await axios.get(
@@ -78,14 +92,12 @@ const UpdateProfile: React.FC = () => {
             schoolYear.push(response.data[i]);
           }
         }
-        console.log(schoolYear);
       }
     } catch (error) {
       console.log(error);
     }
   };
   // getAllSchool
-  const schoolURL = `${baseUrl}/api/v1/schools?sort=desc&pageNumber=0&pageSize=0`;
   const [school, setSchool] = useState([]);
   const [statusChangeImg, setStatusChangeImg] = useState(false);
   //Pick Image
@@ -122,17 +134,6 @@ const UpdateProfile: React.FC = () => {
       alert(err);
     }
   };
-
-  useEffect(() => {
-    fetch(schoolURL)
-      .then((response) =>
-        response.json().then((res) => {
-          setSchool(res);
-        })
-      )
-      .catch((error) => alert(error))
-      .finally(() => setLoading(false));
-  }, [visible]);
 
   async function getAlumni(idAlumni, headers) {
     try {
@@ -174,7 +175,9 @@ const UpdateProfile: React.FC = () => {
       name.length == 0 ||
       address.length == 0 ||
       phone.length == 0 ||
-      bio.length == 0
+      bio.length == 0 ||
+      schoolId == null ||
+      schoolYear == null
     ) {
       setError("Không Được Để Trống");
       setRegistering(false);
@@ -183,7 +186,6 @@ const UpdateProfile: React.FC = () => {
       setRegistering(false);
     } else {
       setRegistering(true);
-      console.log(schoolYearId);
       try {
         const response = await axios.put(
           "https://truongxuaapp.online/api/v1/alumni?id=" + id,
@@ -238,6 +240,14 @@ const UpdateProfile: React.FC = () => {
         );
       }
       alert("Cập Nhập Thành Công");
+      const infoUser = await AsyncStorage.getItem("infoUser");
+      const objUser = JSON.parse(infoUser);
+      objUser.SchoolId = schoolId;
+      objUser.AlumniName = name;
+      objUser.Image =
+        statusChangeImg === false ? image : await uploadImage(image);
+      console.log(objUser);
+      AsyncStorage.setItem("infoUser", JSON.stringify(objUser));
       navigation.navigate("MyTabs");
     } catch (error) {
       console.log(error);
@@ -248,11 +258,12 @@ const UpdateProfile: React.FC = () => {
     return day.getDate() + "/" + day.getMonth() + "/" + day.getFullYear();
   };
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, padding: 20, marginTop: 30 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView>
+    <ScrollView>
+      <KeyboardAvoidingView
+        style={{ flex: 1, padding: 20, marginTop: 30 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        {/* <ScrollView> */}
         <View
           style={{
             position: "absolute",
@@ -287,6 +298,7 @@ const UpdateProfile: React.FC = () => {
           }}
         >
           <RNPickerSelect
+            pickerProps={{ style: { overflow: "hidden" } }}
             placeholder={{
               label: "Chọn trường",
             }}
@@ -315,6 +327,7 @@ const UpdateProfile: React.FC = () => {
             }}
           >
             <RNPickerSelect
+              pickerProps={{ style: { overflow: "hidden" } }}
               onOpen={() => setVisible(!visible)}
               onClose={() => setVisible(!visible)}
               disabled={schoolYear.length != 0 ? false : true}
@@ -449,31 +462,32 @@ const UpdateProfile: React.FC = () => {
             />
           </View>
         ) : null}
-      </ScrollView>
-      <TouchableOpacity onPress={() => UpdateProfile(authorize)}>
-        <View
-          style={{
-            backgroundColor: "#088dcd",
-            width: "100%",
-            borderRadius: 25,
-            marginTop: 20,
-            padding: 17,
-            marginBottom: 20,
-          }}
-        >
-          <Text
+        {/* </ScrollView> */}
+        <TouchableOpacity onPress={() => UpdateProfile(authorize)}>
+          <View
             style={{
-              color: "white",
-              textAlign: "center",
-
-              fontSize: 20,
+              backgroundColor: "#088dcd",
+              width: "100%",
+              borderRadius: 25,
+              marginTop: 20,
+              padding: 17,
+              marginBottom: 20,
             }}
           >
-            Lưu
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+            <Text
+              style={{
+                color: "white",
+                textAlign: "center",
+
+                fontSize: 20,
+              }}
+            >
+              Lưu
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 

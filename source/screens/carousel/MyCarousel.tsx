@@ -3,127 +3,128 @@ import {
   Text,
   View,
   ImageBackground,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
+  AsyncStorage,
 } from "react-native";
-import { COLORS, FONTS, icons, SIZES } from "../../constant";
+import { FONTS, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
-import React, { Component } from "react";
-
-const carouselItems = [
-  {
-    id: 1,
-    eventImg: require("../../assets/images/event.jpg"),
-    name: "Toronto Wedding Party Event 2020",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: 2,
-    eventImg: require("../../assets/images/event3.jpg"),
-    name: "Music Concert Lady Gaga 2020",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: 3,
-    eventImg: require("../../assets/images/event2.jpg"),
-    name: "Get Together Of Oddo Inc Abu Dhabi",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: 4,
-    eventImg: require("../../assets/images/event4.jpg"),
-    name: "Starting With EM Club",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-  {
-    id: 5,
-    eventImg: require("../../assets/images/event5.jpg"),
-    name: "My Friend Wedding Party",
-    date: "2 days ago",
-    content: "Musical and dance party for bechelors in toronto city have fun",
-  },
-];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const MyCarousel: React.FC = () => {
+  const [authorize, setAuthorize] = useState();
+  const [schoolId, setSchoolId] = useState();
+  const tokenForAuthor = async () => {
+    const token = await AsyncStorage.getItem("idToken");
+    const infoUser = await AsyncStorage.getItem("infoUser");
+    const objUser = JSON.parse(infoUser);
+    setSchoolId(objUser.SchoolId);
+    const headers = {
+      Authorization: "Bearer " + token,
+      // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
+    };
+    setAuthorize(headers);
+
+    await featchEvent(headers);
+    await featchImageEvent(headers);
+    return schoolId;
+  };
+  const eventURL =
+    "https://truongxuaapp.online/api/v1/events?sort=desc&pageNumber=0&pageSize=0";
+  const imageURL =
+    "https://truongxuaapp.online/api/v1/images?pageNumber=0&pageSize=0";
+  const [event, setData] = useState({});
+  const [listImg, setListImg] = useState<string>();
+  async function featchEvent(headers) {
+    try {
+      const response = await axios.get(eventURL, { headers });
+      if (response.status === 200) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function featchImageEvent(headers) {
+    try {
+      const response = await axios.get(imageURL, { headers });
+      if (response.status === 200) {
+        setListImg(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getImageByEvent = (eventID) => {
+    let imgLink = "";
+    for (let i = 0; i < listImg?.length; i++) {
+      if (listImg[i].eventId == eventID) {
+        imgLink = listImg[i].imageUrl;
+        break;
+      }
+    }
+    return imgLink;
+  };
+  useEffect(() => {
+    tokenForAuthor();
+  }, []);
+
   return (
-    //  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
     <View style={{ height: SIZES.height / 3 }}>
       <FlatList
         keyExtractor={(item) => item.id.toString()}
-        // numColumns={carouselItems.length}
-        //   horizontal
-        //   showsVerticalScrollIndicator={false}
-        //   showsHorizontalScrollIndicator={false}
         horizontal={true}
         contentContainerStyle={{
           flexDirection: "row",
         }}
-        data={carouselItems}
+        data={event}
         renderItem={({ item, index }) => {
-          return (
-            <View style={{ position: "relative" }}>
-              <ImageBackground
-                style={{
-                  width: SIZES.width,
-                  height: SIZES.height / 3,
-                  resizeMode: "stretch",
-                  borderRadius: 10,
-                }}
-                source={item.eventImg}
-              />
+          if (schoolId == item.schoolId) {
+            return (
+              <View style={{ position: "relative" }}>
+                <ImageBackground
+                  style={{
+                    width: SIZES.width,
+                    height: SIZES.height / 3,
+                    // resizeMode: "stretch",
+                    borderRadius: 10,
+                  }}
+                  source={{ uri: getImageByEvent(item.id) }}
+                />
 
-              <View
-                style={{
-                  position: "absolute",
-                  bottom: 20,
-                  paddingLeft: 20,
-                  width: SIZES.width - 40,
-                }}
-              >
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{ color: "white", ...FONTS.h2, fontWeight: "500" }}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 20,
+                    paddingLeft: 20,
+                    width: SIZES.width - 40,
+                  }}
                 >
-                  {item.name}
-                </Text>
-                <Text
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                  style={{ color: "white", ...FONTS.h3, fontWeight: "500" }}
-                >
-                  {item.content}
-                </Text>
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ color: "white", ...FONTS.h2, fontWeight: "500" }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    style={{ color: "white", ...FONTS.h3, fontWeight: "500" }}
+                  >
+                    {item.description}
+                  </Text>
+                </View>
               </View>
-            </View>
-          );
+            );
+          }
+          return null;
         }}
       />
     </View>
-    //  </ScrollView>
   );
 };
-
-// 	render() {
-// 		return (
-// 			 <View style={{flex: 1}}>
-//             <View style={{ flex: 1, flexDirection:'row', justifyContent: 'center', }}>
-//               {this._renderItem}
-//             <Text style={{position: 'absolute',backgroundColor:"#17a2b8", fontSize:28, color:"white",
-// bottom:-20,right:20,paddingLeft:10,paddingRight:10,borderRadius:100,width:40,height:40,
-// textAlign: 'center'
-//         }}>+</Text>
-//             </View>
-//           </View>
-
-// 		)
-// 	}
-// }
 
 const styles = StyleSheet.create({
   items: {

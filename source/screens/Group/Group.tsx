@@ -74,10 +74,9 @@ const Group = () => {
       console.log(error);
     }
   }
-
   useEffect(() => {
     tokenForAuthor();
-  }, [visible]);
+  }, []);
 
   const countAlumniInGroup = (idGroup) => {
     let count = 0;

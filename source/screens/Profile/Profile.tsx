@@ -408,6 +408,7 @@ const Profile: React.FC = () => {
       if (response.status === 200) {
         // await featchAlumni(headers, idSchool, idUser);
         setAngel(!angel);
+        setVisible(!visible);
       }
     } catch (error) {
       console.log(error);
@@ -416,7 +417,7 @@ const Profile: React.FC = () => {
   const [angel, setAngel] = useState(false);
   useEffect(() => {
     tokenForAuthor();
-  }, [isFocuse, angel]);
+  }, [isFocuse, angel, visible]);
 
   const countAlumniInGroup = (idGroup) => {
     let count = 0;
@@ -446,9 +447,6 @@ const Profile: React.FC = () => {
             <View style={{ flexDirection: "row", marginTop: 10 }}>
               <TouchableOpacity>
                 <AntDesign name="user" style={style.optionTop}></AntDesign>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Feather name="edit-2" style={style.optionTop2}></Feather>
               </TouchableOpacity>
             </View>
           ) : (
@@ -481,6 +479,31 @@ const Profile: React.FC = () => {
                   {myInfo.follow}
                 </Text>
               </TouchableOpacity>
+              {myInfo.follow == "Đã kết nối" || myInfo.id == idUser ? (
+                <View>
+                  <TouchableOpacity
+                    style={style.optionTop2}
+                    onPress={() =>
+                      navigation.navigate("Chat 1 1", {
+                        idSend: route.params.idProfile,
+                        idUser: idUser,
+                      })
+                    }
+                  >
+                    <AntDesign
+                      name="message1"
+                      style={{
+                        fontSize: 18,
+                        color: COLORS.white,
+                        fontWeight: "600",
+                        textAlign: "center",
+                        marginTop: 2,
+                        width: 80,
+                      }}
+                    ></AntDesign>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
             </View>
           )}
         </ImageBackground>
@@ -510,7 +533,7 @@ const Profile: React.FC = () => {
                   <Text style={style.socialText}>{myInfo.facebook}</Text>
                 </View>
               ) : null}
-              {myInfo.instargram != null ? (
+              {myInfo.instagram != null ? (
                 <View>
                   <View style={style.title}>
                     <Text style={style.textTitle}>Instargram</Text>
@@ -561,10 +584,10 @@ const Profile: React.FC = () => {
                     flexDirection: "row",
                   }}
                   keyExtractor={(item) => item._id}
-                  extraData={visible}
+                  extraData={angel}
                   data={user}
                   renderItem={({ item, index }) => {
-                    if (item.id != idUser && item.follow == "Đã kết nối") {
+                    if (item.follow == "Đã kết nối") {
                       return (
                         <View style={style.follow}>
                           <TouchableOpacity
@@ -572,6 +595,7 @@ const Profile: React.FC = () => {
                               navigation.navigate("Hồ Sơ", {
                                 idProfile: item.id,
                               });
+                              setAngel(!angel);
                             }}
                           >
                             <Image
@@ -603,7 +627,7 @@ const Profile: React.FC = () => {
             </View>
           ) : null}
           {/* Joined Group */}
-          {route.params.idProfile == idUser ? (
+          {/* {route.params.idProfile == idUser ? (
             <View>
               <View style={style.title}>
                 <Text style={style.textTitle}>Nhóm đã tham gia</Text>
@@ -623,6 +647,7 @@ const Profile: React.FC = () => {
                         flexDirection: "row",
                         marginTop: 20,
                         marginBottom: 20,
+                        marginRight: 20,
                       }}
                     >
                       <TouchableOpacity
@@ -668,7 +693,7 @@ const Profile: React.FC = () => {
                 }}
               />
             </View>
-          ) : null}
+          ) : null} */}
 
           {/* Event */}
           {/* <View style={style.title}>
@@ -811,10 +836,11 @@ const style = StyleSheet.create({
   optionTop2: {
     color: "white",
     fontSize: 20,
-    marginLeft: 20,
+    marginLeft: 50,
     backgroundColor: "#00b4f0",
-    borderRadius: SIZES.largeTitle,
-    padding: 7,
+    borderRadius: 6,
+    padding: 10,
+    marginTop: 16,
   },
   title: {
     flexDirection: "row",

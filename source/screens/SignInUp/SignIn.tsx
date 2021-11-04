@@ -16,8 +16,9 @@ import { COLORS } from "../../constant";
 import jwtDecode from "jwt-decode";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
-// username: Huytq@gmail.com
-// password: 123456
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
   const [authentication, setAuthentication] = useState<boolean>(false);
@@ -65,11 +66,12 @@ const SignIn: React.FC = () => {
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
         const alumni = await getAlumni(decoded.Id, response.data);
+        console.log(alumni);
         if (
-          alumni.data.name == "" ||
-          alumni.data.address == "" ||
-          alumni.data.phone == "" ||
-          alumni.data.bio == ""
+          alumni.data.name == null ||
+          alumni.data.address == null ||
+          alumni.data.phone == null ||
+          alumni.data.bio == null
         ) {
           navigation.navigate("Cập Nhập Hồ Sơ");
         } else {
@@ -96,10 +98,13 @@ const SignIn: React.FC = () => {
   const signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
+        webClientId:
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         androidClientId:
           "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         clientId:
-          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+          // "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         iosClientId:
           "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
         scopes: ["profile", "email"],

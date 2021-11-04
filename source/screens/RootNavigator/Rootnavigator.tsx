@@ -28,6 +28,10 @@ import AddEvent from "../event/AddEvent";
 import EditCommentEvent from "../event/EditCommentEvent";
 import EditComment from "../Group/EditComment";
 import EditBackgroundGroup from "../Group/EditBackgroundGroup";
+import PayPalLogin from "../event/PaypalLogin";
+import PaypalDetails from "../event/PayPalDetails";
+import ChatMessage from "../Alumini/ChatMessage";
+import CreatePost from "../Home/CreatePost";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -66,7 +70,7 @@ function MyTabs() {
         component={Menu}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Thông Báo " component={Notification} />
+      {/* <Tab.Screen name="Thông Báo " component={Notification} /> */}
     </Tab.Navigator>
   );
 }
@@ -89,6 +93,8 @@ const RootNavigator = () => {
         component={MyTabs}
         options={{ headerShown: false }}
       />
+      {/* News */}
+      <Stack.Screen name="Tạo Tin Tức" component={CreatePost} />
       {/* ======= Group Post ========= */}
       <Stack.Screen name="Sửa Bài Viết" component={EditPostModal} />
       <Stack.Screen name="Sửa Bài Đăng" component={EditPostGroup} />
@@ -105,12 +111,19 @@ const RootNavigator = () => {
       <Stack.Screen name="Chi Tiết Sự Kiện" component={EventDetail} />
       <Stack.Screen name="Tạo Sự Kiện" component={AddEvent} />
       <Stack.Screen name="Sửa Bình Luận" component={EditCommentEvent} />
+      <Stack.Screen name="Đăng nhập Paypal" component={PayPalLogin} />
+      <Stack.Screen
+        name="Chi tiết thanh toán"
+        component={PaypalDetails}
+        options={{ headerShown: false }}
+      />
 
       {/*=======Alumini ======  */}
       <Stack.Screen name="Hồ Sơ" component={Profile} />
       <Stack.Screen name="Cập Nhập Hồ Sơ" component={UpdateProfile} />
+      <Stack.Screen name="Chat 1 1" component={ChatMessage} />
       {/* <Stack.Screen name="Thanh Toán" component={PayPal} /> */}
-
+      {/* <Stack.Screen name="Hồ Sơ" component={Profile} /> */}
       {/* =======Other====== */}
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
       <Stack.Screen name="BlogPost" component={BlogPost} />

@@ -33,6 +33,8 @@ const EventDetail: React.FC = () => {
   const [eventDetail, setEventDetail] = useState<string>("");
   const [listImg, setListImg] = useState<string>();
   const [authorize, setAuthorize] = useState();
+  const [ticketPrice, setTicketPrice] = useState();
+  // For one time payments
 
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
@@ -261,11 +263,20 @@ const EventDetail: React.FC = () => {
       day.getFullYear()
     );
   };
-
+  // const PaypalOptions = {
+  //   clientId:
+  //     "AUMr0wj3gZjO2v5tJuDIvsgsZCUFh_qjM_zr9tDZYKExKboprbvDSPMeEiTl3zIofN13mUaYRInEVqJc",
+  //   intent: "capture",
+  // };
+  // const buttonStyles = {
+  //   layout: "vertical",
+  //   shape: "rect",
+  // };
   useEffect(() => {
     setEventId(route.params.id);
     tokenForAuthor();
   }, [isFocused]);
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -508,7 +519,7 @@ const EventDetail: React.FC = () => {
               return null;
             }}
           />
-          <Text
+          {/* <Text
             style={{
               color: "black",
 
@@ -517,39 +528,88 @@ const EventDetail: React.FC = () => {
             }}
           >
             Đã có 50 người đăng ký để tham gia sự kiện này
-          </Text>
+          </Text> */}
+
           {/* =====end feedback event */}
-          <TouchableOpacity onPress={() => navigation.navigate("Thanh Toán")}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 10,
-                backgroundColor: "#088dcd",
-                borderRadius: 10,
-                marginTop: 20,
-              }}
+          {eventDetail.ticketPrice > 0 ? (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Đăng nhập Paypal", {
+                  id: eventDetail.id,
+                })
+              }
             >
-              <Text
+              <View
                 style={{
-                  fontSize: 18,
-                  color: "white",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 10,
+                  backgroundColor: "#088dcd",
+                  borderRadius: 10,
+                  marginTop: 20,
                 }}
               >
-                Tham gia
-              </Text>
-              <AntDesign
-                name="arrowright"
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: "white",
+                  }}
+                >
+                  Tham gia
+                </Text>
+                <AntDesign
+                  name="arrowright"
+                  style={{
+                    fontSize: 18,
+                    color: "white",
+                    marginLeft: 10,
+                    marginTop: 5,
+                  }}
+                ></AntDesign>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              disabled
+              onPress={() =>
+                navigation.navigate("Đăng nhập Paypal", {
+                  id: eventDetail.id,
+                })
+              }
+            >
+              <View
                 style={{
-                  fontSize: 18,
-                  color: "white",
-                  marginLeft: 10,
-                  marginTop: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 10,
+                  backgroundColor: "#f3994f",
+                  borderRadius: 10,
+                  marginTop: 20,
                 }}
-              ></AntDesign>
-            </View>
-          </TouchableOpacity>
+              >
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: "white",
+                  }}
+                >
+                  Đã Tham Gia
+                </Text>
+                <AntDesign
+                  name="arrowright"
+                  style={{
+                    fontSize: 18,
+                    color: "white",
+                    marginLeft: 10,
+                    marginTop: 5,
+                  }}
+                ></AntDesign>
+              </View>
+            </TouchableOpacity>
+          )}
+
           {/* =====feedback event======= */}
           <View
             style={{

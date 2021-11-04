@@ -12,7 +12,7 @@ const CategoryMenu = ({
   onPress?: any;
 }) => {
   return (
-    <View style={{ top: 40 }}>
+    <View style={{ top: 60 }}>
       <TouchableOpacity
         onPress={onPress}
         style={{
@@ -31,7 +31,7 @@ const CategoryMenu = ({
 const style = StyleSheet.create({
   label: {
     textAlign: "center",
-    color: COLORS.blue,
+    color: COLORS.white,
     height: 20,
     fontWeight: "600",
     fontSize: 17,

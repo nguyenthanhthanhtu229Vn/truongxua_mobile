@@ -19,13 +19,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.TruongXuaApp.TruongXuaApp",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.TruongXuaApp.TruongXuaApp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "config": {
+        "googleSignIn": {
+          "apiKey" : "AIzaSyAtrbm_KQuOGNIiGeEomYyBCxZZB0z1Q3g",
+          "certificateHash": "A3:17:60:9F:D8:2B:E1:A4:FE:06:32:3D:38:2A:C3:6F:6A:1C:23:F8"
+        }
+      },
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

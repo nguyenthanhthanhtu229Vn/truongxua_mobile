@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, TextInput } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Switch, TouchableOpacity } from "react-native-gesture-handler";
 const SettingGeneral = () => {
   return (
