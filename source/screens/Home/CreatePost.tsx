@@ -88,6 +88,7 @@ const CreatePost: React.FC = () => {
     setContent(content);
   };
   const onSubmitFormHandler = async (headers) => {
+    console.log(schoolId, adminId, title, content, createAt, status);
     if (!content.trim()) {
       alert("Không được bỏ trống");
       return;
@@ -116,6 +117,7 @@ const CreatePost: React.FC = () => {
         navigation.navigate("Trang Chủ");
       }
     } catch (error) {
+      console.log(error);
       alert("Có lỗi xảy ra ! Vui lòng kiểm tra lại");
     }
   };

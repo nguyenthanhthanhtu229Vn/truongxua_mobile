@@ -132,14 +132,14 @@ const Event: React.FC = (props) => {
       >
         <MyCarousel />
         {/* Plust Btn */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={style.plusBtn}
           onPress={() => {
             navigation.navigate("Tạo Sự Kiện");
           }}
         >
           <Foundation name="plus" style={style.textPlus}></Foundation>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={style.container}>
           <FlatList
@@ -209,6 +209,7 @@ const Event: React.FC = (props) => {
                         {item.description}
                       </Text>
                       <Text
+                        numberOfLines={1}
                         style={{
                           color: COLORS.darkGray,
                           marginLeft: 4,

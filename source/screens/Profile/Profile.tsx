@@ -525,7 +525,7 @@ const Profile: React.FC = () => {
                 <Text style={style.textTitle}>Số điện thoại</Text>
               </View>
               <Text style={style.bio}>{myInfo.phone}</Text>
-              {myInfo.facebook != null ? (
+              {myInfo.facebook != "" ? (
                 <View>
                   <View style={style.title}>
                     <Text style={style.textTitle}>Facebook</Text>
@@ -533,7 +533,7 @@ const Profile: React.FC = () => {
                   <Text style={style.socialText}>{myInfo.facebook}</Text>
                 </View>
               ) : null}
-              {myInfo.instagram != null ? (
+              {myInfo.instagram != "" ? (
                 <View>
                   <View style={style.title}>
                     <Text style={style.textTitle}>Instargram</Text>
@@ -541,7 +541,7 @@ const Profile: React.FC = () => {
                   <Text style={style.socialText}>{myInfo.instagram}</Text>
                 </View>
               ) : null}
-              {myInfo.zalo != null ? (
+              {myInfo.zalo != "" ? (
                 <View>
                   <View style={style.title}>
                     <Text style={style.textTitle}>Zalo</Text>

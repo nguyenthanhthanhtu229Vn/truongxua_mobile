@@ -66,7 +66,6 @@ const SignIn: React.FC = () => {
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
         const alumni = await getAlumni(decoded.Id, response.data);
-        console.log(alumni);
         if (
           alumni.data.name == null ||
           alumni.data.address == null ||

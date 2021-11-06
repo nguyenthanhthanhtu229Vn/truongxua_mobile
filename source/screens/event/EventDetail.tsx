@@ -17,7 +17,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native-gesture-handler";
-import { AntDesign, EvilIcons, Feather } from "@expo/vector-icons";
+import { AntDesign, Entypo, EvilIcons, Feather } from "@expo/vector-icons";
 import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
 import { COLORS, icons } from "../../constant";
@@ -424,6 +424,45 @@ const EventDetail: React.FC = () => {
             >
               Người tạo: {getNameAlumni(eventDetail.alumniCreatedId)}
             </Text>
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Entypo
+              name="ticket"
+              style={{
+                color: "#6d757a",
+
+                fontSize: 20,
+              }}
+            ></Entypo>
+            {eventDetail.ticketPrice ? (
+              <Text
+                style={{
+                  color: "#6d757a",
+
+                  fontSize: 18,
+                  marginLeft: 10,
+                }}
+              >
+                Giá vé: {eventDetail.ticketPrice}
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  color: "#6d757a",
+
+                  fontSize: 18,
+                  marginLeft: 10,
+                }}
+              >
+                Miễn Phí
+              </Text>
+            )}
           </View>
           <Text
             style={{

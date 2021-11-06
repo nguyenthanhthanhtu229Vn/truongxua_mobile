@@ -299,6 +299,7 @@ const AddEvent = () => {
                 <Text style={{ color: COLORS.gray }}>Ngày Bắt Đầu </Text>
                 {show && (
                   <DateTimePicker
+                    accessibilityViewIsModal
                     testID="dateTimePicker"
                     value={dateOfStart}
                     mode={mode}
@@ -388,41 +389,45 @@ const AddEvent = () => {
                     mode="time"
                     display="default"
                     onChange={onChangeTimeOfEnd}
-                    minimumDate={dateOfStart}
+                    minimumDate={timeOfStart}
                   />
                 )}
               </TouchableOpacity>
             </View>
             {/* begin tag */}
             <Tags
-               initialText="Hoạt Động"
-               textInputProps={{
-                 placeholder: "Các loại hoạt động của sự kiện",
-               }}
-             onChangeTags={(tags) => setContentActivity(tags)}
-               onTagPress={(index, tagLabel, event, deleted) =>
-                 console.log(
-                   index,
-                   tagLabel,
-                   event,
-                   deleted ? "deleted" : "not deleted"
-                 )
-               }
-               containerStyle={{ justifyContent: "center", backgroundColor:'#d4d3d3', borderRadius: 8 }}
-               inputStyle={{
-                 backgroundColor: "white",
-                 borderRadius: 8,
-                 color: COLORS.black,
-               }}
-               tagContainerStyle={{backgroundColor:'red'}}
-               inputContainerStyle={{color:COLORS.black}}
-               tagTextStyle={{color:'red'}}
-               renderTag={({ tag, index, onPress }) => (
-                 <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
-                   <Text>{tag}</Text>
-                 </TouchableOpacity>
-               )}
-             />
+              initialText="Hoạt Động"
+              textInputProps={{
+                placeholder: "Các loại hoạt động của sự kiện",
+              }}
+              onChangeTags={(tags) => setContentActivity(tags)}
+              onTagPress={(index, tagLabel, event, deleted) =>
+                console.log(
+                  index,
+                  tagLabel,
+                  event,
+                  deleted ? "deleted" : "not deleted"
+                )
+              }
+              containerStyle={{
+                justifyContent: "center",
+                backgroundColor: "#d4d3d3",
+                borderRadius: 8,
+              }}
+              inputStyle={{
+                backgroundColor: "white",
+                borderRadius: 8,
+                color: COLORS.black,
+              }}
+              tagContainerStyle={{ backgroundColor: "red" }}
+              inputContainerStyle={{ color: COLORS.black }}
+              tagTextStyle={{ color: "red" }}
+              renderTag={({ tag, index, onPress }) => (
+                <TouchableOpacity key={`${tag}-${index}`} onPress={onPress}>
+                  <Text>{tag}</Text>
+                </TouchableOpacity>
+              )}
+            />
             {/* ==end tags== */}
 
             <TextInput

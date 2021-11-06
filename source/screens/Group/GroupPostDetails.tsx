@@ -241,16 +241,16 @@ const GroupPostDetail = () => {
   }, [isFocused]);
 
   return (
-    // <KeyboardAvoidingView
-    //   // behavior={Platform.OS === "ios" ? "padding" : "height"}
-    //   style={style.container}
-    //   behavior="padding"
-    //   keyboardVerticalOffset={Platform.select({
-    //     ios: () => 60,
-    //     android: () => 200,
-    //   })()}
-    // >
-    <View style={style.container}>
+    <KeyboardAvoidingView
+      // behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={style.container}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.select({
+        ios: () => 60,
+        android: () => 200,
+      })()}
+    >
+      {/* // <View style={style.container}> */}
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -557,8 +557,8 @@ const GroupPostDetail = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
-    // </KeyboardAvoidingView>
+      {/* </View> */}
+    </KeyboardAvoidingView>
   );
 };
 

@@ -56,7 +56,7 @@ const Group = () => {
       const response = await axios.get(groupURL, { headers });
       if (response.status === 200) {
         for (let i = 0; i < groups.length; i++) {
-          groups.splice(i, 1);
+          groups.splice(i--, 1);
         }
         for (let i = 0; i < response.data.length; i++) {
           for (let j = 0; j < listAlumniInGroup.length; j++) {

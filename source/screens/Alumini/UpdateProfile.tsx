@@ -77,6 +77,7 @@ const UpdateProfile: React.FC = () => {
       console.log(error);
     }
   };
+
   const loadSchoolYear = async (headers) => {
     try {
       const response = await axios.get(
@@ -85,7 +86,7 @@ const UpdateProfile: React.FC = () => {
       );
       if (response.status === 200) {
         for (let i = 0; i < schoolYear.length; i++) {
-          schoolYear.splice(i, 1);
+          schoolYear.splice(i--, 1);
         }
         for (let i = 0; i < response.data.length; i++) {
           if (schoolId == response.data[i].schoolId) {
@@ -246,7 +247,6 @@ const UpdateProfile: React.FC = () => {
       objUser.AlumniName = name;
       objUser.Image =
         statusChangeImg === false ? image : await uploadImage(image);
-      console.log(objUser);
       AsyncStorage.setItem("infoUser", JSON.stringify(objUser));
       navigation.navigate("MyTabs");
     } catch (error) {

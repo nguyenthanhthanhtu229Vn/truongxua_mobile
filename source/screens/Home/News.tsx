@@ -15,46 +15,7 @@ import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import { useIsFocused, useNavigation } from "@react-navigation/core";
 import axios from "axios";
-import { idText } from "typescript";
 
-// ========= Start Modal=========
-
-const ModalPoup = ({ visible, children }: { visible: any; children: any }) => {
-  const [showModal, setShowModal] = React.useState(visible);
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
-  React.useEffect(() => {
-    toggleModal();
-  }, [visible]);
-  const toggleModal = () => {
-    if (visible) {
-      setShowModal(true);
-      Animated.spring(scaleValue, {
-        toValue: 1,
-        delay: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      setTimeout(() => setShowModal(false), 200);
-      Animated.timing(scaleValue, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
-  return (
-    <Modal transparent visible={showModal}>
-      <View style={style.modalBackGround}>
-        <Animated.View
-          style={[style.modalContainer, { transform: [{ scale: scaleValue }] }]}
-        >
-          {children}
-        </Animated.View>
-      </View>
-    </Modal>
-  );
-};
-// ======== End Modal=========
 const News: React.FC = () => {
   const moment = require("moment-timezone");
   const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
@@ -109,52 +70,20 @@ const News: React.FC = () => {
       String(day.getMinutes()).padStart(2, "0")
     );
   };
-  // ====== begin detele post =======
-  const onSubmitFormHandler = async (id, headers) => {
-    setLoading(true);
-    try {
-      const response = await axios.delete(
-        `https://truongxuaapp.online/api/v1/news/` + id,
-        { headers }
-      );
 
-      if (response.status === 200) {
-        alert("Xoá Bài Viết Thành Công ");
-        setStatusList(!statusList);
-        setVisible(!visible);
-      }
-    } catch (error) {
-      alert("Bị Lỗi Không Xoá Được ");
-      setLoading(false);
-    }
-  };
-
-  const [newId, setNewId] = useState();
-  const [itemC, setItemC] = useState();
-  const changeIdElement = (id, item) => {
-    setVisible(!visible);
-    setNewId(id);
-    setItemC(item);
-  };
-  //====== End detele post =======
-  const navigation = useNavigation();
   return (
     <View style={{ padding: 10 }}>
       <View
         style={{
           zIndex: 1,
           borderRadius: 10,
-          borderColor: "#d0d0d0",
-          borderWidth: 1,
-          backgroundColor: "#fafafa",
           padding: 10,
           margin: 5,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 10 }}>
-          Tạo Bài Viết
-        </Text>
-        <TouchableOpacity>
+        <Text style={{ fontSize: 20, fontWeight: "700" }}>Tin tức mới</Text>
+      </View>
+      {/*  <TouchableOpacity>
           <Pressable onPress={() => navigation.navigate("Tạo Tin Tức")}>
             <View
               style={{
@@ -181,8 +110,7 @@ const News: React.FC = () => {
               </Text>
             </View>
           </Pressable>
-        </TouchableOpacity>
-      </View>
+        </TouchableOpacity>*/}
       <FlatList
         extraData={visible}
         data={data}
@@ -193,14 +121,14 @@ const News: React.FC = () => {
               style={{
                 backgroundColor: COLORS.white2,
                 marginBottom: 16,
+                padding: 20,
+                paddingLeft: 10,
+                paddingRight: 10,
               }}
             >
               <View
                 style={{
                   flexDirection: "column",
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  marginTop: 20,
                 }}
               >
                 <View style={{ flexDirection: "row" }}>
@@ -211,87 +139,14 @@ const News: React.FC = () => {
                   <Text style={{ marginLeft: 8 }}>
                     {formatDate(item.createAt)}
                   </Text>
-
-                  {/* begin modal */}
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ModalPoup visible={visible}>
-                      <View style={{ alignItems: "center" }}>
-                        <View style={style.header}>
-                          <TouchableOpacity onPress={() => setVisible(false)}>
-                            <Image
-                              source={require("../../assets/icons/error.png")}
-                              style={{ height: 30, width: 30 }}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-
-                      {/* =====Update Bai Viet===== */}
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                        onPress={() =>
-                          navigation.navigate("Sửa Bài Viết", { item: itemC })
-                        }
-                      >
-                        <Image
-                          source={require("../../assets/icons/edit.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                        <Text>Chỉnh Sửa Bài Viết </Text>
-                      </TouchableOpacity>
-
-                      {/*=====delete ===== */}
-                      <TouchableOpacity
-                        style={{ flexDirection: "row", alignItems: "center" }}
-                        onPress={() => onSubmitFormHandler(newId, authorize)}
-                      >
-                        <Image
-                          source={require("../../assets/icons/delete.png")}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            marginVertical: 10,
-                            marginLeft: 10,
-                            marginRight: 10,
-                          }}
-                        />
-                        <Text>Xoá Bài Viết</Text>
-                      </TouchableOpacity>
-                    </ModalPoup>
-                    <TouchableOpacity
-                      onPress={() => changeIdElement(item.id, item)}
-                    >
-                      <Image
-                        source={require("../../assets/icons/menu.png")}
-                        style={{
-                          height: 20,
-                          width: 20,
-                          marginLeft: 130,
-                          marginBottom: 34,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {/* end modal */}
                 </View>
 
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: -20,
+                    marginTop: 15,
                     alignItems: "center",
+                    marginBottom: 20,
                   }}
                 >
                   <Image
@@ -304,7 +159,6 @@ const News: React.FC = () => {
                       color: COLORS.black,
                       fontWeight: "500",
                       marginLeft: 8,
-                      marginBottom: 10,
                     }}
                   >
                     {item.title}
