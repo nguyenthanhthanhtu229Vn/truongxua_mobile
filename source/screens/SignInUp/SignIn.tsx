@@ -121,12 +121,13 @@ const SignIn: React.FC = () => {
     try {
       const result = await Google.logInAsync({
         webClientId:
-          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+        // "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         androidClientId:
           "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         clientId:
-          // "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
-          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+        // "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         iosClientId:
           "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
         scopes: ["profile", "email"],

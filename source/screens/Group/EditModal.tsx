@@ -52,8 +52,9 @@ const EditPostGroup: React.FC = () => {
   const featchImageEvent = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/images/postid?postId=" +
-          route.params.id,
+        "https://truongxuaapp.online/api/v1/posts/" +
+          route.params.id +
+          "/images",
         { headers }
       );
       if (response.status === 200) {

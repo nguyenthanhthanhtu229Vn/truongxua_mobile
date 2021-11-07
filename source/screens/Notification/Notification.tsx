@@ -111,6 +111,7 @@ const Notification: React.FC = () => {
                         ...FONTS.h3,
                         fontWeight: "500",
                         fontSize: 17,
+                        width: 300,
                       }}
                     >
                       {item.content}
