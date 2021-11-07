@@ -38,12 +38,8 @@ const Profile: React.FC = () => {
   const [idSchool, setIdSchool] = useState();
   const [visible, setVisible] = useState(false);
   const [evil, setEvil] = useState(false);
-  const eventURL =
-    "https://truongxuaapp.online/api/v1/events?pageNumber=0&pageSize=0";
   const groupURL =
     "https://truongxuaapp.online/api/v1/groups?pageNumber=0&pageSize=0";
-  const alumniURL =
-    "https://truongxuaapp.online/api/v1/alumni?pageNumber=0&pageSize=0";
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
@@ -150,8 +146,7 @@ const Profile: React.FC = () => {
   async function featchAlumni(headers, schoolId, myId) {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/alumni/schoolid?schoolId=" +
-          schoolId,
+        "https://truongxuaapp.online/api/v1/schools/" + schoolId + "/alumni",
         { headers }
       );
       if (response.status == 200) {
@@ -257,7 +252,7 @@ const Profile: React.FC = () => {
   const getFollow = async (myId, idFollow, headers, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Follower/" + myId,
+        "https://truongxuaapp.online/api/v1/followers/follower/" + myId,
         { headers }
       );
       if (response.status === 200) {
@@ -270,7 +265,7 @@ const Profile: React.FC = () => {
   const getFollowed = async (myId, idFollow, headers, follow, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Followed/" + idFollow,
+        "https://truongxuaapp.online/api/v1/followers/followed" + idFollow,
         { headers }
       );
       if (response.status === 200) {

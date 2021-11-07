@@ -17,8 +17,25 @@ import jwtDecode from "jwt-decode";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 import { LogBox } from "react-native";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import * as Permision from "expo-permissions";
 LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
+// const registerForPushNotification = async () => {
+//   const { status } = await Permision.getAsync(Permision.NOTIFICATIONS);
+//   let a;
+//   if (status != "granted") {
+//     const { status } = await Permision.askAsync(Permision.NOTIFICATIONS);
+//     a = status;
+//   }
+//   console.log(a);
+//   if (status != "granted") {
+//     alert("Fail to get the push token");
+//   }
+//   let token = (await Notifications.getExpoPushTokenAsync()).data;
+//   return token;
+// };
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
   const [authentication, setAuthentication] = useState<boolean>(false);
@@ -40,6 +57,11 @@ const SignIn: React.FC = () => {
       console.log(error);
     }
   }
+  // useEffect(() => {
+  //   registerForPushNotification()
+  //     .then((token) => console.log(token))
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   const signInWithEmailAndPassword = () => {
     if (error !== "") setError("");
@@ -59,7 +81,8 @@ const SignIn: React.FC = () => {
   const getAccessToken = async (idToken) => {
     try {
       const response = await axios.post(
-        `https://truongxuaapp.online/api/users/log-in?idToken=${idToken}`
+        `https://truongxuaapp.online/api/users/log-in`,
+        { idToken }
       );
       if (response.status === 200) {
         await AsyncStorage.setItem("idToken", response.data);
@@ -227,7 +250,7 @@ const SignIn: React.FC = () => {
           </Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Quên Mật Khẩu")}>
         <Text
           style={{
             color: "#8e8e96",

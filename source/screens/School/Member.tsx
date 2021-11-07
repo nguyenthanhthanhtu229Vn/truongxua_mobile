@@ -39,7 +39,7 @@ const Member = () => {
   const featchAlumni = async (headers, id, myId) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/alumni/schoolid?schoolId=" + id,
+        "https://truongxuaapp.online/api/v1/schools/" + id + "/alumni",
         { headers }
       );
       if (response.status === 200) {
@@ -165,7 +165,7 @@ const Member = () => {
   const getFollow = async (myId, idFollow, headers, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Follower/" + myId,
+        "https://truongxuaapp.online/api/v1/followers/follower/" + myId,
         { headers }
       );
       if (response.status === 200) {
@@ -178,7 +178,7 @@ const Member = () => {
   const getFollowed = async (myId, idFollow, headers, follow, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/Followed/" + idFollow,
+        "https://truongxuaapp.online/api/v1/followers/followed/" + idFollow,
         { headers }
       );
       if (response.status === 200) {

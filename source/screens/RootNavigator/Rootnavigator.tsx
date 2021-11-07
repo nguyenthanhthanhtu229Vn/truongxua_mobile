@@ -32,6 +32,7 @@ import PayPalLogin from "../event/PaypalLogin";
 import PaypalDetails from "../event/PayPalDetails";
 import ChatMessage from "../Alumini/ChatMessage";
 import CreatePost from "../Home/CreatePost";
+import ForgotPass from "../SignInUp/ForgotPass";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -70,7 +71,7 @@ function MyTabs() {
         component={Menu}
         options={{ headerShown: false }}
       />
-      {/* <Tab.Screen name="Thông Báo " component={Notification} /> */}
+      <Tab.Screen name="Thông Báo " component={Notification} />
     </Tab.Navigator>
   );
 }
@@ -88,6 +89,7 @@ const RootNavigator = () => {
         component={SignUp}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Quên Mật Khẩu" component={ForgotPass} />
       <Stack.Screen
         name="MyTabs"
         component={MyTabs}

@@ -1,6 +1,13 @@
 import { useNavigation, useRoute } from "@react-navigation/core";
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, TextInput, AsyncStorage } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  AsyncStorage,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import firebase from "firebase";
 import jwtDecode from "jwt-decode";
@@ -58,18 +65,18 @@ const PayPalLogin = () => {
   const getAccessToken = async (idToken) => {
     try {
       const response = await axios.post(
-        `https://truongxuaapp.online/api/users/log-in?idToken=${idToken}`
+        `https://truongxuaapp.online/api/users/log-in`,
+        { idToken }
       );
       if (response.status === 200) {
         await AsyncStorage.setItem("idToken", response.data);
         const decoded = jwtDecode(response.data);
         await AsyncStorage.setItem("infoUser", JSON.stringify(decoded));
         const alumni = await getAlumni(decoded.Id, response.data);
-          navigation.navigate("Chi tiết thanh toán",{
-            id: route.params.id
-          });
-        }
-
+        navigation.navigate("Chi tiết thanh toán", {
+          id: route.params.id,
+        });
+      }
     } catch (error) {
       alert(error);
     }
@@ -104,20 +111,20 @@ const PayPalLogin = () => {
       <View style={{ marginHorizontal: 16 }}>
         {/* ====Input Email ===== */}
         <TextInput
-          placeholder={'Email'}
+          placeholder={"Email"}
           style={styles.input}
           value={email}
           onChangeText={(email) => setEmail(email)}
         />
         {/* =====Input Password==== */}
         <TextInput
-          placeholder={'Mật Khẩu'}
+          placeholder={"Mật Khẩu"}
           secureTextEntry={true}
           style={styles.input}
           value={password}
           onChangeText={(password) => setPassword(password)}
         />
-         <Error error={error} />
+        <Error error={error} />
         {/* =====Button Next ==== */}
         <View style={styles.btnCon1}>
           <TouchableOpacity
@@ -130,10 +137,30 @@ const PayPalLogin = () => {
           </TouchableOpacity>
         </View>
         {/* =====Line===== */}
-        <View style={{marginVertical: 30, flexDirection:'row', alignItems:'center'}}>
-          <View style={{height: 1, width: '44%', borderWidth: 0.5, borderColor:'#D7DCDF'}} />
-          <Text style={{marginHorizontal: 6, color:'#797F83'}}>Hoặc</Text>
-          <View style={{height: 1, width:'44%', borderWidth: 0.5, borderColor:'#D7DCDF'}}  />
+        <View
+          style={{
+            marginVertical: 30,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              height: 1,
+              width: "44%",
+              borderWidth: 0.5,
+              borderColor: "#D7DCDF",
+            }}
+          />
+          <Text style={{ marginHorizontal: 6, color: "#797F83" }}>Hoặc</Text>
+          <View
+            style={{
+              height: 1,
+              width: "44%",
+              borderWidth: 0.5,
+              borderColor: "#D7DCDF",
+            }}
+          />
         </View>
 
         {/* =====Button Debit or credit card  ==== */}

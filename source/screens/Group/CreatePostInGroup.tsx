@@ -17,8 +17,57 @@ import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
-
+import firebase from "firebase";
 const CreatePostInGroup: React.FC = () => {
+  const addNotiInFirebase = async (listStudentId) => {
+    const messagesRef = firebase.firestore().collection("notifications");
+    for (let i = 0; i < listStudentId.length; i++) {
+      await messagesRef
+        .doc(listStudentId[i].id + "")
+        .collection("messages")
+        .add({
+          content: name + " đã đăng bài trong nhóm " + groupName,
+          img: myAvt,
+          createAt: new Date(),
+          idCreatePost: alumniId,
+        });
+    }
+    navigation.navigate("Chi Tiết Nhóm", {
+      id: route.params.id,
+      numberAlumni: route.params.numberAlumni,
+    });
+    alert("Tạo Bài Đăng Thành Công");
+  };
+
+  const [groupName, setGroupName] = useState();
+  const groupURL = `https://truongxuaapp.online/api/v1/groups/`;
+  async function featchGroupDetail(headers) {
+    try {
+      const response = await axios.get(groupURL + route.params.id, { headers });
+      if (response.status === 200) {
+        setGroupName(response.data.name);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [listStudentId, setListStudentId] = useState();
+  const featchAlumni = async (headers, schoolId) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/schools/" +
+          schoolId +
+          "/alumni?sort=desc",
+        { headers }
+      );
+      if (response.status === 200) {
+        setListStudentId(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //========  begin call api post =======
   const moment = require("moment-timezone");
   const dateCreate = moment().tz("Asia/Ho_Chi_Minh").format();
@@ -34,18 +83,24 @@ const CreatePostInGroup: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [idUser, setIdUser] = useState();
   const [authorize, setAuthorize] = useState();
+  const [name, setName] = useState("");
+  const [myAvt, setMyAvt] = useState("");
   const tokenForAuthor = async () => {
     const token = await AsyncStorage.getItem("idToken");
     //
     const infoUser = await AsyncStorage.getItem("infoUser");
     const objUser = JSON.parse(infoUser);
     setAlumniId(objUser.Id);
+    setName(objUser.AlumniName);
+    setMyAvt(objUser.Image);
     //
     const headers = {
       Authorization: "Bearer " + token,
       // "Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCIsIkFjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpbiI6IiovKiJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFxbHM1OFdWaURYN1lDZEUzd0FjVTlwdTlqZjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiSWQiOiIxIiwiU2Nob29sSWQiOiIiLCJHcm91cElkIjoiIiwiZXhwIjoxNjM1MjM2OTE4LCJpc3MiOiJsb2NhbGhvc3Q6MTIzNDciLCJhdWQiOiJsb2NhbGhvc3Q6MTIzNDcifQ.oOnpxsz5hYQuFhq1ikw4Gy-UN_vor3y31neyOFehJ_Y",
     };
     setAuthorize(headers);
+    featchAlumni(headers, objUser.SchoolId);
+    featchGroupDetail(headers);
   };
 
   const OnChangeContentHandler = (content) => {
@@ -73,11 +128,7 @@ const CreatePostInGroup: React.FC = () => {
         if (listImage != null) {
           await createImgForPost(headers, response.data);
         } else {
-          navigation.navigate("Chi Tiết Nhóm", {
-            id: route.params.id,
-            numberAlumni: route.params.numberAlumni,
-          });
-          alert("Tạo Bài Đăng Thành Công");
+          await addNotiInFirebase(listStudentId);
         }
       }
     } catch (error) {
@@ -134,11 +185,7 @@ const CreatePostInGroup: React.FC = () => {
           { headers }
         );
       }
-      alert("Tạo Bài Đăng Thành Công");
-      navigation.navigate("Chi Tiết Nhóm", {
-        id: route.params.id,
-        numberAlumni: route.params.numberAlumni,
-      });
+      await addNotiInFirebase(listStudentId);
     } catch (error) {
       console.log(error);
     }

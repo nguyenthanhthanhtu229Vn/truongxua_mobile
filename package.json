@@ -27,6 +27,8 @@
     "expo-google-app-auth": "^8.2.2",
     "expo-image-picker": "~10.2.2",
     "expo-linking": "~2.3.1",
+    "expo-notifications": "^0.13.3",
+    "expo-permissions": "^13.0.3",
     "expo-splash-screen": "~0.11.2",
     "expo-status-bar": "~1.0.4",
     "expo-web-browser": "~9.2.0",

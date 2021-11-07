@@ -53,8 +53,65 @@ const EventDetail: React.FC = () => {
     await featchActivity(headers);
     await fetchCommentEvent(headers);
     await fetchAlumni(headers);
+    await listEventInAlumni(headers);
+    console.log(checkRegisterEvent(objUser.Id));
   };
 
+  // Call API Alumni In Event
+  const [eventInAlumni, setEventInAlumni] = useState(Array);
+  const [numAlumniInEvent, setNumAlumniInEvent] = useState();
+  const listEventInAlumni = async (headers) => {
+    try {
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/eventinalumni/" +
+          route.params.id +
+          "/alumni",
+        { headers }
+      );
+      if (response.status === 200) {
+        setEventInAlumni(response.data);
+        setNumAlumniInEvent(response.data.length);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkRegisterEvent = (id) => {
+    for (let i = 0; i < eventInAlumni.length; i++) {
+      if (id == eventInAlumni[i]) {
+        return true;
+        break;
+      }
+    }
+    return false;
+  };
+
+  const [visible, setVisible] = useState(false);
+  const registerEvent = async (headers) => {
+    if (eventDetail.ticketPrice > 0) {
+      navigation.navigate("Đăng nhập Paypal", {
+        id: eventDetail.id,
+      });
+    } else {
+      try {
+        const response = await axios.post(
+          "https://truongxuaapp.online/api/v1/eventinalumni",
+          {
+            eventId: eventDetail.id,
+            alumniId: alumniId,
+          },
+          { headers }
+        );
+        if (response.status === 200) {
+          alert("Đăng ký tham gia thành công");
+          setVisible(!visible);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   // Call API event detail
   const listEventDetail = async (headers) => {
     try {
@@ -74,8 +131,9 @@ const EventDetail: React.FC = () => {
   const featchImageEvent = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/images/eventid?eventid=" +
-          route.params.id,
+        "https://truongxuaapp.online/api/v1/events/" +
+          route.params.id +
+          "/images",
         { headers }
       );
       if (response.status === 200) {
@@ -91,8 +149,9 @@ const EventDetail: React.FC = () => {
   const featchActivity = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/activities/eventid?eventId=" +
-          route.params.id,
+        "https://truongxuaapp.online/api/v1/events/" +
+          route.params.id +
+          "/activities",
         { headers }
       );
       if (response.status === 200) {
@@ -193,8 +252,9 @@ const EventDetail: React.FC = () => {
   const fetchCommentEvent = async (headers) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/feedbacks/eventid?eventid=" +
-          route.params.id,
+        "https://truongxuaapp.online/api/v1/events/" +
+          route.params.id +
+          "/feedbacks",
         { headers }
       );
       if (response.status === 200) {
@@ -263,19 +323,11 @@ const EventDetail: React.FC = () => {
       day.getFullYear()
     );
   };
-  // const PaypalOptions = {
-  //   clientId:
-  //     "AUMr0wj3gZjO2v5tJuDIvsgsZCUFh_qjM_zr9tDZYKExKboprbvDSPMeEiTl3zIofN13mUaYRInEVqJc",
-  //   intent: "capture",
-  // };
-  // const buttonStyles = {
-  //   layout: "vertical",
-  //   shape: "rect",
-  // };
+
   useEffect(() => {
     setEventId(route.params.id);
     tokenForAuthor();
-  }, [isFocused]);
+  }, [isFocused, visible]);
 
   return (
     <KeyboardAvoidingView
@@ -558,7 +610,7 @@ const EventDetail: React.FC = () => {
               return null;
             }}
           />
-          {/* <Text
+          <Text
             style={{
               color: "black",
 
@@ -566,18 +618,12 @@ const EventDetail: React.FC = () => {
               marginTop: 20,
             }}
           >
-            Đã có 50 người đăng ký để tham gia sự kiện này
-          </Text> */}
+            Đã có {numAlumniInEvent} người đăng ký để tham gia sự kiện này
+          </Text>
 
           {/* =====end feedback event */}
-          {eventDetail.ticketPrice > 0 ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Đăng nhập Paypal", {
-                  id: eventDetail.id,
-                })
-              }
-            >
+          {!checkRegisterEvent(alumniId) ? (
+            <TouchableOpacity onPress={() => registerEvent(authorize)}>
               <View
                 style={{
                   flexDirection: "row",
@@ -637,12 +683,11 @@ const EventDetail: React.FC = () => {
                   Đã Tham Gia
                 </Text>
                 <AntDesign
-                  name="arrowright"
+                  name="circledowno"
                   style={{
                     fontSize: 18,
                     color: "white",
                     marginLeft: 10,
-                    marginTop: 5,
                   }}
                 ></AntDesign>
               </View>
@@ -670,45 +715,47 @@ const EventDetail: React.FC = () => {
           >
             Đánh giá sự kiện
           </Text>
-          <View
-            style={{
-              paddingTop: 20,
-              paddingLeft: 10,
-              paddingRight: 10,
-              paddingBottom: 20,
-              borderBottomColor: "#ececec",
-              borderBottomWidth: 1,
-            }}
-          >
-            <TextInput
-              placeholder={" Viết Bình Luận ..."}
-              multiline
-              value={content}
-              style={{
-                borderWidth: 0.1,
-                backgroundColor: "#e7e6e6",
-                height: 60,
-                borderRadius: 10,
-                padding: 10,
-              }}
-              onChangeText={(content) => setContent(content)}
-            />
-            {/* =====icons image and button comment ====== */}
+          {checkRegisterEvent(alumniId) ? (
             <View
               style={{
-                position: "absolute",
-                right: 10,
-                top: 40,
+                paddingTop: 20,
+                paddingLeft: 10,
+                paddingRight: 10,
+                paddingBottom: 20,
+                borderBottomColor: "#ececec",
+                borderBottomWidth: 1,
               }}
             >
-              <TouchableOpacity onPress={() => validateComment(authorize)}>
-                <Image
-                  source={icons.send}
-                  style={{ height: 20, width: 20, marginRight: 18 }}
-                />
-              </TouchableOpacity>
+              <TextInput
+                placeholder={" Viết Bình Luận ..."}
+                multiline
+                value={content}
+                style={{
+                  borderWidth: 0.1,
+                  backgroundColor: "#e7e6e6",
+                  height: 60,
+                  borderRadius: 10,
+                  padding: 10,
+                }}
+                onChangeText={(content) => setContent(content)}
+              />
+              {/* =====icons image and button comment ====== */}
+              <View
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: 40,
+                }}
+              >
+                <TouchableOpacity onPress={() => validateComment(authorize)}>
+                  <Image
+                    source={icons.send}
+                    style={{ height: 20, width: 20, marginRight: 18 }}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          ) : null}
           <FlatList
             data={commentEvent}
             keyExtractor={({ id }, index) => id}

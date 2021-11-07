@@ -44,9 +44,9 @@ const News: React.FC = () => {
   const featchNews = async (headers, schoolId) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/news/schoolid?schoolId=" +
+        "https://truongxuaapp.online/api/v1/schools/" +
           schoolId +
-          "&sort=desc",
+          "/news?sort=desc",
         { headers }
       );
       if (response.status === 200) {

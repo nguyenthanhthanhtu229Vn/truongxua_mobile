@@ -129,9 +129,9 @@ const GroupDetail = () => {
   };
 
   const postURL =
-    `https://truongxuaapp.online/api/v1/posts/groupid?groupId=` +
+    `https://truongxuaapp.online/api/v1/groups/` +
     route.params.id +
-    "&sort=desc";
+    `/posts?sort=desc`;
   async function featchPosts(headers) {
     try {
       const response = await axios.get(postURL, { headers });

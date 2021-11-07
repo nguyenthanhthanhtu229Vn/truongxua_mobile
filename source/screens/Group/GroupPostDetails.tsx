@@ -135,9 +135,9 @@ const GroupPostDetail = () => {
   //=====Call Api Comment=======
   const [comment, setComment] = useState<string>("");
   const commentURL =
-    "https://truongxuaapp.online/api/v1/posts/comments/postid?postId=" +
+    "https://truongxuaapp.online/api/v1/posts/" +
     route.params.id +
-    "&sort=desc";
+    "/comments?sort=desc";
   const featchComment = async (headers) => {
     try {
       const response = await axios.get(commentURL, { headers });
@@ -241,16 +241,17 @@ const GroupPostDetail = () => {
   }, [isFocused]);
 
   return (
-    <KeyboardAvoidingView
-      // behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={style.container}
-      behavior="padding"
-      keyboardVerticalOffset={Platform.select({
-        ios: () => 60,
-        android: () => 200,
-      })()}
-    >
-      {/* // <View style={style.container}> */}
+    //   <KeyboardAvoidingView
+    //   // behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={style.container}
+    //   behavior="padding"
+    //   keyboardVerticalOffset={Platform.select({
+    //     ios: () => 60,
+    //     android: () => 60,
+    //   })()}
+    // >
+    // </KeyboardAvoidingView>
+    <View style={style.container}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -557,8 +558,7 @@ const GroupPostDetail = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* </View> */}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

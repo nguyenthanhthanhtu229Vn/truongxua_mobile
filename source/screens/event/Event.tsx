@@ -33,20 +33,23 @@ const Event: React.FC = (props) => {
     console.log(infoUser);
     setAuthorize(headers);
 
-    await featchEvent(headers);
+    await featchEvent(headers, objUser.SchoolId);
     await featchImageEvent(headers);
     await featchAlumni(headers);
     return schoolId;
   };
-  const eventURL =
-    "https://truongxuaapp.online/api/v1/events?sort=desc&pageNumber=0&pageSize=0";
   const imageURL =
     "https://truongxuaapp.online/api/v1/images?pageNumber=0&pageSize=0";
   const [event, setData] = useState({});
   const [listImg, setListImg] = useState<string>();
-  async function featchEvent(headers) {
+  async function featchEvent(headers, schoolID) {
     try {
-      const response = await axios.get(eventURL, { headers });
+      const response = await axios.get(
+        "https://truongxuaapp.online/api/v1/schools/" +
+          schoolID +
+          "/events?sort=desc",
+        { headers }
+      );
       if (response.status === 200) {
         setData(response.data);
       }
@@ -149,92 +152,89 @@ const Event: React.FC = (props) => {
             extraData={visible}
             data={event}
             renderItem={({ item, index }) => {
-              if (schoolId == item.schoolId) {
-                return (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingBottom: 20,
-                      alignItems: "center",
-                      justifyContent: "space-between",
+              return (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingBottom: 20,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  key={item.id}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Chi Tiết Sự Kiện", {
+                        id: item.id,
+                      });
                     }}
-                    key={item.id}
                   >
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("Chi Tiết Sự Kiện", {
-                          id: item.id,
-                        });
+                    <Image
+                      source={{ uri: getImageByEvent(item.id) }}
+                      style={{
+                        height: SIZES.height / 5,
+                        borderRadius: 5,
+                        width: SIZES.width / 3,
+                        resizeMode: "cover",
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
+                    <Text
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                      style={{
+                        color: COLORS.black,
+                        marginLeft: 4,
+                        ...FONTS.h3,
+                        fontWeight: "600",
+                        fontSize: 19,
+                        width: SIZES.width / 2.3,
                       }}
                     >
-                      <Image
-                        source={{ uri: getImageByEvent(item.id) }}
-                        style={{
-                          height: SIZES.height / 5,
-                          borderRadius: 5,
-                          width: SIZES.width / 3,
-                          resizeMode: "cover",
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <View style={{ marginLeft: 10, width: SIZES.width / 2 }}>
-                      <Text
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                        style={{
-                          color: COLORS.black,
-                          marginLeft: 4,
-                          ...FONTS.h3,
-                          fontWeight: "600",
-                          fontSize: 19,
-                          width: SIZES.width / 2.3,
-                        }}
-                      >
-                        {item.name}
-                      </Text>
-                      <Text
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                        style={{
-                          color: "black",
-                          marginLeft: 4,
-                          ...FONTS.h3,
-                          fontWeight: "500",
-                          fontSize: 16,
-                          width: SIZES.width / 2.3,
-                          marginTop: 10,
-                          marginBottom: 10,
-                        }}
-                      >
-                        {item.description}
-                      </Text>
-                      <Text
-                        numberOfLines={1}
-                        style={{
-                          color: COLORS.darkGray,
-                          marginLeft: 4,
-                          ...FONTS.h4,
-                          fontWeight: "500",
-                          marginBottom: 10,
-                        }}
-                      >
-                        Người tạo: {getNameAlumni(item.alumniCreatedId)}
-                      </Text>
-                      <Text
-                        style={{
-                          color: COLORS.darkGray,
-                          marginLeft: 4,
-                          ...FONTS.h4,
-                          fontWeight: "500",
-                        }}
-                      >
-                        {formatDate(item.startDate)}
-                      </Text>
-                    </View>
+                      {item.name}
+                    </Text>
+                    <Text
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                      style={{
+                        color: "black",
+                        marginLeft: 4,
+                        ...FONTS.h3,
+                        fontWeight: "500",
+                        fontSize: 16,
+                        width: SIZES.width / 2.3,
+                        marginTop: 10,
+                        marginBottom: 10,
+                      }}
+                    >
+                      {item.description}
+                    </Text>
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        color: COLORS.darkGray,
+                        marginLeft: 4,
+                        ...FONTS.h4,
+                        fontWeight: "500",
+                        marginBottom: 10,
+                      }}
+                    >
+                      Người tạo: {getNameAlumni(item.alumniCreatedId)}
+                    </Text>
+                    <Text
+                      style={{
+                        color: COLORS.darkGray,
+                        marginLeft: 4,
+                        ...FONTS.h4,
+                        fontWeight: "500",
+                      }}
+                    >
+                      {formatDate(item.startDate)}
+                    </Text>
                   </View>
-                );
-              }
-              return null;
+                </View>
+              );
             }}
           />
         </View>
