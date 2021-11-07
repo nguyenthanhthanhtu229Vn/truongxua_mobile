@@ -143,7 +143,7 @@ const AboutSchool = () => {
         setSchool(reponse.data);
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
   useEffect(() => {

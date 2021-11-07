@@ -57,7 +57,7 @@ const PaypalDetails = () => {
         registerEvent(headers);
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 

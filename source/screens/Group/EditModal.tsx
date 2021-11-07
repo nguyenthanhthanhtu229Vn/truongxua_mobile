@@ -150,7 +150,7 @@ const EditPostGroup: React.FC = () => {
         return response.data.data.display_url;
       }
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 

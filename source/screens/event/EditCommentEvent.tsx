@@ -1,12 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from "react";
-import {
-  AsyncStorage,
-  Image,
-  Text,
-  View,
-  StyleSheet,
-} from "react-native";
+import { AsyncStorage, Image, Text, View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import axios from "axios";
@@ -110,7 +104,6 @@ const EditCommentEvent: React.FC = () => {
       }
     } catch (error) {
       console.log(error);
-      alert(error);
     }
   };
   const CancelComment = (headers) => {

@@ -57,8 +57,8 @@ const ChatMessage: React.FC = () => {
   useLayoutEffect(() => {
     const docid =
       route.params.idSend > route.params.idUser
-        ? route.params.idUser + "-" + route.params.idSend
-        : route.params.idSend + "-" + route.params.idUser;
+        ? route.params.idSend + "-" + route.params.idUser
+        : route.params.idUser + "-" + route.params.idSend;
     const unsubcribe = db
       .collection("chats")
       .doc(docid)
@@ -82,8 +82,8 @@ const ChatMessage: React.FC = () => {
 
     const docid =
       route.params.idSend > route.params.idUser
-        ? route.params.idUser + "-" + route.params.idSend
-        : route.params.idSend + "-" + route.params.idUser;
+        ? route.params.idSend + "-" + route.params.idUser
+        : route.params.idUser + "-" + route.params.idSend;
     db.collection("chats").doc(docid).collection("messages").add({
       _id,
       text,

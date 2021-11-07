@@ -291,8 +291,7 @@ const EventDetail: React.FC = () => {
       }
     } catch (error) {
       // alert("Ghi bình luận không thành công");
-      // console.log(error)
-      alert(error);
+      console.log(error);
     }
   };
 

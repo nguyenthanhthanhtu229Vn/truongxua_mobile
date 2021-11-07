@@ -22,20 +22,7 @@ import * as Notifications from "expo-notifications";
 import * as Permision from "expo-permissions";
 LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
-// const registerForPushNotification = async () => {
-//   const { status } = await Permision.getAsync(Permision.NOTIFICATIONS);
-//   let a;
-//   if (status != "granted") {
-//     const { status } = await Permision.askAsync(Permision.NOTIFICATIONS);
-//     a = status;
-//   }
-//   console.log(a);
-//   if (status != "granted") {
-//     alert("Fail to get the push token");
-//   }
-//   let token = (await Notifications.getExpoPushTokenAsync()).data;
-//   return token;
-// };
+
 const SignIn: React.FC = () => {
   const navigation = useNavigation();
   const [authentication, setAuthentication] = useState<boolean>(false);
@@ -57,12 +44,6 @@ const SignIn: React.FC = () => {
       console.log(error);
     }
   }
-  // useEffect(() => {
-  //   registerForPushNotification()
-  //     .then((token) => console.log(token))
-  //     .catch((error) => console.log(error));
-  // }, []);
-
   const signInWithEmailAndPassword = () => {
     if (error !== "") setError("");
     setAuthentication(true);
@@ -101,7 +82,7 @@ const SignIn: React.FC = () => {
         }
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -121,13 +102,13 @@ const SignIn: React.FC = () => {
     try {
       const result = await Google.logInAsync({
         webClientId:
-          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
-        // "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+          // "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         androidClientId:
           "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         clientId:
-          "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
-        // "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
+          // "190415757946-l541710id73mv9qjgs1a9516miemb0om.apps.googleusercontent.com",
+          "207933358538-rm1ntu3dcvh33mnb6cmfnmuvfiib6tjr.apps.googleusercontent.com",
         iosClientId:
           "207933358538-ul19uo0aktcu9kkk59fo1jfq29munncu.apps.googleusercontent.com",
         scopes: ["profile", "email"],

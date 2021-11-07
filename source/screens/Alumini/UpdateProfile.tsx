@@ -132,7 +132,7 @@ const UpdateProfile: React.FC = () => {
         return response.data.data.display_url;
       }
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   };
 
@@ -207,7 +207,6 @@ const UpdateProfile: React.FC = () => {
           await featchGroup(headers, id, schoolYearId);
         }
       } catch (error) {
-        alert(error);
         setRegistering(false);
       }
     }
@@ -216,8 +215,9 @@ const UpdateProfile: React.FC = () => {
   const featchGroup = async (headers, id, schoolYearId) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/groups/schoolyearid?schoolyearid=" +
-          schoolYearId,
+        "https://truongxuaapp.online/api/v1/schoolyears/" +
+          schoolYearId +
+          "/groups",
         { headers }
       );
       if (response.status === 200) {

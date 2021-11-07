@@ -7,11 +7,13 @@ import {
   Image,
   ScrollView,
   AsyncStorage,
+  RefreshControl,
 } from "react-native";
 import { COLORS, FONTS, icons, SIZES } from "../../constant";
 import { StyleSheet } from "react-native";
 import firebase from "firebase";
 const Notification: React.FC = () => {
+  const [visible, setVisible] = useState(false);
   const db = firebase.firestore();
   const [noti, setNoti] = useState([]);
   const formatDate = (date) => {
@@ -48,9 +50,11 @@ const Notification: React.FC = () => {
       return unsubcribe;
     };
     readUser();
-  }, []);
+  }, [visible]);
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={<RefreshControl onRefresh={() => setVisible(!visible)} />}
+    >
       <View>
         <View
           style={{

@@ -265,7 +265,7 @@ const Profile: React.FC = () => {
   const getFollowed = async (myId, idFollow, headers, follow, status) => {
     try {
       const response = await axios.get(
-        "https://truongxuaapp.online/api/v1/followers/followed" + idFollow,
+        "https://truongxuaapp.online/api/v1/followers/followed/" + idFollow,
         { headers }
       );
       if (response.status === 200) {
@@ -297,6 +297,7 @@ const Profile: React.FC = () => {
       if (response.status === 200) {
         // await featchAlumni(headers, idSchool, idUser);
         setAngel(!angel);
+        console.log("a");
       }
     } catch (error) {
       console.log(error);
